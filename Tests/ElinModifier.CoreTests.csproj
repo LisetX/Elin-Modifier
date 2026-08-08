@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Core\Configuration\ConfigurationInfrastructure.cs" Link="ConfigurationInfrastructure.cs" />
+    <Compile Include="..\Core\Diagnostics\CoreRegressionTests.cs" Link="CoreRegressionTests.cs" />
+    <Compile Include="..\Core\Modules\ElinModifierModuleDescriptor.cs" Link="ElinModifierModuleDescriptor.cs" />
+    <Compile Include="..\Core\Modules\ElinModifierModuleGraph.cs" Link="ElinModifierModuleGraph.cs" />
+    <Compile Include="..\Core\Modules\ElinModifierServiceProvider.cs" Link="ElinModifierServiceProvider.cs" />
+    <Compile Include="..\Infrastructure\GameAccess\Binding\GameBindingContracts.cs" Link="GameBindingContracts.cs" />
+    <Compile Include="..\Infrastructure\GameAccess\Binding\GameMemberSpecs.cs" Link="GameMemberSpecs.cs" />
+    <Compile Include="..\Infrastructure\GameAccess\Binding\GameMemberBinder.cs" Link="GameMemberBinder.cs" />
+    <Compile Include="..\Features\DungeonGeneration\DungeonGenerationPolicy.cs" Link="DungeonGenerationPolicy.cs" />
+    <Compile Include="..\Features\Gathering\GatheringThresholdPolicy.cs" Link="GatheringThresholdPolicy.cs" />
+    <Compile Include="..\Features\Dismantling\GuaranteedGatheringRewardsPolicy.cs" Link="GuaranteedGatheringRewardsPolicy.cs" />
+    <Compile Include="..\Modules\Moongate\MoongateContainerTransferPolicy.cs" Link="MoongateContainerTransferPolicy.cs" />
+    <Compile Include="..\Modules\Moongate\MoongateContainerLimits.cs" Link="MoongateContainerLimits.cs" />
+    <Compile Include="..\Modules\NpcCompendium\NpcInfoProbabilityMath.cs" Link="NpcInfoProbabilityMath.cs" />
+    <Compile Include="..\Modules\NpcCompendium\NpcTemplateValueMath.cs" Link="NpcTemplateValueMath.cs" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>D:\SteamLibrary\steamapps\common\Elin\Elin_Data\Managed\Newtonsoft.Json.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+</Project>

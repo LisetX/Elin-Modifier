@@ -1,0 +1,118 @@
+Elin Modifier Terms of Use and Privacy Notice
+
+Terms Version: 2026-08-08.1
+Last Updated: August 8, 2026
+
+Key Summary
+
+1. Elin Modifier is an unofficial third-party game modification tool. Features you choose to use may read or modify live game data, and some operations may be written into game saves.
+2. AI Assistant is optional. Only when you configure and use it may your input, conversation context, tool definitions, tool results, and related game or plugin data be sent to the AI API endpoint you select. Your API key is stored in plain text in the Mod's local configuration file.
+3. The Mod stores the accepted Terms version in a local configuration file. You will be asked to review and accept the Terms again if the version changes, the field is missing, or the stored version does not match.
+4. The Moongate module accesses the network to obtain map indexes and download maps. Only when you actively click Upload does the Mod send your raw SteamID64, map metadata, and the complete exported map file to the Elin Modifier cloud storage server. A map file may contain map objects, NPCs, player-created containers, and the items inside those containers. After upload, public metadata and the map file can be searched, viewed, and downloaded by other users.
+
+Please read the complete Terms below. Clicking “I acknowledge the Privacy Notice and agree to the Terms” confirms your acceptance. Clicking “Exit” stops the Mod from loading for the current session.
+
+1. Scope and Acceptance
+
+This document contains both the Terms of Use and Privacy Notice for Elin Modifier (the “Mod”). It applies to the Mod itself and its built-in features, including EMG tools, EMP plugin management, automation, debugging features, AI Assistant, and Moongate.
+
+You may use the Mod only if you have the legal capacity and authority to accept these Terms. If you do not agree with any provision, click “Exit,” stop loading the Mod, and remove it from your installation.
+
+2. Unofficial Status and Use Risks
+
+The Mod is an unofficial third-party modification tool. It is not officially authorized, affiliated with, sponsored by, or guaranteed by Valve, Steam, or the developer or publisher of Elin unless expressly stated in writing.
+
+The Mod may read or modify game memory, character and item data, runtime logic, configuration files, plugin workspace files, and game saves. Incorrect settings, extreme values, game updates, plugin conflicts, automation, or runtime patches may cause errors, reduced performance, feature conflicts, save problems, or data loss. Back up important saves and configuration files before use and decide for yourself whether to enable high-risk features.
+
+3. AI Assistant and Third-Party AI APIs
+
+AI Assistant requires you to provide an API base address, API key, and model name. The Mod contacts that endpoint only when you actively fetch the model list, send a message, compact context, or trigger a follow-up tool loop.
+
+Depending on the features you use, requests may contain:
+
+1. Your messages and retained conversation context;
+2. The Mod's system prompt, EMG tool definitions, and capability instructions;
+3. Tool-call arguments, execution results, error information, and interruption reasons;
+4. Game, character, item, NPC, plugin, assembly, decompilation-cache, or runtime data that you ask the AI to inspect or operate on;
+5. The selected model, reasoning effort, streaming settings, and other request parameters.
+
+The API address, API key, model name, and related AI settings are stored in the Mod's local JSON configuration file. The API key is currently stored in plain text. Protect the configuration file and do not publish, upload, or share it. The API key is transmitted as authentication information to the API provider you select.
+
+The Mod itself does not write AI conversation history or the last HTTP request and response bodies into its normal configuration file. Those values are generally held only in the current game process and released by the Mod when you clear history or exit the game. However, the AI provider, proxy, network infrastructure, or logging systems you select may retain requests and responses under their own terms. Exported EMP files, decompilation caches, compilation temporary files, and other workspace output remain local unless you upload them yourself.
+
+The developer does not control how your selected third-party AI provider processes data. Review that provider's terms and privacy policy before use. Do not enter secrets, personal information, or third-party data that you do not want transmitted to that provider.
+
+4. Moongate, Cloud Index, and Map Upload
+
+When you open the Moongate module or actively refresh the page, the Mod obtains the official Moongate index and the Elin Modifier cloud index over HTTPS. Search, language, and source filtering are generally performed on the index downloaded to your device. When you enter a map that is not already cached, the Mod downloads the map file from the corresponding official address, an index-provided download address, or the Elin Modifier cloud storage endpoint and stores it in the game's local Moongate cache directory.
+
+The Mod exports and uploads the current map only when you actively click “Upload map to Elin Modifier cloud storage server.” The upload request may contain:
+
+1. The raw SteamID64 of the current Steam account as owner_id, used to identify the uploader, derive a stable map identity, and process updates by the same uploader;
+2. A local map_key composed from the current save-directory identifier and zone UID;
+3. An update_key used to authorize later updates of the same map;
+4. The PC display or character name, map title, language region, map category, tags, and game version;
+5. The complete exported current-map file, including map, object, character, text, and other zone data included by the game's export process;
+6. Player-created containers, their lock levels, and complete game data for items stored inside those containers.
+
+The SteamID64, map_key, and update_key are transmitted to the Elin Modifier Moongate server over HTTPS. They are used to identify the uploader, map, and update authority. The public index primarily displays map metadata such as map ID, title, author, language region, upload time, game version, and source. The upload update_key is stored in the Mod's local configuration. Losing that configuration may prevent future updates to the original map. Do not disclose the key.
+
+After a successful upload, map metadata is added to the public index and the map file can be searched and downloaded by other users. Do not put information you do not want made public into a character name, map title, tags, map objects, custom text, NPCs, containers, or item data, and do not upload third-party content you lack the right to distribute. Map files and revision records may remain stored until replaced by a later version, removed by the developer, or deleted during service cleanup. The Mod currently provides no self-service interface for permanently deleting a cloud map. Use the contact information at the end of this document to request deletion.
+
+Downloading and entering a map uploaded by another user may import third-party map content, objects, characters, and item data into the current game environment. The developer does not guarantee the accuracy, compatibility, legality, or continued availability of user-uploaded content. Decide whether to download and enter a map and back up your save when appropriate.
+
+Moongate requests generate network-operational data such as IP address, request time, TLS/HTTP metadata, status code, and security logs. The server may process map files, metadata, uploader identifiers, and logs for as long as needed to provide index, upload, download, and update functions; prevent abuse; troubleshoot faults; and comply with legal obligations.
+
+5. Local Configuration, Workspace, and Game Data
+
+The Mod stores local configuration needed for operation, which may include the accepted Terms version, language and UI settings, feature switches, automation settings, kill-growth records, EMP states, Moongate upload update keys, and the AI API settings you provide. Automation profiles, EMP plugins, Skills, decompiled source, compilation caches, Moongate favorites, downloaded map caches, persistent maps, and other feature files may also be stored in the Mod directory, game save, game Moongate cache directory, or workspace subdirectory.
+
+Some features modify only the current process and reset after restart. Some write to the Mod's configuration. Other features directly modify game objects and may be written into game saves by the game's normal save process. The outcome depends on the feature description, game mechanics, and your actions. Removing the Mod does not necessarily reverse data already written into a game save.
+
+Except for AI API requests you actively initiate, Moongate index and map downloads, Moongate map uploads you actively initiate, official-site links you actively open, and communications technically necessary for those network features, the Mod is not currently designed to transmit routine gameplay telemetry, chat history, friends lists, inventory lists, purchase records, or payment information to the developer. Moongate map upload is an express exception: the uploaded file may contain item data stored in map containers, but it does not therefore automatically transmit a complete list of unrelated items in the PC's inventory.
+
+6. Logs, Retention, and Sharing
+
+When you use the Moongate cloud service, the server may store map files, public map metadata, hashed uploader and local-map fingerprints, update-authorization information, upload and download times, source addresses, status codes, and security logs. Map files and public index information may remain stored to provide map search, download, and update services. Deletion requests, unlawful-content or infringement handling, security incidents, backup rotation, and technical faults may affect the actual deletion time.
+
+Information may be processed or disclosed only where reasonably necessary for hosting, network transport, security protection, and logging; investigating security incidents; complying with applicable law, a court, or an authorized public body; protecting the lawful rights and safety of the developer, the Mod, related services, or users; or lawfully transferring the related service to a successor maintainer.
+
+7. Third-Party Services
+
+Steam's handling of account information and interface data is governed by Steam's own agreements and privacy policy. Your selected AI provider's handling of API requests and responses is governed by that provider's terms and privacy policy. Official Moongate services and user-uploaded content may be provided by the game developer, map authors, or other third parties and may be governed by their rules. The developer cannot guarantee the continued availability of third-party services or user content and does not control their independent data processing, interface changes, content changes, or service interruptions.
+
+8. User Responsibilities and Prohibited Conduct
+
+You must use a lawfully obtained Steam account and game environment and ensure that your conduct complies with applicable law, Steam agreements, game rules, and these Terms. You must not:
+
+1. Bypass or attempt to bypass Terms confirmation or other security mechanisms that remain in the Mod;
+2. Falsify, steal, or misuse another person's SteamID64, authorization file, or identity information;
+3. Scan, attack, stress-test, send malicious requests to, or perform denial-of-service attacks against the developer's servers;
+4. Use the Mod, EMG, EMP, AI Assistant, or runtime patches for unauthorized destruction, attacks, infringement, or other harmful conduct;
+5. Distribute maliciously modified copies, embed malicious code, impersonate an official release, or mislead others about the source;
+6. Otherwise harm the normal operation or security of the Mod, developer, related services, or other users;
+7. Upload through Moongate any map, text, character, image, item data, or other content that infringes another person's copyright, privacy, name, or other lawful rights, or place unrelated personal information, credentials, or other sensitive information into public fields or map data.
+
+9. Changes, Availability, and Disclaimer
+
+The developer may modify features or data processing; limit or remove map content; suspend services; or discontinue maintenance because of game updates, feature changes, security risks, Steam, AI, or Moongate API changes, server maintenance, storage capacity, content complaints, or other practical circumstances.
+
+The Mod is provided “as is” and “as available.” To the maximum extent permitted by applicable law, the developer does not guarantee that it is error-free, continuously available, compatible with every game version, or compatible with every plugin. You assume the risk of loss arising from use, inability to use, or misuse of the Mod, including loss caused by game updates, save modifications, automation, runtime patches, third-party APIs, or network failures. Nothing in this section excludes or limits liability that cannot lawfully be excluded or limited.
+
+10. Updates to These Terms and Renewed Acceptance
+
+The developer may update these Terms because of feature, data-processing, security, or legal changes. After the Terms version changes, the Mod compares it with the locally accepted version. If the field is missing or does not match, the Terms window is shown again. The Mod completes loading only after you accept the current version.
+
+The acceptedTermsVersion value in the local configuration records only which Terms version you accepted. That value is not uploaded to the developer's server merely because it is stored. Deleting or changing it triggers renewed confirmation.
+
+11. Language and Contact
+
+The Chinese and English texts are intended to have the same meaning. If an irreconcilable difference exists, the Chinese text controls, except where applicable law requires otherwise.
+
+Developer: Liset
+Official website: https://m9.pw/
+Email: liset@m9.pw
+
+For privacy questions, Moongate map deletion requests, or questions about these Terms, provide only the information necessary to locate the issue, such as your SteamID64, Moongate map ID, error message, event time, and a brief description of the issue. Do not send unrelated sensitive information.
+
+By clicking the acceptance button, you confirm that you have read, understood, and agreed to all provisions above.

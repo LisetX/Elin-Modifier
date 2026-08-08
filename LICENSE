@@ -1,0 +1,54 @@
+Elin Modifier Source-Available License
+
+Copyright (c) 2026 Liset
+All Rights Reserved.
+
+This license applies to the original portions of Elin Modifier owned by Liset.
+The source code, compiled binaries, documentation, and associated files are
+collectively referred to as the "Software."
+
+"Source Code" means the human-readable source files made available in this
+repository. "Official Binaries" means unmodified compiled releases distributed
+by Liset or through a distribution channel authorized by Liset. "Personal
+Build" means a binary compiled by a licensee from unmodified Source Code, except
+for changes strictly necessary to configure local dependency paths or the local
+build environment.
+
+Permission is granted to:
+
+1. download, install, execute, and use Official Binaries as an end user;
+2. make copies of Official Binaries reasonably necessary for installation and
+   personal backup; and
+3. access, download, and retain the Source Code solely for inspection, study,
+   security review, and reference; and
+4. compile and use a Personal Build solely as an end user, provided that the
+   Personal Build is not published, shared, or distributed.
+
+Except for the permissions expressly granted above or rights that cannot be
+restricted under applicable law, no permission is granted to:
+
+1. modify, adapt, translate, merge, or create derivative works from the Source
+   Code, except for the limited local build-configuration changes permitted in
+   the definition of a Personal Build;
+2. publish, distribute, sublicense, sell, rent, host, mirror, repackage, or
+   otherwise provide the Source Code, Official Binaries, Personal Builds, or
+   derivative works to third parties;
+3. remove or alter copyright, license, attribution, or proprietary notices; or
+4. reverse engineer, decompile, or disassemble Official Binaries.
+
+The Source Code is made available under proprietary source-available terms.
+Its availability does not grant any right beyond this license. All rights not
+expressly granted are reserved. Rights necessarily provided by the hosting
+platform's terms remain unaffected.
+
+Third-party libraries, game assets, trademarks, and other third-party materials
+remain the property of their respective owners and are governed by their own
+licenses and terms. This license applies only to the original portions of Elin
+Modifier owned by Liset.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OF OR OTHER DEALINGS IN THE SOFTWARE.
