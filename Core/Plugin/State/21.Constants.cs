@@ -1,0 +1,50 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Net.Http;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Logging;
+using BepInEx.Unity.Bootstrap;
+using HarmonyLib;
+using UnityEngine;
+
+public sealed partial class ElinModifierPlugin
+{
+    private const int ItemsPerPage = 50;
+    private const int NpcsPerPage = 40;
+    private const int GameRowsPerPage = 20;
+    private const int AbilityRowsPerPage = 8;
+    private const int HomeRowsPerPage = 12;
+    private const int AiModelsPerPage = 12;
+    private const int CardDecayIntIndex = 12;
+    private const int VirtualCraftMaterialCount = 999999;
+    private const string FoodRotOverlayName = "ElinModifierFoodRotOverlay";
+    private const float AdaptiveUiBaseWidth = 2560f;
+    private const float AdaptiveUiBaseHeight = 1440f;
+    private const string ConfigFileName = "ElinModifier_Config.json";
+    private static readonly Color FoodRotFreshColor = new Color(0.48f, 1f, 0.52f, 0.28f);
+    private static readonly Color FoodRotSpoiledColor = new Color(1f, 0.34f, 0.34f, 0.38f);
+    private static readonly FieldInfo? CardIntsField = typeof(Card).GetField("_ints", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+    private static readonly FieldInfo? ButtonHotItemBaseItemField = AccessTools.Field(typeof(ButtonHotItem), "item");
+    private static readonly int[] FixedAttributeEffectIds = { 70, 71, 72, 73, 74, 75, 76 };
+    private static readonly string[] UiStyleNamesZh = { "默认", "暗色", "蓝色", "绿色", "高对比黑", "高对比白", "终端绿", "琥珀黑" };
+    private static readonly string[] UiStyleNamesEn = { "Default", "Dark", "Blue", "Green", "High Contrast Black", "High Contrast White", "Terminal Green", "Amber Black" };
+    private static readonly string[] UiStyleNamesJa = { "デフォルト", "ダーク", "ブルー", "グリーン", "ハイコントラスト黒", "ハイコントラスト白", "ターミナルグリーン", "アンバー黒" };
+    private static readonly string[] UiStyleNamesRu = { "По умолчанию", "Темная", "Синяя", "Зеленая", "Черная HC", "Белая HC", "Терминал", "Янтарная" };
+    private static readonly string[] AiReasoningEfforts = { "off", "low", "medium", "high", "xhigh", "max" };
+}

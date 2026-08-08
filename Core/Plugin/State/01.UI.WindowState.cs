@@ -1,0 +1,54 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Net.Http;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Logging;
+using BepInEx.Unity.Bootstrap;
+using HarmonyLib;
+using UnityEngine;
+
+public sealed partial class ElinModifierPlugin
+{
+    private int _targetTab;
+    private int _itemEnchantPage;
+    private int _foodEffectPage;
+    private int _weaponEnchantPage;
+    private int _geneSourcePage;
+    private int _geneEffectPage;
+    private int _npcGeneSourcePage;
+    private int _npcGeneEffectPage;
+    private int _etherDiseasePage;
+    private int _nearbyNpcPage;
+    private int _teleportPage;
+    private int _selectedHomeUid = -1;
+    private int _uiStyleIndex = 4;
+    private float _uiAlpha = 0.9f;
+    private bool _uiTextColorFollowsStyle = true;
+    private Color _uiTextColor = Color.white;
+    private GUISkin? _modifierSkin;
+    private KeyCode _openKey = DefaultOpenKey;
+    private bool _forceGameUnfocus = true;
+    private bool _uiRoundedCorners = true;
+    private bool _adaptiveUiScale = true;
+    private float _customUiScale;
+    private string _simulateAdvanceMinutesText = "60";
+    private string _generateDungeonDangerText = DungeonGenerationPolicy.DefaultRequestedDanger.ToString(CultureInfo.InvariantCulture);
+    internal bool _simulatedAdvanceRunning;
+    internal bool _lowPerformanceMode;
+}

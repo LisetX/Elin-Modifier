@@ -1,0 +1,56 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Net.Http;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Logging;
+using BepInEx.Unity.Bootstrap;
+using HarmonyLib;
+using UnityEngine;
+
+public sealed partial class ElinModifierPlugin
+{
+    private string _weaponEditorName = "";
+    private string _weaponEditorLv = "";
+    private string _weaponEditorEncLv = "";
+    private string _weaponEditorMaterialId = "";
+    private string _weaponEditorDiceDim = "";
+    private string _weaponEditorHit = "";
+    private string _weaponEditorDamage = "";
+    private string _weaponEditorDv = "";
+    private string _weaponEditorPv = "";
+    private string _weaponEditorWeight = "";
+    private string _weaponEditorCharges = "";
+    private string _weaponEditorAmmo = "";
+    private string _weaponEditorRangeText = "";
+    private string _weaponEditorPenetrationText = "";
+    private string _weaponEditorModificationSlots = "";
+    private int _weaponEditorBlessedStateValue;
+    private bool _weaponEditorFlagStolen;
+    private bool _weaponEditorFlagCrafted;
+    private bool _weaponEditorFlagGifted;
+    private bool _weaponEditorFlagReplica;
+    private bool _weaponEditorFlagCopy;
+    private bool _weaponEditorFlagFireproof;
+    private bool _weaponEditorFlagAcidproof;
+    private bool _weaponEditorFlagBroken;
+    private bool _weaponEditorFlagNoSell;
+    private bool _weaponEditorFlagLostProperty;
+    private int _weaponEditorRarityValue;
+    private Thing? _weaponEditorTarget;
+}

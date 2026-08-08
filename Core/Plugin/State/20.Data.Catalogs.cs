@@ -1,0 +1,50 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Net.Http;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Logging;
+using BepInEx.Unity.Bootstrap;
+using HarmonyLib;
+using UnityEngine;
+
+public sealed partial class ElinModifierPlugin
+{
+    private readonly List<string> _aiModels = new List<string>();
+    private readonly List<AiChatMessage> _aiMessages = new List<AiChatMessage>();
+    internal List<RowDef> _skillRows;
+    private List<RowDef> _traitRows;
+    internal List<RowDef> _featRows;
+    private List<RowDef> _etherDiseaseRows;
+    private List<AbilityDef> _abilityRows;
+    private List<HomeElementDef> _homeSkillRows;
+    private List<HomeElementDef> _homeFeatRows;
+    private List<HomeElementDef> _homePolicyRows;
+    private List<RowDef> _resistRows;
+    private List<ItemDef> _itemRows;
+    private List<NpcDef> _npcRows;
+    private List<FaithDef>? _faithRows;
+    private List<GeneEffectDef>? _itemEnchantEffectRows;
+    private List<GeneEffectDef>? _foodEffectRows;
+    private List<GeneEffectDef>? _weaponEnchantEffectRows;
+    private List<GeneEffectDef>? _geneEffectRows;
+    private List<MaterialDef> _materialRows;
+    private readonly Dictionary<string, Sprite?> _itemIconCache = new Dictionary<string, Sprite?>();
+    private readonly Dictionary<string, Sprite?> _npcIconCache = new Dictionary<string, Sprite?>();
+    private readonly Dictionary<int, Sprite?> _abilityIconCache = new Dictionary<int, Sprite?>();
+}

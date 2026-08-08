@@ -1,0 +1,53 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Net.Http;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Logging;
+using BepInEx.Unity.Bootstrap;
+using HarmonyLib;
+using UnityEngine;
+
+public sealed partial class ElinModifierPlugin
+{
+    private string _itemFilter = "";
+    private string _npcFilter = "";
+    private string _nearbyNpcFilter = "";
+    private string _lastGeneSourceFilter = "";
+    private string _lastGeneEffectFilter = "";
+    private string _lastNpcGeneSourceFilter = "";
+    private string _lastNpcGeneEffectFilter = "";
+    private string _itemCount = "1";
+    private string _itemLv = "1";
+    private string _itemMat = "-1";
+    private string _npcSpawnId = "";
+    private string _npcSpawnLv = "-1";
+    private string _npcSpawnAffinity = "0";
+    private int _npcSpawnHostilityIndex = 1;
+    private string _npcAffinityInput = "0";
+    private int _npcHostilityIndex = 1;
+    private int _nearbyNpcSelectedUid = -1;
+    private Chara? _lastNpcRelationTarget;
+    private string _uiAlphaText = "0.90";
+    private int _uiFontSize = UiFontSizeDefault;
+    private string _uiFontSizeText = "13";
+    private string _uiTextColorHexText = "#FFFFFF";
+    private string _openKeyText = "Insert";
+    internal string _language = "zh";
+    private int _lastOpenKeyToggleFrame = -1;
+}

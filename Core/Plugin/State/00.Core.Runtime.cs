@@ -1,0 +1,68 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Net.Http;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Logging;
+using BepInEx.Unity.Bootstrap;
+using HarmonyLib;
+using UnityEngine;
+
+public sealed partial class ElinModifierPlugin
+{
+    private const int LowPerformanceUiValueCacheFrames = 60;
+    private const int LowPerformanceThreatMarkerCacheFrames = 6;
+    private const int NearbyNpcCacheFrames = 15;
+    private const int DebugMembersPerObject = 500;
+    private const int DebugCollectionItemsPerObject = 500;
+    private const int DebugTypesPerPage = 120;
+    private const int DebugMethodsPerType = 220;
+    private const int DebugRowsPerPage = 80;
+    internal const int DebugExceptionTraceMaxRecords = 100;
+    internal const int DebugSubmoduleTraceMaxRecords = 80;
+    internal const int DebugSubmoduleTraceFrameWindow = 60;
+    private const int AiRuntimeWorkspaceJobLimit = 32;
+    private const int AiRuntimeWorkspacePendingRetryMax = 64;
+    private const int AiContextCompressionDefaultThreshold = 262144;
+    private const int AiContextCompressionMinThreshold = 4000;
+    private const int AiContextCompressionMaxThreshold = 1048576;
+    private const int AiHttpTimeoutDefaultSeconds = 360;
+    private const int AiHttpTimeoutMinSeconds = 10;
+    private const int AiHttpTimeoutMaxSeconds = 3600;
+    private const int AiSkillPromptMaxChars = 120000;
+    private const int AiSkillPromptMaxFileChars = 60000;
+    private const int UiFontSizeDefault = 13;
+    private const int UiFontSizeMin = 1;
+    private const int UiFontSizeMax = 28;
+    private const KeyCode DefaultOpenKey = KeyCode.Insert;
+    private const int FoodNutritionElementId = 10;
+    private const int WeaponRangeOverrideMapKey = -2100101;
+    private const int WeaponPenetrationOverrideMapKey = -2100102;
+    private const string DebugLicenseFileName = "debug_license";
+    private const string DebugLicenseSha256 = "481f361d7fe37c74c8cdfe38b68add0cc1643d56d8b43e86b4091b6814f6db4b";
+    private static ElinModifierPlugin? Instance;
+    private ElinModifierModuleRegistry? _moduleRegistry;
+    private ElinModifierModuleRegistry _modules =>
+        _moduleRegistry ??= new ElinModifierModuleRegistry(this, Logger);
+    internal static ElinModifierPlugin? ActiveInstance => Instance;
+    internal static ElinModifierModuleRegistry? ActiveModules => Instance?._modules;
+    private static readonly object AiSkillPromptCacheLock = new object();
+    private static string _aiSkillPromptCache = "";
+    private static string _aiSkillPromptCacheStamp = "";
+    private static readonly object AiWorkspacePluginCacheLock = new object();
+}

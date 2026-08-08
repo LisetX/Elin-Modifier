@@ -1,0 +1,50 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Net.Http;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Text.Json;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Logging;
+using BepInEx.Unity.Bootstrap;
+using HarmonyLib;
+using UnityEngine;
+
+public sealed partial class ElinModifierPlugin
+{
+    private bool _infinitePlayerSightApplied;
+    private Map? _infinitePlayerSightMap;
+    private int _infinitePlayerSightPointCount;
+    private bool _infinitePlayerSightSavedTelepathy;
+    private bool _infinitePlayerSightOriginalTelepathy;
+    private Map? _infinitePlayerSightCharaMap;
+    private readonly Dictionary<int, bool> _infinitePlayerSightOriginalTelepathyVisibility = new Dictionary<int, bool>();
+    private int _infinitePlayerSightObservedCharaCount = -1;
+    private float _infinitePlayerSightLastCharaAuditTime = -9999f;
+    private float _infinitePlayerSightLastWatchdogTime = -9999f;
+    private readonly Dictionary<string, CachedUiValue> _lowPerformanceValueCache = new Dictionary<string, CachedUiValue>(StringComparer.Ordinal);
+    private readonly HashSet<int> _virtualCraftThingUids = new HashSet<int>();
+    private readonly Dictionary<string, List<string>> _craftOriginThingIdsCache = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+    private readonly Dictionary<string, List<string>> _craftCategoryThingIdsCache = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+    private readonly Dictionary<string, List<string>> _craftMaterialAliasesCache = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+    private readonly List<NearbyNpcEntry> _nearbyNpcCache = new List<NearbyNpcEntry>();
+    private Map? _nearbyNpcCacheMap;
+    private int _nearbyNpcCacheFrame = -9999;
+    private int _nearbyNpcCacheCharaCount = -1;
+    private string _nearbyNpcCacheFilter = "";
+    private string _nearbyNpcCacheLanguage = "";
+    private bool _nearbyNpcCacheDirty = true;
+}
