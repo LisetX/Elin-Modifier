@@ -7,13 +7,6 @@ This license applies to the original portions of Elin Modifier owned by Liset.
 The source code, compiled binaries, documentation, and associated files are
 collectively referred to as the "Software."
 
-"Source Code" means the human-readable source files made available in this
-repository. "Official Binaries" means unmodified compiled releases distributed
-by Liset or through a distribution channel authorized by Liset. "Personal
-Build" means a binary compiled by a licensee from unmodified Source Code, except
-for changes strictly necessary to configure local dependency paths or the local
-build environment.
-
 Permission is granted to:
 
 1. download, install, execute, and use Official Binaries as an end user;
