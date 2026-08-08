@@ -29,8 +29,6 @@ internal sealed partial class AutomationModule
         if (pc == null || map == null)
             return false;
 
-        // Combat retaliation and other game actions can replace the current hot item while a
-        // sweep is running. Re-select the mining tool before every target, not only at start.
         SetAutomationCurrentTool(pc, thing => thing.HasElement(220));
 
         var point = FindNearestAutomationMinePoint(pc);

@@ -90,10 +90,6 @@ internal sealed partial class ThreatOverlayModule
         _executingLockedThreatDecision = true;
         try
         {
-            // One combat callback must consume exactly one cached action.
-            // The old loop silently skipped a failed spell and executed a
-            // later turn's action during the same callback, causing both the
-            // visible sequence and the real action order to drift.
             var stepIndex = sequence.NextIndex++;
             var decision = sequence.Steps[stepIndex];
             succeeded = ExecuteLockedThreatDecision(actor, combat, decision);

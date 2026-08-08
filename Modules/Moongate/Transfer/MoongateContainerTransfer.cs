@@ -285,7 +285,6 @@ internal static class MoongateContainerTransfer
         }
         catch
         {
-            // Keep the base moongate container usable if one supplemental entry is invalid.
         }
     }
 

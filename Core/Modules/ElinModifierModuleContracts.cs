@@ -50,8 +50,6 @@ internal sealed class ElinModifierModuleContext : IDisposable
         }
         catch (Exception ex)
         {
-            // A module owns its cancellation callbacks. One failing callback must
-            // not prevent the remaining module shutdown sequence from running.
             try
             {
                 Logger.LogError("Module lifetime cancellation failed: " + ex);

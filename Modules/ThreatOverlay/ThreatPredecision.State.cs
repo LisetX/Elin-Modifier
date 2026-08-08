@@ -5,8 +5,6 @@ using UnityEngine;
 
 internal sealed partial class ThreatOverlayModule
 {
-    // 0..8 are the PC's 3 x 3 movement intents. 9 is the explicit
-    // no-movement branch used after the PC completes a non-movement action.
     private const int LockedThreatMovementScenarioCount = 9;
     private const int LockedThreatStationaryScenario = 9;
     private const int LockedThreatScenarioCount = 10;

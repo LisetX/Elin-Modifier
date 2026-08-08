@@ -76,22 +76,15 @@ internal sealed partial class AutomationModule
             if (thing.isDestroyed || !thing.ExistsOnMap || !thing.IsInstalled || thing.trait == null)
                 return false;
 
-            // Treat disarmable switches/traps as explicit interaction targets. This is checked
-            // before the hidden-state filter so discovered and concealed map traps can both be
-            // handled by the automation disarm path instead of being walked over.
             if (thing.trait is TraitSwitch trap && trap.CanDisarmTrap)
                 return true;
 
             if (thing.isHidden || thing.isMasked || thing.isRoofItem)
                 return false;
 
-            // Smashable vessels are handled as a dedicated interaction before the normal action list.
             if (IsAutomationSmashableVessel(thing))
                 return true;
 
-            // Doors, containers and floor transitions are intentionally excluded. Containers and
-            // transitions have dedicated automation actions, while doors are handled by pathfinding
-            // only when another action actually needs to pass through them.
             if (thing.trait is TraitDoor || thing.trait is TraitContainer || thing.trait is TraitStairsDown ||
                 thing.trait is TraitNewZone || thing.trait is TraitTeleporter || thing.trait is TraitElevator)
                 return false;
@@ -159,9 +152,6 @@ internal sealed partial class AutomationModule
                 return disarmed || target.isDestroyed || !target.ExistsOnMap;
             }
 
-            // Vases, sacks and parchment bottles share CanBeSmashedToDeath. DamageHP follows the
-            // game's normal object-death/drop path and avoids a random melee miss leaving the sweep
-            // in an indeterminate state.
             if (IsAutomationSmashableVessel(target))
             {
                 var map = GameAccess.World.CurrentMap;
@@ -181,8 +171,6 @@ internal sealed partial class AutomationModule
                 return target.isDestroyed || !target.ExistsOnMap;
             }
 
-            // Reproduce the normal primary toggle action without enabling the alternate-action
-            // branch that would switch powered furniture off.
             var toggleType = trait.ToggleType;
             if (toggleType == ToggleType.Lever || toggleType == ToggleType.Curtain ||
                 ((toggleType == ToggleType.Fire || toggleType == ToggleType.Light || toggleType == ToggleType.Electronics) && !target.isOn))

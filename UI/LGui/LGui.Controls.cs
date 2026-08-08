@@ -44,16 +44,10 @@ public sealed partial class ElinModifierPlugin
     }
     private Font FindLGuiFont()
     {
-        // Use the font selected by Elin for its normal UI.  Picking the first
-        // dynamic font returned by Resources is order-dependent and can select
-        // a title/news/dialog font after a scene or startup-flow change, which
-        // makes the Mod UI (especially Latin text) visibly change between runs.
         var gameUiFont = TryFindSelectedGameUiFont();
         if (gameUiFont != null)
             return gameUiFont;
 
-        // Keep the fallback deterministic.  The selected game UI font should
-        // normally be available by the time the modifier UI is initialized.
         return Resources.GetBuiltinResource<Font>("Arial.ttf");
     }
     private static Font? TryFindSelectedGameUiFont()
@@ -96,8 +90,6 @@ public sealed partial class ElinModifierPlugin
             if (selectedFont != null)
                 return selectedFont;
 
-            // Fallback for a game version where FontData.source is unavailable:
-            // resolve the same selected index through SkinManager.FontList.
             var indexValue = GetMemberValue(uiFontData, "index");
             var index = indexValue is int selectedIndex ? selectedIndex : -1;
             var fontList = GetMemberValue(manager, "FontList") as System.Collections.IList ??
@@ -190,12 +182,6 @@ public sealed partial class ElinModifierPlugin
 
         var viewport = CreateLGuiRect(rect, "Viewport");
         StretchLGuiRect(viewport, 8f, 6f, 28f, 6f);
-        // InputField renders its caret/selection through a separate
-        // CanvasRenderer. RectMask2D only clips registered MaskableGraphics,
-        // so a long read-only selection can escape the viewport after the
-        // text RectTransform is expanded for scrolling. A stencil Mask makes
-        // the Text modified material (which Unity also assigns to the
-        // selection renderer) clip both the glyphs and selection geometry.
         var viewportMaskImage = viewport.gameObject.AddComponent<Image>();
         viewportMaskImage.color = Color.white;
         viewportMaskImage.raycastTarget = false;

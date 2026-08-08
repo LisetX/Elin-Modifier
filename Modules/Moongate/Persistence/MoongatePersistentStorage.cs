@@ -92,7 +92,6 @@ internal static class MoongatePersistentStorage
             }
             catch
             {
-                // Keep the original map available if the persistent copy cannot be read.
             }
         }
         else if (map.path.EndsWith(PersistentSuffix, StringComparison.OrdinalIgnoreCase) && File.Exists(originalPath))

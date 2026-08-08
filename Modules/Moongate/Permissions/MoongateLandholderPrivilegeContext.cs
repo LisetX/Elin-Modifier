@@ -21,7 +21,6 @@ internal static class MoongateLandholderPrivilegeContext
         if (IsActive(zone))
             return true;
 
-        // Outside an enabled moongate map, preserve the exact vanilla getter.
         return zone.IsPCFaction;
     }
 
@@ -32,7 +31,6 @@ internal static class MoongateLandholderPrivilegeContext
         if (IsActive(zone))
             return true;
 
-        // Do not approximate the original result from zone type/faction data.
         return zone.IsPCFactionOrTent;
     }
 
@@ -56,9 +54,6 @@ internal static class MoongateLandholderPrivilegeContext
         if (card == null)
             return false;
 
-        // 月门地图中的场景物品在导入时会保留 NPCProperty 标记。
-        // 土地权限开启后，仅在权限判定期间将这些场景物品视为非 NPC 财产，
-        // 不直接改写物品字段，避免权限开关影响地图持久化数据。
         if (card is Thing thing && thing.ExistsOnMap && IsActive(GameAccess.World.CurrentZone))
             return false;
 

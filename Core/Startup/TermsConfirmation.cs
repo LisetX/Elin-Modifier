@@ -252,10 +252,6 @@ internal sealed class TermsConfirmationModule
             padding = new RectOffset(12, 12, 10, 10)
         };
         var termsText = _termsDisplayEnglish ? _termsEnglishText : _termsChineseText;
-        // GUILayout cannot reliably infer the wrapped label width inside a vertical-only
-        // scroll view.  ExpandWidth may therefore calculate the label with its minimum
-        // word width first and create premature line breaks around text such as "本 Mod".
-        // Use the actual window content width for both wrapping and height calculation.
         var termsTextWidth = Mathf.Max(320f, _termsWindow.width - 58f);
         var termsContent = new GUIContent(termsText);
         var termsTextHeight = Mathf.Max(1f, textStyle.CalcHeight(termsContent, termsTextWidth));

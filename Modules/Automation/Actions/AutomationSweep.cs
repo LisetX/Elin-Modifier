@@ -70,9 +70,6 @@ internal sealed partial class AutomationModule
         if (started)
             return;
 
-        // The first pass may temporarily skip a blocked target, or a target may appear/change
-        // while the sweep is running. Clear only the failure exclusions and perform one complete
-        // verification pass before declaring the map finished.
         if (!_automationSweepVerificationPass)
         {
             _automationSweepVerificationPass = true;
@@ -105,9 +102,6 @@ internal sealed partial class AutomationModule
                 return;
         }
 
-        // Enemy state and map membership can settle one or two frames after combat ends.
-        // Verify on separate frames before reporting completion; same-frame rescans alone can
-        // still miss a target whose hostility or map state is being refreshed by the game.
         if (type == AutomationTypeAutoKill)
         {
             _automationKillWaitingForEmptyRecheck = true;

@@ -131,10 +131,6 @@ internal sealed partial class ThreatOverlayModule
         if (sequence == null || sequence.NextIndex >= sequence.Steps.Count)
             return false;
 
-        // Once the PC's real action selected one of the ten branches, validate
-        // the visible next action against the live game state. This prevents a
-        // spell that is already on cooldown/out of range/out of resource from
-        // being shown as the locked action.
         if (decisionSet.ExecutionScenario >= 0)
             EnsureCurrentLockedDecisionExecutable(decisionSet, sequence, allowEquipRanged: false);
         if (sequence.NextIndex >= sequence.Steps.Count)
@@ -220,9 +216,6 @@ internal sealed partial class ThreatOverlayModule
                 TargetIsPc = ReferenceEquals(target, pc)
             };
 
-            // One game RNG read seeds every direction and every action. The
-            // branch table therefore does not consume up to 100 global rolls,
-            // while all ten movement scenarios remain directly comparable.
             var decisionSeed = GameAccess.Random.Next(1000000);
             for (var scenario = 0; scenario < LockedThreatScenarioCount; scenario++)
             {

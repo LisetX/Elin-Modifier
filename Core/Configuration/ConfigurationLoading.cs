@@ -488,7 +488,6 @@ public sealed partial class ElinModifierPlugin
             }
             else
             {
-                // Stable 分支不解析或应用 Nightly 配置，只保留原始 JSON 供后续保存时原样透传。
                 _nightlyConfigPassthroughJson = ConfigurationValueDocument.For(json)
                     .GetRawJson("nightlyAllowCurrencyGifts");
             }

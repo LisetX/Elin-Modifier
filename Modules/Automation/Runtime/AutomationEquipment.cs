@@ -138,8 +138,6 @@ internal sealed partial class AutomationModule
             catch { }
         }
 
-        // Preserve the existing hotbar-first selection order. A ranged weapon that wins that
-        // order remains active; dual wielding applies when a melee weapon wins.
         if (preferredRanged != null)
         {
             try
@@ -189,8 +187,6 @@ internal sealed partial class AutomationModule
             return false;
         try
         {
-            // CharaBody.Equip toggles an already equipped item off. Keep repeated automation
-            // preparation idempotent and only call Equip when the requested hand differs.
             if (ReferenceEquals(slot.thing, weapon))
                 return true;
             return pc.body.Equip(weapon, slot, false) || ReferenceEquals(slot.thing, weapon);

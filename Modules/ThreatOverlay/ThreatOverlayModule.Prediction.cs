@@ -18,17 +18,11 @@ internal sealed partial class ThreatOverlayModule
             current ??= ai;
             if (ai.IsMoveAI || current is AI_Goto)
             {
-                // AIAct.Current points at the deepest running action.  A
-                // GoalCombat parent does not expose the child AI_Goto
-                // destination, so use the current action when one exists.
                 if (TryGetThreatNextMovePoint(chara, current, out var next))
                     movePoint = next;
                 return T("移动", "Move");
             }
 
-            // If GoalCombat has already selected and started an ability, its
-            // deepest current child is the concrete Act.  Show that ability's
-            // localized name instead of replacing it with a fresh combat guess.
             if (!ReferenceEquals(current, ai) &&
                 current is not GoalCombat &&
                 current is not AI_Wait &&
@@ -39,9 +33,6 @@ internal sealed partial class ThreatOverlayModule
                     return currentActionText;
             }
 
-            // GoalCombat itself has no action element. Asking the base
-            // AIAct for its text returns the game's element-0 name ("虚无"),
-            // so combat prediction must run before the generic text fallback.
             var combat = current as GoalCombat ?? ai as GoalCombat;
             if (combat != null)
                 return PredictThreatCombatAction(chara, combat, target, out movePoint);
@@ -72,12 +63,6 @@ internal sealed partial class ThreatOverlayModule
             var tactics = combat.tactics;
             var desiredDistance = GetThreatDesiredCombatDistance(combat, target);
             var moveChance = Mathf.Clamp(tactics?.ChanceMove ?? 0, 0, 100);
-            // GoalCombat rolls ChanceMove immediately before TryMove.  The old
-            // >= 50 filter discarded every valid movement intent below 50%,
-            // which left most ranged/special enemies without a target cell.
-            // A future RNG roll cannot be known without consuming game RNG, so
-            // expose the AI's current movement intent whenever movement is
-            // possible and let the same combat pathfinder select the cell.
             if (distance != desiredDistance && moveChance > 0)
             {
                 if (distance > desiredDistance)
@@ -158,11 +143,6 @@ internal sealed partial class ThreatOverlayModule
             var ownerActTime = baseActTime * Mathf.Max(0.1f, pcSpeed / (float)ownerSpeed);
             var carriedTime = Mathf.Clamp(chara.roundTimer, 0f, ownerActTime);
 
-            // CharaUpdater executes while roundTimer > actTime.  Include the
-            // current residual timer so ratios such as 1.5x correctly alternate
-            // between one and two predicted actions instead of always showing
-            // the same rounded count.  The game clamps the ratio to 0.1, so ten
-            // is also the real scheduling maximum for one PC action budget.
             var nextBudget = carriedTime + baseActTime;
             var count = Mathf.FloorToInt(Mathf.Max(0f, nextBudget - 0.00001f) / ownerActTime);
             return Mathf.Clamp(Math.Max(1, count), 1, 10);

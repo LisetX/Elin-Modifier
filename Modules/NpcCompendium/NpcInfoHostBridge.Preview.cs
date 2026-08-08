@@ -46,10 +46,6 @@ public sealed partial class ElinModifierPlugin
                 var pass = row.renderData?.pass;
                 if (row._tiles != null && row._tiles.Length > 0 && pass != null && pass.mesh != null && pass.mat != null)
                 {
-                    // This is the first branch used by TraitFigure for normal
-                    // NPC rows. Keep its mesh, atlas tile, material and the
-                    // special card matColor (-3) intact; converting -3 to an
-                    // ether RGB token switches to the static actor fallback.
                     _usesOriginalTilePass = true;
                     tileMesh = pass.mesh;
                     material = pass.mat;
@@ -62,8 +58,6 @@ public sealed partial class ElinModifierPlugin
                         var owner = GameAccess.Spawn.CreateCharacter(npcId, -1);
                         if (owner != null)
                         {
-                            // This is the fallback branch used by TraitFigure
-                            // for PCC/NPC rows without placement tiles.
                             _sourceRenderer = new CharaRenderer();
                             _sourceRenderer.SetOwner(owner);
                             _sourceRenderParam = new RenderParam(owner.GetRenderParam());
@@ -76,11 +70,6 @@ public sealed partial class ElinModifierPlugin
                                 var actorSprite = _sourceActor.sr?.sprite;
                                 if (actorSprite != null)
                                 {
-                                    // Generic/template rows can create a
-                                    // random Chara even though their actual
-                                    // placement model is only a placeholder.
-                                    // Do not present that unrelated actor as
-                                    // the NPC's card model.
                                     if (!IsSamePlacementModel(placementSprite, actorSprite))
                                     {
                                         ReleaseSourceRenderer();
@@ -157,9 +146,6 @@ public sealed partial class ElinModifierPlugin
                 _propertyBlock = new MaterialPropertyBlock();
                 if (_usesOriginalTilePass && _previewMeshRenderer != null)
                 {
-                    // MeshPass.Draw supplies these as instanced arrays. Using
-                    // the same names and values preserves the original card
-                    // shader branch, including its time-driven effect.
                     _propertyBlock.SetFloatArray("_Tiles", new[] { tile });
                     _propertyBlock.SetFloatArray("_Color", new[] { 11010048f });
                     _propertyBlock.SetFloatArray("_MatColor", new[] { -3f });
@@ -177,10 +163,6 @@ public sealed partial class ElinModifierPlugin
                     ApplySprite(sprite, etherMatColor);
                 }
                 RenderPreview();
-                // The fallback image occupies the same area below the
-                // transparent RenderTexture. Leaving it enabled causes a
-                // static blue character to remain visible behind the original
-                // card shader animation.
                 if (_fallback != null)
                 {
                     _fallback.enabled = false;
@@ -211,9 +193,6 @@ public sealed partial class ElinModifierPlugin
 
             try
             {
-                // Drive the exact renderer path used by a placed TraitCard.
-                // CharaRenderer.UpdatePosition advances the original actor
-                // frames using the current game animation settings.
                 DrawSourceRenderer();
 
                 var sprite = _sourceActor.sr?.sprite;
@@ -238,9 +217,6 @@ public sealed partial class ElinModifierPlugin
 
             var position = _sourceRenderPosition;
             _sourceRenderer.Draw(_sourceRenderParam, ref position, false);
-            // This preview owns the renderer lifecycle. Keeping it outside the
-            // global screen-sync list prevents the world renderer from
-            // reclaiming it between UI and map render phases.
             RenderObject.syncList.Remove(_sourceRenderer);
         }
 
@@ -281,8 +257,6 @@ public sealed partial class ElinModifierPlugin
                     : default;
             if (bounds.size.x <= 0f || bounds.size.y <= 0f)
                 return;
-            // Image.preserveAspect fills the specimen slot without extra
-            // framing. Match that fill ratio for the card preview as well.
             var padding = 1f;
             _camera.orthographicSize = Math.Max(bounds.extents.y, bounds.extents.x) * padding;
             _camera.transform.position = new Vector3(bounds.center.x, bounds.center.y, bounds.center.z - 10f);
@@ -401,9 +375,6 @@ public sealed partial class ElinModifierPlugin
                     layer = PreviewLayer
                 };
                 _previewObject.transform.position = new Vector3(30000f, 30000f, 0f);
-                // Use the source Sprite without the map MeshPass/material
-                // branch. The latter applies world shading and makes the
-                // specimen substantially darker than the original image.
                 _spriteRenderer = _previewObject.AddComponent<SpriteRenderer>();
                 _spriteRenderer.sprite = sprite;
                 _spriteRenderer.color = Color.white;
@@ -555,8 +526,6 @@ public sealed partial class ElinModifierPlugin
         bool cardPreview)
     {
         var background = CreateLGuiImage(content, name + "Background", x, y, width, height);
-        // Preview cards are a single visual group. Do not reuse alternating
-        // table-row colors here or the two cards look like zebra-striped rows.
         background.color = GetLGuiRowColor(0, false);
         background.raycastTarget = false;
         RegisterLGuiRoundedImage(background);
@@ -679,8 +648,6 @@ public sealed partial class ElinModifierPlugin
         if (preview.Initialize(fallback, rawImage, npc.Row, sprite, npc.Id))
             return true;
 
-        // If the row has no real character placement model, keep the same
-        // neutral specimen image instead of tinting its placeholder as a card.
         fallback.color = Color.white;
         Destroy(rect.gameObject);
         return false;

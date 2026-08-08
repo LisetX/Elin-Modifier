@@ -18,10 +18,6 @@ internal static class MoongateLandholderStockSearchLocalPatch
 {
     private static IEnumerable<MethodBase> TargetMethods()
     {
-        // The ownership checks that gate stocked crafting materials live in
-        // ListThingStack's generated Find/FindCat local functions. Patching the
-        // outer ListThingStack method keeps an unnecessary global detour active
-        // for every recipe lookup, even outside a moongate map.
         var nestedTypes = typeof(Props).GetNestedTypes(
             BindingFlags.Public | BindingFlags.NonPublic);
         for (var i = 0; i < nestedTypes.Length; i++)
@@ -121,9 +117,6 @@ internal static class MoongateLandholderContainerActionPatch
             !MoongateLandholderPrivilegeContext.IsActive(GameAccess.World.CurrentZone))
             return true;
 
-        // 月门不是玩家领地时，部分家园专用容器会通过 CanOpenContainer
-        // 直接隐藏“打开容器”操作。土地持有人模式下只绕过这层领地权限，
-        // 有锁容器仍交回游戏原逻辑处理，避免连锁绕过开锁机制。
         if (owner.c_lockLv > 0)
             return true;
 

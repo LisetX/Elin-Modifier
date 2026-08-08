@@ -252,10 +252,6 @@ internal sealed partial class AutomationModule
         content.anchorMax = new Vector2(1f, 1f);
         content.pivot = new Vector2(0.5f, 1f);
         content.anchoredPosition = Vector2.zero;
-        // Dropdown.Show() derives the final scrollable content height from the
-        // template item's height and the content's initial rect. Keeping one
-        // item of initial height prevents the last generated option from being
-        // placed outside the ScrollRect bounds.
         content.sizeDelta = new Vector2(0f, dropdownItemHeight);
 
         var item = CreateLGuiRect(content, "Item");

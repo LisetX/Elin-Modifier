@@ -98,10 +98,6 @@ internal sealed partial class AutomationModule
 
         public override bool TryAbortCombat()
         {
-            // The game's normal auto-combat aborts after two idle turns. Closed doors and short
-            // path interruptions can therefore stop an automation sweep while enemies still exist.
-            // Keep the original imminent death-sentence abort, but let the automation controller
-            // handle idle/path retries itself.
             var condition = owner?.GetCondition<ConDeathSentense>();
             if (condition != null && condition.value <= 3)
             {

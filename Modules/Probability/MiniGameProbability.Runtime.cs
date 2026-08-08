@@ -40,11 +40,6 @@ internal sealed partial class ProbabilityModule
             return;
         try
         {
-            // AccessTools.TypeByName enumerates every type in every loaded assembly.
-            // Some Unity middleware assemblies (notably DOTweenPro on this runtime)
-            // contain a type Mono cannot materialize and HarmonyX logs a warning for
-            // that unrelated type on every lookup. Assembly.GetType resolves the
-            // exact full name without enumerating the assembly type table.
             var slotType = FindLoadedTypeExact("CSFramework.CustomSlot");
             if (slotType == null)
                 return;

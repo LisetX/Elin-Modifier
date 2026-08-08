@@ -228,19 +228,12 @@ internal sealed partial class ThreatOverlayModule
                 return LockedThreatStationaryScenario;
             }
 
-            // AM_Adv.RefreshArrow is the game's canonical conversion from the
-            // isometric screen-space cursor direction to the X/Z movement
-            // vector. Using mouseTarget.pos directly disagrees with the
-            // direction that GoalManualMove ultimately executes.
             if (_mouseThreatDirectionFrame >= 0 &&
                 Time.frameCount - _mouseThreatDirectionFrame <= 2)
             {
                 return (_mouseThreatStepZ + 1) * 3 + _mouseThreatStepX + 1;
             }
 
-            // Fallback for a frame where RefreshArrow has not run yet. For a
-            // distant click, follow the same default pathfinder used by
-            // AI_Goto/GoalManualMove and preview its actual first step.
             if (pc.pos.Distance(mouseTarget.pos) > 1)
             {
                 var firstStep = pc.GetFirstStep(mouseTarget.pos, PathManager.MoveType.Default);

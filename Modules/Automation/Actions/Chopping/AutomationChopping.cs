@@ -29,8 +29,6 @@ internal sealed partial class AutomationModule
         if (pc == null || map == null)
             return false;
 
-        // Re-select an axe before every tree so interruptions cannot leave the task using the
-        // combat weapon or empty hands.
         SetAutomationCurrentTool(pc, thing => thing.HasElement(225));
 
         Point? best = null;

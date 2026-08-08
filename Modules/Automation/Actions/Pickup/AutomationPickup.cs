@@ -64,9 +64,6 @@ internal sealed partial class AutomationModule
         var count = _automationSweepCompletedCount.ToString(CultureInfo.InvariantCulture);
         if (backpackFull && !droppedForBurden && !replacedLowerValueItem)
         {
-            // The nearest ground item may be cheaper than every replaceable backpack item.
-            // Skip only that target and keep scanning instead of stopping the whole pickup action,
-            // otherwise a more valuable item farther away is never evaluated.
             if ((targetIsPreferred || IsAutomationPickupReplacementEnabled(action)) && TryStartNextAutomationPickupTarget(action))
                 return;
 
@@ -148,8 +145,6 @@ internal sealed partial class AutomationModule
             var amount = Math.Max(1L, card.Num);
             totalValue = unitValue > long.MaxValue / amount ? long.MaxValue : unitValue * amount;
 
-            // A carried container is still one backpack item. Include its contents in the
-            // comparison so a cheap box containing valuable items is not selected as the minimum.
             if (depth < 16 && card.IsContainer && card.things != null)
             {
                 foreach (var child in card.things)
@@ -249,9 +244,6 @@ internal sealed partial class AutomationModule
             if (zone == null || !ReferenceEquals(lowest.parent, pc))
                 return false;
 
-            // DropThing() may return without moving the item for several trait-specific paths.
-            // All unsafe cases were filtered above, so move the selected direct backpack child
-            // to the current zone explicitly and verify the parent change before retrying pickup.
             lowest.ignoreAutoPick = true;
             zone.AddCard(lowest, pc.pos);
             if (lowest.isDestroyed || !lowest.ExistsOnMap)

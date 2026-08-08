@@ -122,7 +122,6 @@ internal sealed class CwlErrorNotificationModule
         }
         catch
         {
-            // The compatibility target is optional. A future assembly load can request another attempt.
         }
     }
 

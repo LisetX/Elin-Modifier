@@ -180,8 +180,6 @@ internal sealed partial class MoreInfoModule
                 if (!string.IsNullOrEmpty(hoveredPlantDetails))
                     return hoveredPlantDetails;
 
-                // Fertilizer can cover a seed that has not sprouted yet. Such a tile
-                // has no PlantData, so read the underlying installed seed directly.
                 var thingsAtPoint = mouseTarget.pos.Things;
                 if (thingsAtPoint != null)
                 {

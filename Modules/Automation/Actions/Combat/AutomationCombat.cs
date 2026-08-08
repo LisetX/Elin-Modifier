@@ -147,9 +147,6 @@ internal sealed partial class AutomationModule
                 chara.IsPCFactionOrMinion || chara.IsPCParty)
                 return false;
 
-            // Use both directions because combat hostility can be asymmetric while enemies are
-            // changing targets. Direct enemy references also catch an enemy currently attacking a
-            // party member even when the PC-side relation has not refreshed yet.
             if (pc.IsHostile(chara) || chara.IsHostile(pc) || chara.hostility <= Hostility.Enemy ||
                 ReferenceEquals(pc.enemy, chara) || ReferenceEquals(chara.enemy, pc))
                 return true;
@@ -184,8 +181,6 @@ internal sealed partial class AutomationModule
             var charas = GameAccess.World.CurrentCharacters!;
             for (var i = 0; i < charas.Count; i++)
             {
-                // A malformed or concurrently removed character must not abort the complete map
-                // scan and hide every enemy that appears later in the list.
                 try
                 {
                     var chara = charas[i];

@@ -233,9 +233,6 @@ internal sealed partial class ProbabilityModule
                 else if (list.filter is ThingFilter &&
                          !string.Equals(list.id, "thing", StringComparison.Ordinal))
                 {
-                    // Category/tag item pools are runtime ThingFilter lists. Rebuild the
-                    // rows as well as totalChance so values changed from 0 to positive
-                    // can enter an already-created pool immediately.
                     list.CreateMaster(list.filter, "thing");
                     continue;
                 }

@@ -29,11 +29,6 @@ internal sealed class LGuiSafeInputField : InputField
         if (textComponent == null || !isActiveAndEnabled)
             return;
 
-        // InputField registers UpdateLabel directly as Text's dirty-vertices
-        // callback. A dynamic-font atlas rebuild can run that callback while
-        // the cached character list and caret draw range describe different
-        // generations. Keep the original update logic, but recover locally
-        // when that transient mismatch produces ArgumentOutOfRangeException.
         textComponent.UnregisterDirtyVerticesCallback(UpdateLabel);
         textComponent.RegisterDirtyVerticesCallback(UpdateLabelSafely);
         _safeLabelTextComponent = textComponent;
@@ -62,8 +57,6 @@ internal sealed class LGuiSafeInputField : InputField
             }
             catch (ArgumentOutOfRangeException)
             {
-                // Reset both ends so SetDrawRangeToContainCaretPosition does
-                // not reuse a range from the previous font/text generation.
                 m_CaretPosition = 0;
                 m_CaretSelectPosition = 0;
                 try { UpdateLabel(); } catch (ArgumentOutOfRangeException) { }
@@ -111,10 +104,6 @@ internal sealed class LGuiSafeInputField : InputField
 
     protected override void OnEnable()
     {
-        // Pooled rows can be rebound while inactive. Unity's InputField keeps
-        // its previous draw/caret range and may index past the newly generated
-        // character list when the row is enabled again. Start inactive rows at
-        // a known-safe caret and never let rich-text tags change that list.
         m_CaretPosition = 0;
         m_CaretSelectPosition = 0;
         if (textComponent != null)
@@ -310,9 +299,6 @@ internal sealed class LGuiMultilineScrollbar : MonoBehaviour, IScrollHandler
         }
         catch (InvalidOperationException)
         {
-            // FontUpdateTracker can be enumerating its rebuild set while a
-            // page is being constructed. Retry after that rebuild finishes
-            // instead of querying preferred height re-entrantly.
             QueueLayoutRefresh(moveToBottom);
         }
     }
@@ -353,11 +339,6 @@ internal sealed class LGuiMultilineScrollbar : MonoBehaviour, IScrollHandler
 
         if (_directTextScrolling)
         {
-            // InputField scrolls by changing its caret/draw range. A read-only
-            // field is never activated, so Unity can leave that draw range at
-            // the first visible lines even though the scrollbar itself moves.
-            // Keep the complete text rendered and move its RectTransform
-            // directly inside the masked viewport instead.
             var textRect = _text.rectTransform;
             textRect.sizeDelta = new Vector2(textRect.sizeDelta.x, _contentHeight);
             _text.text = _input.text ?? "";
@@ -394,8 +375,6 @@ internal sealed class LGuiMultilineScrollbar : MonoBehaviour, IScrollHandler
         if (_input == null || _text == null)
             return;
 
-        // InputField may rewrite textComponent.text when it receives a pointer
-        // event. Restore the complete read-only value before applying offset.
         var value = _input.text ?? "";
         if (!string.Equals(_text.text, value, StringComparison.Ordinal))
             _text.text = value;

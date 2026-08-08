@@ -113,7 +113,6 @@ internal sealed class HarmonyPatchModule
             }
             catch
             {
-                // A single unloadable metadata entry must not prevent other patch classes.
             }
         }
 

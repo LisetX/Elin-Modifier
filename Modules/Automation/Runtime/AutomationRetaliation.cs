@@ -92,8 +92,6 @@ internal sealed partial class AutomationModule
         if (TryRetryAutomationKillTarget(pc, target, _automationRetaliationFailureCount))
             return;
 
-        // The attacker had already managed to damage the player, so it is normally reachable.
-        // Keep automation from getting permanently stuck if the map changes after the hit.
         CompleteAutomationRetaliation(pc);
     }
     private void StartAutomationRetaliationTarget(Chara pc, Chara target, bool captureResumeContext)

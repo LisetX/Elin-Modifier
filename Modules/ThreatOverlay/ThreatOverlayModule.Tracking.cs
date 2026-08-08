@@ -66,9 +66,6 @@ internal sealed partial class ThreatOverlayModule
         _threatGameUiSortingLayerId = sortingLayerId;
         _threatGameUiTargetDisplay = targetDisplay;
 
-        // Draw the marker canvas before the game's UI canvas. Normal UI alpha
-        // blending then hides only the overlapping pixels instead of removing
-        // the entire marker.
         if (renderMode != RenderMode.WorldSpace)
         {
             _threatCanvas.renderMode = renderMode;

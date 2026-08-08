@@ -368,11 +368,6 @@ public sealed partial class ElinModifierPlugin
             return;
 
         const int size = 64;
-        // Keep the sliced border close to the slider track's half-height.
-        // A near-circular 31px border is stretched into a long ellipse by
-        // Unity's sliced Image, which makes both track ends look pointed.
-        // A 6px corner produces blunt semicircular track caps and a softly
-        // rounded square handle at the current value position.
         const float radius = 6f;
         var texture = new Texture2D(size, size, TextureFormat.RGBA32, false);
         texture.name = "ElinModifier.RoundedCapsule";

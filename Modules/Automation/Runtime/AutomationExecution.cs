@@ -299,10 +299,6 @@ internal sealed partial class AutomationModule
                 return;
             }
 
-            // Hostility can temporarily become asymmetric while combat AI switches targets.
-            // Do not count an alive target as killed merely because pc.IsHostile(target) is false
-            // for one frame. A genuinely non-hostile target is skipped and reconsidered during the
-            // full verification pass instead.
             if (!IsAutomationEnemyCandidate(pc, target!))
             {
                 ContinueAutomationSweep(action, type, false, false);
@@ -371,12 +367,6 @@ internal sealed partial class AutomationModule
                 }
                 else if (target != null && !targetAlreadyLeftMap && ai != null && pc.Dist(target) <= 1)
                 {
-                    // AI_Grab uses HoldCard, which first tries to reserve an empty inventory slot.
-                    // When the backpack has no empty slot, it can finish with Fail without ever
-                    // assigning pc.held—even if this item could still merge into an existing stack.
-                    // Retry the normal stack-aware pickup first. If the same target remains on the
-                    // map afterwards and the visible backpack grid is full, high-value replacement
-                    // must run even when GetDest() can see an unrelated nested container.
                     pc.Pick(target, false, true);
                     var targetStillOnMap = !target.isDestroyed && target.ExistsOnMap;
                     backpackWasOverflowing = targetStillOnMap && (pc.things == null || pc.things.IsFull());
@@ -403,8 +393,6 @@ internal sealed partial class AutomationModule
             }
             catch { }
 
-            // AI_Grab can finish with Fail while leaving the target on the map. Treat that state as
-            // a capacity failure directly instead of depending on the game's inconsistent grid flags.
             ContinueAutomationPickup(action, targetPicked, false,
                 !targetPicked && (backpackWasOverflowing || pickupCompletedButTargetRemained));
             return;

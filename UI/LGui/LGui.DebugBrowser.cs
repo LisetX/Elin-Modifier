@@ -10,9 +10,6 @@ public sealed partial class ElinModifierPlugin
     private void BuildLGuiDebugRoots()
     {
         _lGuiDebugRoots.Clear();
-        // Keep the default debug surface focused on the game and loaded mods. The
-        // modifier itself remains searchable from the root selector, but no longer
-        // occupies the first/default root or the normal root cycle.
         AddLGuiDebugRoot("[Game runtime] EClass", typeof(EClass));
         AddLGuiDebugRoot("[Game runtime] EClass.game", ReadLGuiDebugTarget(() => GameAccess.Runtime.Game));
         AddLGuiDebugRoot("[Game runtime] EClass.pc", ReadLGuiDebugTarget(() => GameAccess.Characters.PlayerCharacter));

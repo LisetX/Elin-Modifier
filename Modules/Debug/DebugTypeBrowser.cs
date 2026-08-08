@@ -94,9 +94,6 @@ public sealed partial class ElinModifierPlugin
             typeof(LayerCraft).Assembly,
             typeof(DropdownGrid).Assembly
         };
-        // BepInEx plugins and workshop/package mods do not necessarily live under
-        // BepInEx\plugins and may use arbitrary assembly names. Seed their actual
-        // runtime assemblies explicitly so the full module scan cannot omit them.
         try
         {
             foreach (var plugin in GetOtherLoadedBepInExPluginsCached())
@@ -125,9 +122,6 @@ public sealed partial class ElinModifierPlugin
         {
             if (assembly == null)
                 continue;
-            // The debug catalog is intended to inspect the game and its ecosystem.
-            // Keep only the small dedicated self-diagnostics elsewhere instead of
-            // reflecting this very large plugin assembly into thousands of rows.
             if (assembly == typeof(ElinModifierPlugin).Assembly)
                 continue;
             Type[] types;

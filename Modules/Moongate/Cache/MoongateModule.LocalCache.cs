@@ -62,13 +62,11 @@ internal sealed partial class MoongateModule
                 }
                 catch
                 {
-                    // Ignore individual broken cache files and continue listing usable maps.
                 }
             }
         }
         catch
         {
-            // The local cache may be unavailable while the game is moving map files.
         }
         return _localMaps;
     }

@@ -41,9 +41,6 @@ internal sealed partial class ThreatOverlayModule
     {
         try
         {
-            // GoalCombat.TryMove ultimately uses the combat pathfinder through
-            // Chara.TryMoveTowards.  Prefer that route instead of guessing a
-            // straight step, otherwise walls and doors produce no red cell.
             var pathPoint = chara.GetFirstStep(destination, PathManager.MoveType.Combat);
             if (pathPoint != null && pathPoint.IsValid &&
                 !pathPoint.HasChara &&
@@ -67,9 +64,6 @@ internal sealed partial class ThreatOverlayModule
     {
         try
         {
-            // Match Card.TryMoveFrom's first choice: one step directly away
-            // from the threat.  If that tile cannot be used, select the best
-            // valid neighbouring tile without touching game state.
             var dx = Math.Sign(threat.x - chara.pos.x);
             var dz = Math.Sign(threat.z - chara.pos.z);
             var direct = new Point(chara.pos.x - dx, chara.pos.z - dz);

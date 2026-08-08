@@ -114,9 +114,6 @@ internal sealed class NightlyModule
                 codes[i + 4].opcode != OpCodes.Stloc_0)
                 continue;
 
-            // Nightly resets the already-calculated gift affinity to zero for currency.
-            // Keep that behavior while the feature is disabled, but retain the Stable
-            // value while "Allow Currency Gifts" is enabled.
             codes[i + 3].opcode = OpCodes.Ldloc_0;
             codes[i + 3].operand = null;
             codes.Insert(i + 4, new CodeInstruction(OpCodes.Call, resolver));
@@ -163,7 +160,6 @@ internal sealed class NightlyModule
         }
         catch
         {
-            // Preserve the original result if a future Nightly build changes gift data.
         }
     }
 }
