@@ -84,6 +84,7 @@ public sealed partial class ElinModifierPlugin
         RightClickInterruptOperation,
         StealHandNoTargetLimit,
         StealHandUndetectable,
+        MerchantRefreshNoCost,
         MerchantAlwaysStocksMonsterBall,
         MerchantMonsterBallLevelOptimization,
         IgnoreSpecialNpcHatchRestriction,
@@ -380,6 +381,7 @@ public sealed partial class ElinModifierPlugin
     private InputField? _lGuiNpcIdInput;
     private readonly List<Text> _lGuiNpcRelationshipLabels = new List<Text>();
     private Font? _lGuiFont;
+    private float _lGuiNextFontRefreshAt;
     private Texture2D? _lGuiRoundedWindowTexture;
     private Sprite? _lGuiRoundedWindowSprite;
     private Texture2D? _lGuiRoundedCapsuleTexture;

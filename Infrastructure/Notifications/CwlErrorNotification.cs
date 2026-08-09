@@ -67,7 +67,7 @@ internal sealed class CwlErrorNotificationModule
         _harmony = harmony;
         AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoad;
 
-        var loadedType = FindLoadedTypeExact(ExceptionProfileTypeName);
+        var loadedType = LoadedAssemblyTypeResolver.ResolveExact(ExceptionProfileTypeName);
         if (loadedType != null)
         {
             lock (_sync)
@@ -125,35 +125,11 @@ internal sealed class CwlErrorNotificationModule
         }
     }
 
-    private static Type? FindLoadedTypeExact(string fullName)
-    {
-        try
-        {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            for (var i = 0; i < assemblies.Length; i++)
-            {
-                try
-                {
-                    var type = assemblies[i].GetType(fullName, false);
-                    if (type != null)
-                        return type;
-                }
-                catch
-                {
-                }
-            }
-        }
-        catch
-        {
-        }
-        return null;
-    }
-
     private void CloseActiveNotifications()
     {
         try
         {
-            var profileType = _profileType ?? FindLoadedTypeExact(ExceptionProfileTypeName);
+            var profileType = _profileType ?? LoadedAssemblyTypeResolver.ResolveExact(ExceptionProfileTypeName);
             if (profileType == null)
                 return;
 

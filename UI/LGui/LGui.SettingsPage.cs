@@ -25,8 +25,8 @@ public sealed partial class ElinModifierPlugin
         PlaceLGuiRect(customScaleLabel.rectTransform, 0f, 256f, 120f, 48f);
         var customScaleValue = CreateLGuiText(host, "CustomUiScaleValue", _customUiScale.ToString("0.00", CultureInfo.InvariantCulture), 17, TextAnchor.MiddleLeft, FontStyle.Normal);
         PlaceLGuiRect(customScaleValue.rectTransform, 750f, 256f, 70f, 48f);
-        var customScaleSlider = CreateLGuiSlider(host, "CustomUiScaleSlider", 130f, 267f, 600f, 26f, -4f, 4f, _customUiScale, 0.01f);
-        var customScaleInput = CreateLGuiInput(host, "CustomUiScaleInput", "-4.00 ~ 4.00", 830f, 258f, 90f, 44f);
+        var customScaleSlider = CreateLGuiSlider(host, "CustomUiScaleSlider", 130f, 267f, 600f, 26f, -10f, 10f, _customUiScale, 0.01f);
+        var customScaleInput = CreateLGuiInput(host, "CustomUiScaleInput", "-10.00 ~ 10.00", 830f, 258f, 90f, 44f);
         customScaleInput.contentType = InputField.ContentType.DecimalNumber;
         customScaleInput.text = _customUiScale.ToString("0.00", CultureInfo.InvariantCulture);
         CreateLGuiButton(host, "ApplyCustomUiScale", T("应用", "Apply"), 930f, 258f, 90f, 44f, () =>

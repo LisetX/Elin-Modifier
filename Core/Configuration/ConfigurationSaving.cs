@@ -197,6 +197,7 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"rightClickInterruptOperation\": " + (_modules.RightClickInterrupt.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"stealHandNoTargetLimit\": " + (_stealHandNoTargetLimit ? "true" : "false") + ",");
             sb.AppendLine("  \"stealHandUndetectable\": " + (_stealHandUndetectable ? "true" : "false") + ",");
+            sb.AppendLine("  \"merchantRefreshNoCost\": " + (_modules.MerchantRefreshNoCost.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"merchantAlwaysStocksMonsterBall\": " + (_modules.MerchantMonsterBall.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"merchantMonsterBallLevelOptimization\": " + (_modules.MerchantMonsterBall.LevelOptimizationEnabled ? "true" : "false") + ",");
             sb.AppendLine("  \"ignoreSpecialNpcHatchRestriction\": " + (_modules.SpecialNpcHatch.IgnoreRestriction ? "true" : "false") + ",");

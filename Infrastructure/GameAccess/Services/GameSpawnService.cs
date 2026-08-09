@@ -12,26 +12,26 @@ internal sealed class GameSpawnService : IGameSpawnService
         if (binder == null)
             throw new ArgumentNullException("binder");
 
-        _createThingByMaterialId = binder.BindMethod(GameMethodSpec.Static(
+        _createThingByMaterialId = binder.BindStaticMethod(
             typeof(ThingGen),
             typeof(Thing),
             new[] { typeof(string), typeof(int), typeof(int) },
-            "Create"));
-        _createThingByMaterialAlias = binder.BindMethod(GameMethodSpec.Static(
+            "Create");
+        _createThingByMaterialAlias = binder.BindStaticMethod(
             typeof(ThingGen),
             typeof(Thing),
             new[] { typeof(string), typeof(string), typeof(int) },
-            "Create"));
-        _createThingFromCategory = binder.BindMethod(GameMethodSpec.Static(
+            "Create");
+        _createThingFromCategory = binder.BindStaticMethod(
             typeof(ThingGen),
             typeof(Thing),
             new[] { typeof(string), typeof(int) },
-            "CreateFromCategory"));
-        _createCharacter = binder.BindMethod(GameMethodSpec.Static(
+            "CreateFromCategory");
+        _createCharacter = binder.BindStaticMethod(
             typeof(CharaGen),
             typeof(Chara),
             new[] { typeof(string), typeof(int) },
-            "Create"));
+            "Create");
     }
 
     public Thing? CreateThing(string id, int materialId, int level)

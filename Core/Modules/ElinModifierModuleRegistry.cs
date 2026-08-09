@@ -58,6 +58,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
             SleepWithoutSleepiness = new SleepWithoutSleepinessModule();
             AllPurposeWorkbench = new AllPurposeWorkbenchModule();
             RightClickInterrupt = new RightClickInterruptModule();
+            MerchantRefreshNoCost = new MerchantRefreshNoCostModule(binder);
             MerchantMonsterBall = new MerchantMonsterBallModule();
             Nightly = NightlyModule.TryCreate();
             MoreInfo = new MoreInfoModule(host);
@@ -127,6 +128,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
     internal SleepWithoutSleepinessModule SleepWithoutSleepiness { get; }
     internal AllPurposeWorkbenchModule AllPurposeWorkbench { get; }
     internal RightClickInterruptModule RightClickInterrupt { get; }
+    internal MerchantRefreshNoCostModule MerchantRefreshNoCost { get; }
     internal MerchantMonsterBallModule MerchantMonsterBall { get; }
     internal NightlyModule? Nightly { get; }
     internal MoreInfoModule MoreInfo { get; }
@@ -245,10 +247,11 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         Register("feature.right-click-interrupt", 200, 0, RightClickInterrupt,
             tick: RightClickInterrupt.Tick,
             dependencies: new[] { "core.configuration" });
-        Register("feature.merchant-monster-ball", 1310, 0, MerchantMonsterBall);
-        Register("module.more-info", 1320, 0, MoreInfo);
-        Register("module.exception-trace", 1330, 0, ExceptionTrace);
-        Register("module.npc-compendium", 1340, 0, NpcInfo);
+        Register("feature.merchant-refresh-no-cost", 1310, 0, MerchantRefreshNoCost);
+        Register("feature.merchant-monster-ball", 1320, 0, MerchantMonsterBall);
+        Register("module.more-info", 1330, 0, MoreInfo);
+        Register("module.exception-trace", 1340, 0, ExceptionTrace);
+        Register("module.npc-compendium", 1350, 0, NpcInfo);
     }
 
     private void RegisterRuntime(ElinModifierPlugin host, ManualLogSource logger)

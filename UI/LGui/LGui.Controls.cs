@@ -44,61 +44,37 @@ public sealed partial class ElinModifierPlugin
     }
     private Font FindLGuiFont()
     {
-        var gameUiFont = TryFindSelectedGameUiFont();
+        var gameUiFont = GameUiFontResolver.ResolveCurrentUiFont();
         if (gameUiFont != null)
             return gameUiFont;
 
         return Resources.GetBuiltinResource<Font>("Arial.ttf");
     }
-    private static Font? TryFindSelectedGameUiFont()
+    private void RefreshLGuiFontIfNeeded(bool force)
     {
-        try
-        {
-            var skinManagerType = Type.GetType("SkinManager, Plugins.UI", false);
-            if (skinManagerType == null)
-            {
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                for (var i = 0; i < assemblies.Length && skinManagerType == null; i++)
-                {
-                    try { skinManagerType = assemblies[i].GetType("SkinManager", false); }
-                    catch { }
-                }
-            }
+        var now = Time.realtimeSinceStartup;
+        if (!force && now < _lGuiNextFontRefreshAt)
+            return;
 
-            if (skinManagerType == null)
-                return null;
+        _lGuiNextFontRefreshAt = now + 1f;
+        var selectedFont = GameUiFontResolver.ResolveCurrentUiFont();
+        if (selectedFont == null || selectedFont == _lGuiFont)
+            return;
 
-            const System.Reflection.BindingFlags staticFlags =
-                System.Reflection.BindingFlags.Static |
-                System.Reflection.BindingFlags.Public |
-                System.Reflection.BindingFlags.NonPublic;
-            object? manager = null;
-            try { manager = skinManagerType.GetProperty("Instance", staticFlags)?.GetValue(null, null); }
-            catch { }
-            if (manager == null)
-            {
-                try { manager = skinManagerType.GetField("_Instance", staticFlags)?.GetValue(null); }
-                catch { }
-            }
-            if (manager == null)
-                return null;
+        _lGuiFont = selectedFont;
+        ApplyLGuiFontToHierarchy(_lGuiRoot, selectedFont);
+        _modules.Watermark.RefreshFont(selectedFont);
+        _modules.ThreatOverlay.RefreshFont(selectedFont);
+    }
+    private static void ApplyLGuiFontToHierarchy(GameObject? root, Font font)
+    {
+        if (root == null || font == null)
+            return;
 
-            var fontSet = GetMemberValue(manager, "fontSet");
-            var uiFontData = GetMemberValue(fontSet, "ui");
-            var fontSource = GetMemberValue(uiFontData, "source");
-            var selectedFont = GetMemberValue(fontSource, "font") as Font;
-            if (selectedFont != null)
-                return selectedFont;
-
-            var indexValue = GetMemberValue(uiFontData, "index");
-            var index = indexValue is int selectedIndex ? selectedIndex : -1;
-            var fontList = GetMemberValue(manager, "FontList") as System.Collections.IList ??
-                           GetMemberValue(manager, "fontList") as System.Collections.IList;
-            if (fontList != null && index >= 0 && index < fontList.Count)
-                return GetMemberValue(fontList[index], "font") as Font;
-        }
-        catch { }
-        return null;
+        var texts = root.GetComponentsInChildren<Text>(true);
+        for (var i = 0; i < texts.Length; i++)
+            if (texts[i] != null)
+                texts[i].font = font;
     }
     private RectTransform CreateLGuiRect(Transform parent, string name)
     {

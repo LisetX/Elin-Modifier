@@ -370,6 +370,18 @@ internal sealed partial class WatermarkModule
         ApplyLGuiRegisteredCornerStyles(_watermarkRoot);
     }
 
+    internal void RefreshFont(Font font)
+    {
+        if (_watermarkRoot == null || font == null)
+            return;
+
+        var texts = _watermarkRoot.GetComponentsInChildren<Text>(true);
+        for (var i = 0; i < texts.Length; i++)
+            if (texts[i] != null)
+                texts[i].font = font;
+        ApplyVisualSettings();
+    }
+
     private void UpdateWatermarkLayout()
     {
         if (_watermarkBar == null || _watermarkText == null)

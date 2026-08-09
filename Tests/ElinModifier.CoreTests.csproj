@@ -16,6 +16,8 @@
     <Compile Include="..\Infrastructure\GameAccess\Binding\GameBindingContracts.cs" Link="GameBindingContracts.cs" />
     <Compile Include="..\Infrastructure\GameAccess\Binding\GameMemberSpecs.cs" Link="GameMemberSpecs.cs" />
     <Compile Include="..\Infrastructure\GameAccess\Binding\GameMemberBinder.cs" Link="GameMemberBinder.cs" />
+    <Compile Include="..\Infrastructure\GameAccess\Binding\GameMemberBindingExtensions.cs" Link="GameMemberBindingExtensions.cs" />
+    <Compile Include="..\Infrastructure\GameAccess\Reflection\LoadedAssemblyTypeResolver.cs" Link="LoadedAssemblyTypeResolver.cs" />
     <Compile Include="..\Features\DungeonGeneration\DungeonGenerationPolicy.cs" Link="DungeonGenerationPolicy.cs" />
     <Compile Include="..\Features\Gathering\GatheringThresholdPolicy.cs" Link="GatheringThresholdPolicy.cs" />
     <Compile Include="..\Features\Dismantling\GuaranteedGatheringRewardsPolicy.cs" Link="GuaranteedGatheringRewardsPolicy.cs" />

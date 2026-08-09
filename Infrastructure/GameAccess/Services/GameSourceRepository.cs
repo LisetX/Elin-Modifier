@@ -21,23 +21,19 @@ internal sealed class GameSourceRepository : IGameSourceRepository
         if (binder == null)
             throw new ArgumentNullException("binder");
 
-        _sources = binder.BindValue<SourceManager>(GameValueSpec.Static(
-            typeof(EClass),
-            typeof(SourceManager),
-            GameValueAccess.Read,
-            "sources"));
-        _cards = BindTable<SourceCard>(binder, "cards");
-        _characters = BindTable<SourceChara>(binder, "charas");
-        _things = BindTable<SourceThing>(binder, "things");
-        _elements = BindTable<SourceElement>(binder, "elements");
-        _races = BindTable<SourceRace>(binder, "races");
-        _categories = BindTable<SourceCategory>(binder, "categories");
-        _materials = BindTable<SourceMaterial>(binder, "materials");
-        _spawnLists = BindTable<SourceSpawnList>(binder, "spawnLists");
-        _religions = BindTable<SourceReligion>(binder, "religions");
-        _jobs = BindTable<SourceJob>(binder, "jobs");
-        _recipes = BindTable<SourceRecipe>(binder, "recipes");
-        _objects = BindTable<SourceObj>(binder, "objs");
+        _sources = binder.BindStaticValue<SourceManager>(typeof(EClass), GameValueAccess.Read, "sources");
+        _cards = binder.BindInstanceValue<SourceCard>(typeof(SourceManager), GameValueAccess.Read, "cards");
+        _characters = binder.BindInstanceValue<SourceChara>(typeof(SourceManager), GameValueAccess.Read, "charas");
+        _things = binder.BindInstanceValue<SourceThing>(typeof(SourceManager), GameValueAccess.Read, "things");
+        _elements = binder.BindInstanceValue<SourceElement>(typeof(SourceManager), GameValueAccess.Read, "elements");
+        _races = binder.BindInstanceValue<SourceRace>(typeof(SourceManager), GameValueAccess.Read, "races");
+        _categories = binder.BindInstanceValue<SourceCategory>(typeof(SourceManager), GameValueAccess.Read, "categories");
+        _materials = binder.BindInstanceValue<SourceMaterial>(typeof(SourceManager), GameValueAccess.Read, "materials");
+        _spawnLists = binder.BindInstanceValue<SourceSpawnList>(typeof(SourceManager), GameValueAccess.Read, "spawnLists");
+        _religions = binder.BindInstanceValue<SourceReligion>(typeof(SourceManager), GameValueAccess.Read, "religions");
+        _jobs = binder.BindInstanceValue<SourceJob>(typeof(SourceManager), GameValueAccess.Read, "jobs");
+        _recipes = binder.BindInstanceValue<SourceRecipe>(typeof(SourceManager), GameValueAccess.Read, "recipes");
+        _objects = binder.BindInstanceValue<SourceObj>(typeof(SourceManager), GameValueAccess.Read, "objs");
     }
 
     public SourceManager? Manager => GameAccessServiceHelpers.GetReference(_sources, null);
@@ -63,13 +59,4 @@ internal sealed class GameSourceRepository : IGameSourceRepository
             : GameAccessServiceHelpers.GetReference(binding, sources);
     }
 
-    private static IBoundGameValue<T> BindTable<T>(IGameMemberBinder binder, string memberName)
-        where T : class
-    {
-        return binder.BindValue<T>(GameValueSpec.Instance(
-            typeof(SourceManager),
-            typeof(T),
-            GameValueAccess.Read,
-            memberName));
-    }
 }

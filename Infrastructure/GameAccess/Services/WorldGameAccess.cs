@@ -21,42 +21,29 @@ internal sealed class WorldGameAccess : IWorldGameAccess
         if (binder == null)
             throw new ArgumentNullException("binder");
 
-        _currentMap = BindRoot<Map>(binder, "_map");
-        _currentZone = BindRoot<Zone>(binder, "_zone");
-        _currentWorld = BindRoot<World>(binder, "world");
-        _branch = BindRoot<FactionBranch>(binder, "Branch");
-        _branchOrHomeBranch = BindRoot<FactionBranch>(binder, "BranchOrHomeBranch");
-        _home = BindRoot<Faction>(binder, "Home");
-        _characters = binder.BindValue<List<Chara>>(GameValueSpec.Instance(
-            typeof(Map),
-            typeof(List<Chara>),
+        _currentMap = binder.BindStaticValue<Map>(typeof(EClass), GameValueAccess.Read, "_map");
+        _currentZone = binder.BindStaticValue<Zone>(typeof(EClass), GameValueAccess.Read, "_zone");
+        _currentWorld = binder.BindStaticValue<World>(typeof(EClass), GameValueAccess.Read, "world");
+        _branch = binder.BindStaticValue<FactionBranch>(typeof(EClass), GameValueAccess.Read, "Branch");
+        _branchOrHomeBranch = binder.BindStaticValue<FactionBranch>(
+            typeof(EClass),
             GameValueAccess.Read,
-            "charas"));
-        _things = binder.BindValue<List<Thing>>(GameValueSpec.Instance(
-            typeof(Map),
-            typeof(List<Thing>),
-            GameValueAccess.Read,
-            "things"));
-        _region = binder.BindValue<Region>(GameValueSpec.Instance(
-            typeof(World),
-            typeof(Region),
-            GameValueAccess.Read,
-            "region"));
-        _countHostile = binder.BindMethod(GameMethodSpec.Instance(
-            typeof(Map),
-            typeof(int),
-            Array.Empty<Type>(),
-            "CountHostile"));
-        _addCard = binder.BindMethod(GameMethodSpec.Instance(
+            "BranchOrHomeBranch");
+        _home = binder.BindStaticValue<Faction>(typeof(EClass), GameValueAccess.Read, "Home");
+        _characters = binder.BindInstanceValue<List<Chara>>(typeof(Map), GameValueAccess.Read, "charas");
+        _things = binder.BindInstanceValue<List<Thing>>(typeof(Map), GameValueAccess.Read, "things");
+        _region = binder.BindInstanceValue<Region>(typeof(World), GameValueAccess.Read, "region");
+        _countHostile = binder.BindInstanceMethod(typeof(Map), typeof(int), Type.EmptyTypes, "CountHostile");
+        _addCard = binder.BindInstanceMethod(
             typeof(Zone),
             typeof(Card),
             new[] { typeof(Card), typeof(Point) },
-            "AddCard"));
-        _tryAddThing = binder.BindMethod(GameMethodSpec.Instance(
+            "AddCard");
+        _tryAddThing = binder.BindInstanceMethod(
             typeof(Zone),
             typeof(bool),
             new[] { typeof(Thing), typeof(Point), typeof(bool) },
-            "TryAddThing"));
+            "TryAddThing");
     }
 
     public Map? CurrentMap => GameAccessServiceHelpers.GetReference(_currentMap, null);
@@ -121,13 +108,4 @@ internal sealed class WorldGameAccess : IWorldGameAccess
         return GameAccessServiceHelpers.InvokeValue<bool>(_tryAddThing, zone, thing, point, tryStack);
     }
 
-    private static IBoundGameValue<T> BindRoot<T>(IGameMemberBinder binder, string memberName)
-        where T : class
-    {
-        return binder.BindValue<T>(GameValueSpec.Static(
-            typeof(EClass),
-            typeof(T),
-            GameValueAccess.Read,
-            memberName));
-    }
 }

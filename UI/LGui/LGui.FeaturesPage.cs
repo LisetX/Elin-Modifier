@@ -73,6 +73,7 @@ public sealed partial class ElinModifierPlugin
         AddLGuiFeature(LGuiFeatureId.RightClickInterruptOperation, T("右键打断操作", "Right-click to interrupt actions"));
         AddLGuiFeature(LGuiFeatureId.StealHandNoTargetLimit, T("盗窃之手无对象限制", "Steal hand without target restrictions"));
         AddLGuiFeature(LGuiFeatureId.StealHandUndetectable, T("盗窃之手不会被发现", "Undetectable steal hand"));
+        AddLGuiFeature(LGuiFeatureId.MerchantRefreshNoCost, T("商人刷新商品无消耗", "Free merchant restocking"));
         AddLGuiFeature(LGuiFeatureId.MerchantAlwaysStocksMonsterBall, T("道具商必刷精灵球", "Goods merchant always stocks monster balls"));
         AddLGuiFeature(LGuiFeatureId.MerchantMonsterBallLevelOptimization, T("道具商精灵球等级优化", "Optimize goods merchant monster ball levels"));
         AddLGuiFeature(LGuiFeatureId.IgnoreSpecialNpcHatchRestriction, T("无视特殊NPC孵化限制", "Ignore special NPC hatching restriction"));

@@ -41,7 +41,11 @@ public sealed partial class ElinModifierPlugin
         for (var count = parts.Count; count >= 1; count--)
         {
             var typeName = string.Join(".", parts.GetRange(0, count).ToArray());
-            var type = FindAiRuntimeType(typeName, assemblyName);
+            var type = LoadedAssemblyTypeResolver.Resolve(
+                typeName,
+                assemblyName,
+                ignoreCase: true,
+                allowSimpleName: true);
             if (type == null)
                 continue;
             var owner = (object)type;
@@ -427,33 +431,6 @@ public sealed partial class ElinModifierPlugin
                 NormalizeAiKey(GetDebugPluginName(info)) == key ||
                 NormalizeAiKey(GetDebugBepInExPluginDisplayName(plugin)) == key)
                 return plugin;
-        }
-        return null;
-    }
-    private static Type FindAiRuntimeType(string typeName, string assemblyName)
-    {
-        if (string.IsNullOrWhiteSpace(typeName))
-            return null;
-        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-        {
-            try
-            {
-                var name = assembly.GetName().Name ?? "";
-                if (!string.IsNullOrWhiteSpace(assemblyName) &&
-                    name.IndexOf(assemblyName, StringComparison.OrdinalIgnoreCase) < 0 &&
-                    (assembly.FullName ?? "").IndexOf(assemblyName, StringComparison.OrdinalIgnoreCase) < 0)
-                    continue;
-                var type = assembly.GetType(typeName, false, false) ?? assembly.GetType(typeName, false, true);
-                if (type != null)
-                    return type;
-                foreach (var candidate in assembly.GetTypes())
-                {
-                    if (string.Equals(candidate.FullName, typeName, StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(candidate.Name, typeName, StringComparison.OrdinalIgnoreCase))
-                        return candidate;
-                }
-            }
-            catch { }
         }
         return null;
     }

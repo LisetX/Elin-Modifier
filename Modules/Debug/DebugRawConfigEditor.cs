@@ -25,28 +25,6 @@ using UnityEngine;
 
 public sealed partial class ElinModifierPlugin
 {
-    private static Type FindDebugType(string typeName)
-    {
-        if (string.IsNullOrEmpty(typeName))
-            return null;
-        try
-        {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                if (assembly == null || assembly.IsDynamic)
-                    continue;
-                Type type = null;
-                try { type = assembly.GetType(typeName, false); } catch { }
-                if (type != null)
-                    return type;
-                try { type = assembly.GetType("Elin." + typeName, false); } catch { }
-                if (type != null)
-                    return type;
-            }
-        }
-        catch { }
-        return null;
-    }
     private static string GetDebugConfigPath(ConfigFile config)
     {
         try { return config == null ? "" : config.ConfigFilePath ?? ""; }

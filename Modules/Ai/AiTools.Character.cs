@@ -184,6 +184,10 @@ public sealed partial class ElinModifierPlugin
             case "steal_hand_undetectable":
             case "stealhandundetectable":
             case "盗窃之手不会被发现": SetStealHandUndetectable(enabled); break;
+            case "merchant_refresh_no_cost":
+            case "merchantrefreshnocost":
+            case "free_merchant_restock":
+            case "商人刷新商品无消耗": SetMerchantRefreshNoCost(enabled); break;
             case "merchant_always_stocks_monster_ball":
             case "merchantalwaysstocksmonsterball":
             case "goods_merchant_monster_ball":

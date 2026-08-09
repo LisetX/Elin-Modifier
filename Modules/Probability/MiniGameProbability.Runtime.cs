@@ -40,7 +40,7 @@ internal sealed partial class ProbabilityModule
             return;
         try
         {
-            var slotType = FindLoadedTypeExact("CSFramework.CustomSlot");
+            var slotType = LoadedAssemblyTypeResolver.ResolveExact("CSFramework.CustomSlot");
             if (slotType == null)
                 return;
             var startSpin = AccessTools.Method(slotType, "StartSpin", new[] { typeof(float) });
@@ -51,28 +51,6 @@ internal sealed partial class ProbabilityModule
             _slotProbabilityPatchInstalled = true;
         }
         catch { }
-    }
-    private static Type? FindLoadedTypeExact(string fullName)
-    {
-        if (string.IsNullOrWhiteSpace(fullName))
-            return null;
-        try
-        {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                if (assembly == null)
-                    continue;
-                try
-                {
-                    var type = assembly.GetType(fullName, false, false);
-                    if (type != null)
-                        return type;
-                }
-                catch { }
-            }
-        }
-        catch { }
-        return null;
     }
     private static void SlotStartSpinPrefix(object __instance)
     {

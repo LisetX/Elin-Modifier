@@ -43,6 +43,7 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.RightClickInterruptOperation: return _modules.RightClickInterrupt.Enabled;
             case LGuiFeatureId.StealHandNoTargetLimit: return _stealHandNoTargetLimit;
             case LGuiFeatureId.StealHandUndetectable: return _stealHandUndetectable;
+            case LGuiFeatureId.MerchantRefreshNoCost: return _modules.MerchantRefreshNoCost.Enabled;
             case LGuiFeatureId.MerchantAlwaysStocksMonsterBall: return _modules.MerchantMonsterBall.Enabled;
             case LGuiFeatureId.MerchantMonsterBallLevelOptimization: return _modules.MerchantMonsterBall.LevelOptimizationEnabled;
             case LGuiFeatureId.IgnoreSpecialNpcHatchRestriction: return _modules.SpecialNpcHatch.IgnoreRestriction;
@@ -620,6 +621,7 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.RightClickInterruptOperation: SetRightClickInterruptOperation(value); break;
             case LGuiFeatureId.StealHandNoTargetLimit: SetStealHandNoTargetLimit(value); break;
             case LGuiFeatureId.StealHandUndetectable: SetStealHandUndetectable(value); break;
+            case LGuiFeatureId.MerchantRefreshNoCost: SetMerchantRefreshNoCost(value); break;
             case LGuiFeatureId.MerchantAlwaysStocksMonsterBall: SetMerchantAlwaysStocksMonsterBall(value); break;
             case LGuiFeatureId.MerchantMonsterBallLevelOptimization: SetMerchantMonsterBallLevelOptimization(value); break;
             case LGuiFeatureId.IgnoreSpecialNpcHatchRestriction: SetIgnoreSpecialNpcHatchRestriction(value); break;

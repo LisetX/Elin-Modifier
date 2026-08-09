@@ -620,7 +620,8 @@ internal static class NonStandardCrafterIngredientPager
         catch
         {
         }
-        return Resources.GetBuiltinResource<Font>("Arial.ttf");
+        return GameUiFontResolver.ResolveCurrentUiFont() ??
+               Resources.GetBuiltinResource<Font>("Arial.ttf");
     }
 }
 

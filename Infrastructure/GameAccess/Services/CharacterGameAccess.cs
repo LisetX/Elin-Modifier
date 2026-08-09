@@ -13,31 +13,23 @@ internal sealed class CharacterGameAccess : ICharacterGameAccess
         if (binder == null)
             throw new ArgumentNullException("binder");
 
-        _playerCharacter = binder.BindValue<Chara>(GameValueSpec.Static(
-            typeof(EClass),
-            typeof(Chara),
-            GameValueAccess.Read,
-            "pc"));
-        _elements = binder.BindValue<ElementContainerCard>(GameValueSpec.Instance(
-            typeof(Card),
-            typeof(ElementContainerCard),
-            GameValueAccess.Read,
-            "elements"));
-        _getName = binder.BindMethod(GameMethodSpec.Instance(
+        _playerCharacter = binder.BindStaticValue<Chara>(typeof(EClass), GameValueAccess.Read, "pc");
+        _elements = binder.BindInstanceValue<ElementContainerCard>(typeof(Card), GameValueAccess.Read, "elements");
+        _getName = binder.BindInstanceMethod(
             typeof(Card),
             typeof(string),
             new[] { typeof(NameStyle), typeof(int) },
-            "GetName"));
-        _getElementValue = binder.BindMethod(GameMethodSpec.Instance(
+            "GetName");
+        _getElementValue = binder.BindInstanceMethod(
             typeof(Card),
             typeof(int),
             new[] { typeof(int) },
-            "Evalue"));
-        _refresh = binder.BindMethod(GameMethodSpec.Instance(
+            "Evalue");
+        _refresh = binder.BindInstanceMethod(
             typeof(Chara),
             typeof(void),
             new[] { typeof(bool) },
-            "Refresh"));
+            "Refresh");
     }
 
     public Chara? PlayerCharacter => GameAccessServiceHelpers.GetReference(_playerCharacter, null);

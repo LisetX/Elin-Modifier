@@ -363,7 +363,10 @@ public sealed partial class ElinModifierPlugin
         }
         var typeName = text.Substring(0, split);
         var path = text.Substring(split + 1);
-        var type = FindAiRuntimeType(typeName, "");
+        var type = LoadedAssemblyTypeResolver.Resolve(
+            typeName,
+            ignoreCase: true,
+            allowSimpleName: true);
         if (type == null)
         {
             error = "type not found: " + typeName;
@@ -395,7 +398,11 @@ public sealed partial class ElinModifierPlugin
         }
         var typeName = rest.Substring(0, split);
         var path = rest.Substring(split + 1);
-        var type = FindAiRuntimeType(typeName, assemblyName);
+        var type = LoadedAssemblyTypeResolver.Resolve(
+            typeName,
+            assemblyName,
+            ignoreCase: true,
+            allowSimpleName: true);
         if (type == null)
         {
             error = "type not found in assembly " + assemblyName + ": " + typeName;
@@ -505,7 +512,10 @@ public sealed partial class ElinModifierPlugin
             ownerType = owner == null ? typeof(SourceManager) : owner.GetType();
             return owner != null;
         }
-        var type = FindAiRuntimeType(root, "");
+        var type = LoadedAssemblyTypeResolver.Resolve(
+            root,
+            ignoreCase: true,
+            allowSimpleName: true);
         if (type != null)
         {
             owner = type;

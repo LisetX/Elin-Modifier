@@ -12,26 +12,26 @@ internal sealed class GameRandomService : IGameRandomService
         if (binder == null)
             throw new ArgumentNullException("binder");
 
-        _nextInt32 = binder.BindMethod(GameMethodSpec.Static(
+        _nextInt32 = binder.BindStaticMethod(
             typeof(EClass),
             typeof(int),
             new[] { typeof(int) },
-            "rnd"));
-        _nextInt64 = binder.BindMethod(GameMethodSpec.Static(
+            "rnd");
+        _nextInt64 = binder.BindStaticMethod(
             typeof(EClass),
             typeof(int),
             new[] { typeof(long) },
-            "rnd"));
-        _nextSingle = binder.BindMethod(GameMethodSpec.Static(
+            "rnd");
+        _nextSingle = binder.BindStaticMethod(
             typeof(EClass),
             typeof(float),
             new[] { typeof(float) },
-            "rndf"));
-        _curve = binder.BindMethod(GameMethodSpec.Static(
+            "rndf");
+        _curve = binder.BindStaticMethod(
             typeof(EClass),
             typeof(int),
             new[] { typeof(long), typeof(int), typeof(int), typeof(int) },
-            "curve"));
+            "curve");
     }
 
     public int Next(int maximum)

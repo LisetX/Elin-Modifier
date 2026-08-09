@@ -450,8 +450,16 @@ public sealed partial class ElinModifierPlugin
         error = "";
         var type = Type.GetType("System.CodeDom.Compiler.CompilerParameters, System.CodeDom") ??
                    Type.GetType("System.CodeDom.Compiler.CompilerParameters, System") ??
-                   FindAiRuntimeType("System.CodeDom.Compiler.CompilerParameters", "System.CodeDom") ??
-                   FindAiRuntimeType("System.CodeDom.Compiler.CompilerParameters", "System");
+                   LoadedAssemblyTypeResolver.Resolve(
+                       "System.CodeDom.Compiler.CompilerParameters",
+                       "System.CodeDom",
+                       ignoreCase: true,
+                       allowSimpleName: true) ??
+                   LoadedAssemblyTypeResolver.Resolve(
+                       "System.CodeDom.Compiler.CompilerParameters",
+                       "System",
+                       ignoreCase: true,
+                       allowSimpleName: true);
         if (type == null)
         {
             error = "System.CodeDom.Compiler.CompilerParameters is not available. Use patch_method to reference a static method from a loaded DLL.";
@@ -483,8 +491,16 @@ public sealed partial class ElinModifierPlugin
             Directory.CreateDirectory(tempDir);
             var tempFilesType = Type.GetType("System.CodeDom.Compiler.TempFileCollection, System.CodeDom") ??
                                 Type.GetType("System.CodeDom.Compiler.TempFileCollection, System") ??
-                                FindAiRuntimeType("System.CodeDom.Compiler.TempFileCollection", "System.CodeDom") ??
-                                FindAiRuntimeType("System.CodeDom.Compiler.TempFileCollection", "System");
+                                LoadedAssemblyTypeResolver.Resolve(
+                                    "System.CodeDom.Compiler.TempFileCollection",
+                                    "System.CodeDom",
+                                    ignoreCase: true,
+                                    allowSimpleName: true) ??
+                                LoadedAssemblyTypeResolver.Resolve(
+                                    "System.CodeDom.Compiler.TempFileCollection",
+                                    "System",
+                                    ignoreCase: true,
+                                    allowSimpleName: true);
             if (tempFilesType == null)
                 return;
             var tempFiles = Activator.CreateInstance(tempFilesType, new object[] { tempDir, false });
@@ -497,9 +513,20 @@ public sealed partial class ElinModifierPlugin
         note = "";
         var type = Type.GetType("Microsoft.CSharp.CSharpCodeProvider, System") ??
                    Type.GetType("Microsoft.CSharp.CSharpCodeProvider, Microsoft.CSharp") ??
-                   FindAiRuntimeType("Microsoft.CSharp.CSharpCodeProvider", "System") ??
-                   FindAiRuntimeType("Microsoft.CSharp.CSharpCodeProvider", "Microsoft.CSharp") ??
-                   FindAiRuntimeType("Microsoft.CSharp.CSharpCodeProvider", "");
+                   LoadedAssemblyTypeResolver.Resolve(
+                       "Microsoft.CSharp.CSharpCodeProvider",
+                       "System",
+                       ignoreCase: true,
+                       allowSimpleName: true) ??
+                   LoadedAssemblyTypeResolver.Resolve(
+                       "Microsoft.CSharp.CSharpCodeProvider",
+                       "Microsoft.CSharp",
+                       ignoreCase: true,
+                       allowSimpleName: true) ??
+                   LoadedAssemblyTypeResolver.Resolve(
+                       "Microsoft.CSharp.CSharpCodeProvider",
+                       ignoreCase: true,
+                       allowSimpleName: true);
         if (type != null)
             return type;
 

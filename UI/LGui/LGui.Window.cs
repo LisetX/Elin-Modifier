@@ -198,6 +198,7 @@ public sealed partial class ElinModifierPlugin
         _lGuiVisible = true;
         _lGuiRoot.SetActive(true);
         EnsureLGuiEventSystem();
+        RefreshLGuiFontIfNeeded(true);
         if (!wasActive)
             _lGuiRootFade?.SetImmediate(0f, false);
         ApplyLGuiVisualSettings();
@@ -241,6 +242,7 @@ public sealed partial class ElinModifierPlugin
     }
     private void TickLGui()
     {
+        RefreshLGuiFontIfNeeded(false);
         if (!IsLGuiVisible())
             return;
 

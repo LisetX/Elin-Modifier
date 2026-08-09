@@ -212,7 +212,7 @@ internal sealed partial class ExceptionTraceModule
         if (string.IsNullOrEmpty(typeName) || string.IsNullOrEmpty(methodName))
             return false;
 
-        var resolvedType = ResolveDebugType(typeName);
+        var resolvedType = LoadedAssemblyTypeResolver.Resolve(typeName, allowSimpleName: true);
         var resolvedMethod = ResolveDebugMethod(resolvedType, methodName);
         frame = new DebugStackFrameInfo(raw, wrapper, typeName, methodName, location, resolvedType, resolvedMethod);
         return true;

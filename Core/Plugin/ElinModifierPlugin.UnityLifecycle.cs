@@ -81,7 +81,7 @@ public sealed partial class ElinModifierPlugin
 
     private static float NormalizeCustomUiScale(float value)
     {
-        return Mathf.Round(Clamp(value, -4f, 4f) * 100f) / 100f;
+        return Mathf.Round(Clamp(value, -10f, 10f) * 100f) / 100f;
     }
 
     private void SetCustomUiScale(float value)

@@ -14,12 +14,12 @@ internal sealed class GameRuntimeContext : IGameRuntimeContext
         if (binder == null)
             throw new ArgumentNullException("binder");
 
-        _core = BindRoot<Core>(binder, "core");
-        _game = BindRoot<Game>(binder, "game");
-        _player = BindRoot<Player>(binder, "player");
-        _settings = BindRoot<GameSetting>(binder, "setting");
-        _gameData = BindRoot<GameData>(binder, "gamedata");
-        _debug = BindRoot<CoreDebug>(binder, "debug");
+        _core = binder.BindStaticValue<Core>(typeof(EClass), GameValueAccess.Read, "core");
+        _game = binder.BindStaticValue<Game>(typeof(EClass), GameValueAccess.Read, "game");
+        _player = binder.BindStaticValue<Player>(typeof(EClass), GameValueAccess.Read, "player");
+        _settings = binder.BindStaticValue<GameSetting>(typeof(EClass), GameValueAccess.Read, "setting");
+        _gameData = binder.BindStaticValue<GameData>(typeof(EClass), GameValueAccess.Read, "gamedata");
+        _debug = binder.BindStaticValue<CoreDebug>(typeof(EClass), GameValueAccess.Read, "debug");
     }
 
     public Core? Core => GameAccessServiceHelpers.GetReference(_core, null);
@@ -29,13 +29,4 @@ internal sealed class GameRuntimeContext : IGameRuntimeContext
     public GameData? GameData => GameAccessServiceHelpers.GetReference(_gameData, null);
     public CoreDebug? Debug => GameAccessServiceHelpers.GetReference(_debug, null);
 
-    private static IBoundGameValue<T> BindRoot<T>(IGameMemberBinder binder, string memberName)
-        where T : class
-    {
-        return binder.BindValue<T>(GameValueSpec.Static(
-            typeof(EClass),
-            typeof(T),
-            GameValueAccess.Read,
-            memberName));
-    }
 }

@@ -354,6 +354,8 @@ public sealed partial class ElinModifierPlugin
                 ExtractBool(json, "rightClickInterruptOperation", false));
             _stealHandNoTargetLimit = ExtractBool(json, "stealHandNoTargetLimit", false);
             _stealHandUndetectable = ExtractBool(json, "stealHandUndetectable", false);
+            _modules.MerchantRefreshNoCost.Load(
+                ExtractBool(json, "merchantRefreshNoCost", false));
             _modules.MerchantMonsterBall.Load(
                 ExtractBool(json, "merchantAlwaysStocksMonsterBall", false),
                 ExtractBool(json, "merchantMonsterBallLevelOptimization", false));
@@ -596,6 +598,7 @@ public sealed partial class ElinModifierPlugin
         _modules.RightClickInterrupt.Reset();
         _stealHandNoTargetLimit = false;
         _stealHandUndetectable = false;
+        _modules.MerchantRefreshNoCost.Reset();
         _modules.MerchantMonsterBall.Reset();
         _modules.SpecialNpcHatch.Reset();
         _modules.SpecialNpcCapture.Reset();

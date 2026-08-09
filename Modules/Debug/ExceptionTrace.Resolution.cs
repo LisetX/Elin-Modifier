@@ -24,38 +24,6 @@ using static ElinModifierPlugin;
 
 internal sealed partial class ExceptionTraceModule
 {
-    private static Type ResolveDebugType(string typeName)
-    {
-        if (string.IsNullOrEmpty(typeName))
-            return null;
-        typeName = typeName.Replace('/', '+');
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        for (var i = 0; i < assemblies.Length; i++)
-        {
-            Type type = null;
-            try { type = assemblies[i].GetType(typeName, false); }
-            catch { }
-            if (type != null)
-                return type;
-        }
-
-        var shortName = typeName;
-        var dot = shortName.LastIndexOf('.');
-        if (dot >= 0 && dot < shortName.Length - 1)
-            shortName = shortName.Substring(dot + 1);
-        for (var i = 0; i < assemblies.Length; i++)
-        {
-            foreach (var type in GetDebugAssemblyTypes(assemblies[i]))
-            {
-                if (type == null)
-                    continue;
-                if (string.Equals(type.FullName, typeName, StringComparison.Ordinal) ||
-                    string.Equals(type.Name, shortName, StringComparison.Ordinal))
-                    return type;
-            }
-        }
-        return null;
-    }
     private static MethodBase ResolveDebugMethod(Type type, string methodName)
     {
         if (type == null || string.IsNullOrEmpty(methodName))
@@ -86,20 +54,6 @@ internal sealed partial class ExceptionTraceModule
             }
         }
         return null;
-    }
-    private static IEnumerable<Type> GetDebugAssemblyTypes(Assembly assembly)
-    {
-        if (assembly == null)
-            yield break;
-        Type[] types;
-        try { types = assembly.GetTypes(); }
-        catch (ReflectionTypeLoadException ex) { types = ex.Types; }
-        catch { yield break; }
-        if (types == null)
-            yield break;
-        for (var i = 0; i < types.Length; i++)
-            if (types[i] != null)
-                yield return types[i];
     }
     private void AppendDebugStackSummary(StringBuilder sb, List<DebugStackFrameInfo> frames)
     {

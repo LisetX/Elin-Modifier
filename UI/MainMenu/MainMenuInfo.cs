@@ -201,8 +201,14 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 因代码后续不进行混淆，遂解开对日本地区、日语UI选择的限制",
-                        "* Since future code will no longer be obfuscated, restrictions on Japan and Japanese UI selection have been lifted."),
+                        "* 新增\"商人刷新商品无消耗\"，开启后商人刷新商品无消耗",
+                        "* Added \"Free merchant restocking\". When enabled, refreshing merchant stock costs nothing."),
+                    host.TranslateModuleText(
+                        "* \"装备对比\"采用滚轮切换显示多个装备",
+                        "* \"Equipment comparison\" now uses the mouse wheel to switch between multiple equipped items."),
+                    host.TranslateModuleText(
+                        "* \"自定义UI比例\"上限、下限调整",
+                        "* Adjusted the upper and lower limits of \"Custom UI scale\"."),
                 }
             };
 

@@ -412,4 +412,15 @@ internal sealed partial class ThreatOverlayModule
         text.raycastTarget = false;
         return text;
     }
+
+    internal void RefreshFont(Font font)
+    {
+        if (_threatRoot == null || font == null)
+            return;
+
+        var texts = _threatRoot.GetComponentsInChildren<Text>(true);
+        for (var i = 0; i < texts.Length; i++)
+            if (texts[i] != null)
+                texts[i].font = font;
+    }
 }

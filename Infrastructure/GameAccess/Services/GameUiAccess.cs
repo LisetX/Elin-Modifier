@@ -14,24 +14,12 @@ internal sealed class GameUiAccess : IGameUiAccess
         if (binder == null)
             throw new ArgumentNullException("binder");
 
-        _current = binder.BindValue<UI>(GameValueSpec.Static(
-            typeof(EClass),
-            typeof(UI),
-            GameValueAccess.Read,
-            "ui"));
-        _scene = BindRoot<Scene>(binder, "scene");
-        _screen = BindRoot<BaseGameScreen>(binder, "screen");
-        _colors = BindRoot<ColorProfile>(binder, "Colors");
-        _isActive = binder.BindValue<bool>(GameValueSpec.Instance(
-            typeof(UI),
-            typeof(bool),
-            GameValueAccess.Read,
-            "IsActive"));
-        _isPointerOverUi = binder.BindValue<bool>(GameValueSpec.Instance(
-            typeof(UI),
-            typeof(bool),
-            GameValueAccess.Read,
-            "isPointerOverUI"));
+        _current = binder.BindStaticValue<UI>(typeof(EClass), GameValueAccess.Read, "ui");
+        _scene = binder.BindStaticValue<Scene>(typeof(EClass), GameValueAccess.Read, "scene");
+        _screen = binder.BindStaticValue<BaseGameScreen>(typeof(EClass), GameValueAccess.Read, "screen");
+        _colors = binder.BindStaticValue<ColorProfile>(typeof(EClass), GameValueAccess.Read, "Colors");
+        _isActive = binder.BindInstanceValue<bool>(typeof(UI), GameValueAccess.Read, "IsActive");
+        _isPointerOverUi = binder.BindInstanceValue<bool>(typeof(UI), GameValueAccess.Read, "isPointerOverUI");
     }
 
     public UI? Root => GameAccessServiceHelpers.GetReference(_current, null);
@@ -57,13 +45,4 @@ internal sealed class GameUiAccess : IGameUiAccess
         }
     }
 
-    private static IBoundGameValue<T> BindRoot<T>(IGameMemberBinder binder, string memberName)
-        where T : class
-    {
-        return binder.BindValue<T>(GameValueSpec.Static(
-            typeof(EClass),
-            typeof(T),
-            GameValueAccess.Read,
-            memberName));
-    }
 }

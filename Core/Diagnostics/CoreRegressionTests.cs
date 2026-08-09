@@ -110,6 +110,7 @@ internal static class CoreRegressionTests
         CheckNpcTemplateValueMath(result);
         CheckModuleGraph(result);
         CheckGameMemberBinder(result);
+        CheckLoadedAssemblyTypeResolver(result);
         CheckServiceProvider(result);
         CheckAtomicStorage(result);
         return result;
@@ -129,6 +130,12 @@ internal static class CoreRegressionTests
         Check(result, "game binding public field read write",
             publicField.Status == GameBindingStatus.PublicReflection &&
             publicField.Get(publicFieldTarget) == 12);
+        var publicFieldExtension = binder.BindInstanceValue<int>(
+            typeof(PublicFieldBindingFixture),
+            GameValueAccess.ReadWrite,
+            "Value");
+        Check(result, "game binding instance value extension",
+            ReferenceEquals(publicField, publicFieldExtension));
         var positiveResolutionCount = binder.ValueResolutionCount;
         var publicFieldAgain = binder.BindValue<int>(GameValueSpec.Instance(
             typeof(PublicFieldBindingFixture),
@@ -190,6 +197,12 @@ internal static class CoreRegressionTests
         Check(result, "game binding static private property",
             staticProperty.Status == GameBindingStatus.NonPublicReflection &&
             staticProperty.Get(null) == 44 && StaticBindingFixture.ReadValue() == 44);
+        var staticPropertyExtension = binder.BindStaticValue<int>(
+            typeof(StaticBindingFixture),
+            GameValueAccess.ReadWrite,
+            "Value");
+        Check(result, "game binding static value extension",
+            ReferenceEquals(staticProperty, staticPropertyExtension));
 
         var candidateValue = binder.BindValue<int>(GameValueSpec.Instance(
             typeof(CandidateBindingFixture),
@@ -226,6 +239,13 @@ internal static class CoreRegressionTests
         Check(result, "game binding exact overload signature",
             overload.Status == GameBindingStatus.PublicDelegate &&
             Equals(overload.Invoke(new MethodBindingFixture(), "text"), "string:text"));
+        var overloadExtension = binder.BindInstanceMethod(
+            typeof(MethodBindingFixture),
+            typeof(string),
+            new[] { typeof(string) },
+            "Echo");
+        Check(result, "game binding instance method extension",
+            ReferenceEquals(overload, overloadExtension));
 
         var priorityMethod = binder.BindMethod(GameMethodSpec.Instance(
             typeof(MethodPriorityBindingFixture),
@@ -252,6 +272,13 @@ internal static class CoreRegressionTests
             "Add"));
         Check(result, "game binding static public method",
             Equals(staticMethod.Invoke(null, 8, 9), 17));
+        var staticMethodExtension = binder.BindStaticMethod(
+            typeof(MethodBindingFixture),
+            typeof(int),
+            new[] { typeof(int), typeof(int) },
+            "Add");
+        Check(result, "game binding static method extension",
+            ReferenceEquals(staticMethod, staticMethodExtension));
 
         var publicGenericMethod = binder.BindMethod(GameMethodSpec.InstanceGeneric(
             typeof(MethodBindingFixture),
@@ -263,6 +290,14 @@ internal static class CoreRegressionTests
             publicGenericMethod.Status == GameBindingStatus.PublicDelegate &&
             publicGenericMethod.Method?.ContainsGenericParameters == false &&
             Equals(publicGenericMethod.Invoke(new MethodBindingFixture(), 12), "Int32:12"));
+        var publicGenericMethodExtension = binder.BindInstanceGenericMethod(
+            typeof(MethodBindingFixture),
+            typeof(string),
+            new[] { typeof(int) },
+            new[] { typeof(int) },
+            "DescribeGeneric");
+        Check(result, "game binding instance generic method extension",
+            ReferenceEquals(publicGenericMethod, publicGenericMethodExtension));
 
         var privateGenericMethod = binder.BindMethod(GameMethodSpec.InstanceGeneric(
             typeof(MethodBindingFixture),
@@ -274,6 +309,15 @@ internal static class CoreRegressionTests
             privateGenericMethod.Status == GameBindingStatus.NonPublicReflection &&
             privateGenericMethod.Method?.ContainsGenericParameters == false &&
             Equals(privateGenericMethod.Invoke(new MethodBindingFixture(), "value"), "String:value"));
+        var staticGenericMethodExtension = binder.BindStaticGenericMethod(
+            typeof(MethodBindingFixture),
+            typeof(string),
+            new[] { typeof(int) },
+            new[] { typeof(int) },
+            "DescribeStaticGeneric");
+        Check(result, "game binding static generic method extension",
+            staticGenericMethodExtension.IsBound &&
+            Equals(staticGenericMethodExtension.Invoke(null, 5), "Int32:5"));
 
         var invalidGenericMethod = binder.BindMethod(GameMethodSpec.InstanceGeneric(
             typeof(MethodBindingFixture),
@@ -399,6 +443,36 @@ internal static class CoreRegressionTests
             disposedAccessRejected = true;
         }
         Check(result, "service provider rejects access after dispose", disposedAccessRejected);
+    }
+
+    private static void CheckLoadedAssemblyTypeResolver(CoreRegressionTestResult result)
+    {
+        var fixtureType = typeof(LoadedTypeResolverFixture);
+        var fullName = fixtureType.FullName ?? string.Empty;
+        var assemblyName = fixtureType.Assembly.GetName().Name ?? string.Empty;
+
+        Check(result, "loaded type resolver exact name",
+            ReferenceEquals(LoadedAssemblyTypeResolver.ResolveExact(fullName), fixtureType));
+        Check(result, "loaded type resolver assembly filter",
+            ReferenceEquals(
+                LoadedAssemblyTypeResolver.ResolveExact(fullName, assemblyName),
+                fixtureType));
+        Check(result, "loaded type resolver nested slash normalization",
+            ReferenceEquals(
+                LoadedAssemblyTypeResolver.ResolveExact(fullName.Replace('+', '/')),
+                fixtureType));
+        Check(result, "loaded type resolver case insensitive simple name",
+            ReferenceEquals(
+                LoadedAssemblyTypeResolver.Resolve(
+                    fixtureType.Name.ToUpperInvariant(),
+                    assemblyName,
+                    ignoreCase: true,
+                    allowSimpleName: true),
+                fixtureType));
+        Check(result, "loaded type resolver rejects unmatched assembly",
+            LoadedAssemblyTypeResolver.ResolveExact(fullName, "Missing.Assembly.Filter") == null);
+        Check(result, "loaded type resolver rejects empty type name",
+            LoadedAssemblyTypeResolver.Resolve(" ", allowSimpleName: true) == null);
     }
 
     private static void CheckModuleGraph(CoreRegressionTestResult result)
@@ -691,6 +765,11 @@ internal static class CoreRegressionTests
             return typeof(T).Name + ":" + value;
         }
 
+        public static string DescribeStaticGeneric<T>(T value)
+        {
+            return typeof(T).Name + ":" + value;
+        }
+
         public string DescribeReferenceGeneric<T>(T value)
             where T : class
         {
@@ -715,6 +794,10 @@ internal static class CoreRegressionTests
             : base(message)
         {
         }
+    }
+
+    private sealed class LoadedTypeResolverFixture
+    {
     }
 
     private interface IProviderFirstAlias
