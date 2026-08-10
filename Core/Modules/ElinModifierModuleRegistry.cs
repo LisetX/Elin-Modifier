@@ -58,6 +58,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
             SleepWithoutSleepiness = new SleepWithoutSleepinessModule();
             AllPurposeWorkbench = new AllPurposeWorkbenchModule();
             RightClickInterrupt = new RightClickInterruptModule();
+            AiInstruction = new AiInstructionModule(host);
             MerchantRefreshNoCost = new MerchantRefreshNoCostModule(binder);
             MerchantMonsterBall = new MerchantMonsterBallModule();
             Nightly = NightlyModule.TryCreate();
@@ -128,6 +129,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
     internal SleepWithoutSleepinessModule SleepWithoutSleepiness { get; }
     internal AllPurposeWorkbenchModule AllPurposeWorkbench { get; }
     internal RightClickInterruptModule RightClickInterrupt { get; }
+    internal AiInstructionModule AiInstruction { get; }
     internal MerchantRefreshNoCostModule MerchantRefreshNoCost { get; }
     internal MerchantMonsterBallModule MerchantMonsterBall { get; }
     internal NightlyModule? Nightly { get; }
@@ -167,6 +169,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         _services.Register<IGameUiAccess>(gameServices.Ui);
         _services.Register<IGameRandomService>(gameServices.Random);
         _services.Register<IGameSpawnService>(gameServices.Spawn);
+        _services.Register<IGameMessageService>(gameServices.Messages);
     }
 
     private static void TryConstructorCleanup(
@@ -247,6 +250,10 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         Register("feature.right-click-interrupt", 200, 0, RightClickInterrupt,
             tick: RightClickInterrupt.Tick,
             dependencies: new[] { "core.configuration" });
+        Register("feature.ai-instruction", 1305, 0, AiInstruction,
+            tick: AiInstruction.Tick,
+            lateTick: AiInstruction.LateTick,
+            shutdown: AiInstruction.Shutdown);
         Register("feature.merchant-refresh-no-cost", 1310, 0, MerchantRefreshNoCost);
         Register("feature.merchant-monster-ball", 1320, 0, MerchantMonsterBall);
         Register("module.more-info", 1330, 0, MoreInfo);

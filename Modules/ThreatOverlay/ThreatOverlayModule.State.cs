@@ -35,7 +35,7 @@ internal sealed partial class ThreatOverlayModule
         public RectTransform HpFill = null!;
         public Image HpImage = null!;
         public GameObject MoveCellRoot = null!;
-        public ThreatMoveCellGraphic MoveCell = null!;
+        public ProjectedCellGraphic MoveCell = null!;
         public bool Active;
         public bool HasScreenCache;
         public bool CachedScreenVisible;

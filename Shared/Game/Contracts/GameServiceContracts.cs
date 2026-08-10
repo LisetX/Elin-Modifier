@@ -9,6 +9,7 @@ internal interface IElinModifierGameServices
     IGameUiAccess Ui { get; }
     IGameRandomService Random { get; }
     IGameSpawnService Spawn { get; }
+    IGameMessageService Messages { get; }
 }
 
 internal interface IGameRuntimeContext
@@ -19,6 +20,7 @@ internal interface IGameRuntimeContext
     GameSetting? Settings { get; }
     GameData? GameData { get; }
     CoreDebug? Debug { get; }
+    string? CurrentSaveId { get; }
 }
 
 internal interface IGameSourceRepository

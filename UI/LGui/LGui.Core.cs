@@ -52,6 +52,7 @@ public sealed partial class ElinModifierPlugin
     {
         SimulateAdvance,
         GenerateDungeon,
+        AiInstruction,
         LowPerformance,
         UnlockFrameRate,
         InvincibleMode,

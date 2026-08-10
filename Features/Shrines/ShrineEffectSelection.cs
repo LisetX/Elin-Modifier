@@ -431,7 +431,7 @@ public sealed partial class ElinModifierPlugin
             if (string.Equals(shrineId, "invention", StringComparison.Ordinal) &&
                 !string.IsNullOrEmpty(outcome.RecipeId) && GameAccess.Runtime.Player?.recipes != null)
             {
-                Msg.Say("learnRecipeIdea");
+                GameAccess.Messages.Say("learnRecipeIdea");
                 GameAccess.Runtime.Player.recipes.Add(outcome.RecipeId, true);
                 return false;
             }

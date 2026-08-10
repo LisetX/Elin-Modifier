@@ -41,6 +41,7 @@ public sealed partial class ElinModifierPlugin
         _lGuiFeatureRows.Clear();
         AddLGuiFeature(LGuiFeatureId.SimulateAdvance, T("模拟推进", "Simulated advance"));
         AddLGuiFeature(LGuiFeatureId.GenerateDungeon, T("生成地牢", "Generate dungeon"));
+        AddLGuiFeature(LGuiFeatureId.AiInstruction, T("AI指示", "AI instructions"));
         AddLGuiFeature(LGuiFeatureId.LowPerformance, T("低性能模式", "Low performance mode"));
         AddLGuiFeature(LGuiFeatureId.UnlockFrameRate, T("解锁刷新率上限", "Unlock frame rate"));
         AddLGuiFeature(LGuiFeatureId.InvincibleMode, T("无敌模式", "Invincible mode"));

@@ -201,14 +201,8 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 新增\"商人刷新商品无消耗\"，开启后商人刷新商品无消耗",
-                        "* Added \"Free merchant restocking\". When enabled, refreshing merchant stock costs nothing."),
-                    host.TranslateModuleText(
-                        "* \"装备对比\"采用滚轮切换显示多个装备",
-                        "* \"Equipment comparison\" now uses the mouse wheel to switch between multiple equipped items."),
-                    host.TranslateModuleText(
-                        "* \"自定义UI比例\"上限、下限调整",
-                        "* Adjusted the upper and lower limits of \"Custom UI scale\"."),
+                        "* 新增\"AI指示\"，支持\"自动寻敌\"(存档+UID隔离)，可选\"前往指定位置\"、\"攻击指定NPC\"、\"使用指定能力\"",
+                        "* Added \"AI instructions\", supporting \"Auto-target enemies\" (isolated by save and UID), with optional \"Go to specified location\", \"Attack specified NPC\", and \"Use specified ability\"."),
                 }
             };
 

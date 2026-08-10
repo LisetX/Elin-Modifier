@@ -1,0 +1,366 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+internal sealed class EmTooltipContent
+{
+    internal EmTooltipContent(string title, Sprite? icon, string description)
+    {
+        Title = title ?? "";
+        Icon = icon;
+        Description = description ?? "";
+    }
+
+    internal string Title { get; }
+    internal Sprite? Icon { get; }
+    internal string Description { get; }
+    internal List<EmTooltipLine> Lines { get; } = new List<EmTooltipLine>();
+}
+
+internal readonly struct EmTooltipLine
+{
+    internal EmTooltipLine(string text, Sprite? icon = null, Color? color = null)
+    {
+        Text = text ?? "";
+        Icon = icon;
+        Color = color ?? new Color(0.92f, 0.94f, 0.96f, 1f);
+    }
+
+    internal string Text { get; }
+    internal Sprite? Icon { get; }
+    internal Color Color { get; }
+}
+
+internal readonly struct EmTooltipVisualStyle
+{
+    internal EmTooltipVisualStyle(bool roundedCorners, Sprite? backgroundSprite)
+    {
+        RoundedCorners = roundedCorners;
+        BackgroundSprite = backgroundSprite;
+    }
+
+    internal bool RoundedCorners { get; }
+    internal Sprite? BackgroundSprite { get; }
+}
+
+internal sealed class EmTooltipTarget : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+{
+    private EmTooltipContent? _content;
+    private Font? _font;
+    private EmTooltipOverlay? _overlay;
+    private Func<EmTooltipVisualStyle>? _styleProvider;
+
+    internal void Initialize(
+        EmTooltipContent content,
+        Font? font,
+        Func<EmTooltipVisualStyle>? styleProvider = null)
+    {
+        _content = content;
+        _font = font;
+        _styleProvider = styleProvider;
+    }
+
+    internal EmTooltipVisualStyle ResolveVisualStyle()
+    {
+        try { return _styleProvider?.Invoke() ?? default; }
+        catch { return default; }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (_content == null)
+            return;
+        _overlay = EmTooltipOverlay.GetOrCreate(this, _font);
+        _overlay?.Show(this, _content);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _overlay?.Hide(this);
+    }
+
+    private void OnDisable()
+    {
+        _overlay?.Hide(this);
+    }
+
+    private void OnDestroy()
+    {
+        _overlay?.Hide(this);
+    }
+}
+
+internal sealed class EmTooltipOverlay : MonoBehaviour
+{
+    private const float Width = 460f;
+    private const float Margin = 14f;
+    private const float FadeInSeconds = 0.14f;
+    private const float FadeOutSeconds = 0.12f;
+    private Canvas? _canvas;
+    private RectTransform? _bounds;
+    private RectTransform? _panel;
+    private CanvasGroup? _group;
+    private Image? _background;
+    private Font? _font;
+    private EmTooltipTarget? _owner;
+    private float _fadeFrom;
+    private float _fadeTo;
+    private float _fadeElapsed;
+    private float _fadeDuration;
+    private bool _fading;
+    private int _transition;
+
+    internal static EmTooltipOverlay? GetOrCreate(Component target, Font? font)
+    {
+        Canvas? canvas;
+        try
+        {
+            canvas = target.GetComponentInParent<Canvas>();
+            if (canvas != null && canvas.rootCanvas != null)
+                canvas = canvas.rootCanvas;
+        }
+        catch
+        {
+            canvas = null;
+        }
+        if (canvas == null)
+            return null;
+        var overlay = canvas.GetComponent<EmTooltipOverlay>();
+        if (overlay == null)
+            overlay = canvas.gameObject.AddComponent<EmTooltipOverlay>();
+        overlay.EnsureView(canvas, font);
+        return overlay;
+    }
+
+    internal void Show(EmTooltipTarget owner, EmTooltipContent content)
+    {
+        if (_panel == null || _group == null || _font == null)
+            return;
+        _owner = owner;
+        _transition++;
+        _panel.gameObject.SetActive(true);
+        ApplyVisualStyle(owner.ResolveVisualStyle());
+        ClearRows();
+        BuildContent(content);
+        _panel.SetAsLastSibling();
+        UpdatePosition();
+        BeginFade(1f, FadeInSeconds);
+    }
+
+    internal void Hide(EmTooltipTarget owner)
+    {
+        if (!ReferenceEquals(_owner, owner) || _panel == null)
+            return;
+        _owner = null;
+        var transition = ++_transition;
+        BeginFade(0f, FadeOutSeconds, () =>
+        {
+            if (_panel != null && _owner == null && transition == _transition)
+                _panel.gameObject.SetActive(false);
+        });
+    }
+
+    private void EnsureView(Canvas canvas, Font? font)
+    {
+        _canvas = canvas;
+        _bounds = canvas.transform as RectTransform;
+        _font = font ?? GameUiFontResolver.ResolveCurrentUiFont() ?? Resources.GetBuiltinResource<Font>("Arial.ttf");
+        if (_panel != null)
+            return;
+        var panelObject = new GameObject("ElinModifier.EmTooltip", typeof(RectTransform), typeof(Image), typeof(CanvasGroup));
+        _panel = panelObject.GetComponent<RectTransform>();
+        _panel.SetParent(canvas.transform, false);
+        _panel.anchorMin = new Vector2(0f, 1f);
+        _panel.anchorMax = new Vector2(0f, 1f);
+        _panel.pivot = new Vector2(0f, 1f);
+        _panel.sizeDelta = new Vector2(Width, 100f);
+        _background = panelObject.GetComponent<Image>();
+        _background.color = new Color(0.025f, 0.03f, 0.04f, 0.98f);
+        _background.raycastTarget = false;
+        _group = panelObject.GetComponent<CanvasGroup>();
+        _group.alpha = 0f;
+        _group.blocksRaycasts = false;
+        _group.interactable = false;
+        panelObject.SetActive(false);
+    }
+
+    private void BuildContent(EmTooltipContent content)
+    {
+        if (_panel == null || _font == null)
+            return;
+        var width = _bounds == null ? Width : Mathf.Clamp(_bounds.rect.width - 24f, 260f, Width);
+        var y = Margin;
+        var headerHeight = content.Icon != null ? 48f : 28f;
+        if (content.Icon != null)
+            CreateImage("HeaderIcon", content.Icon, Margin, y, 48f, 48f);
+        var titleX = content.Icon != null ? 74f : Margin;
+        var title = CreateText("Title", content.Title, 17, FontStyle.Normal, new Color(0.78f, 0.94f, 0.91f, 1f));
+        SetTopLeft(title.rectTransform, titleX, y, width - titleX - Margin, headerHeight);
+        y += headerHeight + 10f;
+        if (!string.IsNullOrWhiteSpace(content.Description))
+        {
+            var description = CreateText("Description", content.Description, 14, FontStyle.Italic, new Color(0.84f, 0.86f, 0.89f, 1f));
+            var height = Measure(description, width - Margin * 2f, 22f, 150f);
+            SetTopLeft(description.rectTransform, Margin, y, width - Margin * 2f, height);
+            y += height + 10f;
+        }
+        for (var i = 0; i < content.Lines.Count; i++)
+        {
+            var line = content.Lines[i];
+            if (string.IsNullOrWhiteSpace(line.Text))
+                continue;
+            var hasIcon = line.Icon != null;
+            var textX = hasIcon ? 44f : Margin;
+            var textWidth = width - textX - Margin;
+            var text = CreateText("Line" + i, line.Text, 13, FontStyle.Normal, line.Color);
+            var height = Measure(text, textWidth, 24f, 120f);
+            if (hasIcon)
+                CreateImage("LineIcon" + i, line.Icon!, Margin, y + Mathf.Max(0f, (height - 22f) * 0.5f), 22f, 22f);
+            SetTopLeft(text.rectTransform, textX, y, textWidth, height);
+            y += height + 5f;
+        }
+        _panel.sizeDelta = new Vector2(width, y + Margin - 5f);
+    }
+
+    private Text CreateText(string name, string value, int size, FontStyle style, Color color)
+    {
+        var go = new GameObject(name, typeof(RectTransform), typeof(Text));
+        var rect = go.GetComponent<RectTransform>();
+        rect.SetParent(_panel, false);
+        var text = go.GetComponent<Text>();
+        text.font = _font;
+        text.fontSize = size;
+        text.fontStyle = style;
+        text.color = color;
+        text.alignment = TextAnchor.UpperLeft;
+        text.horizontalOverflow = HorizontalWrapMode.Wrap;
+        text.verticalOverflow = VerticalWrapMode.Overflow;
+        text.raycastTarget = false;
+        text.text = value ?? "";
+        return text;
+    }
+
+    private void CreateImage(string name, Sprite sprite, float x, float y, float width, float height)
+    {
+        if (_panel == null)
+            return;
+        var go = new GameObject(name, typeof(RectTransform), typeof(Image));
+        var rect = go.GetComponent<RectTransform>();
+        rect.SetParent(_panel, false);
+        SetTopLeft(rect, x, y, width, height);
+        var image = go.GetComponent<Image>();
+        image.sprite = sprite;
+        image.preserveAspect = true;
+        image.raycastTarget = false;
+    }
+
+    private static float Measure(Text text, float width, float minimum, float maximum)
+    {
+        SetTopLeft(text.rectTransform, 0f, 0f, width, maximum);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(text.rectTransform);
+        return Mathf.Clamp(Mathf.Ceil(text.preferredHeight), minimum, maximum);
+    }
+
+    private void ClearRows()
+    {
+        if (_panel == null)
+            return;
+        for (var i = _panel.childCount - 1; i >= 0; i--)
+        {
+            var child = _panel.GetChild(i).gameObject;
+            child.SetActive(false);
+            Destroy(child);
+        }
+    }
+
+    private void BeginFade(float target, float duration, Action? completed = null)
+    {
+        if (_group == null)
+        {
+            completed?.Invoke();
+            return;
+        }
+        _fadeFrom = _group.alpha;
+        _fadeTo = Mathf.Clamp01(target);
+        _fadeDuration = Mathf.Max(0.001f, duration);
+        _fadeElapsed = 0f;
+        _fading = true;
+        _fadeCompleted = completed;
+    }
+
+    private Action? _fadeCompleted;
+
+    private void Update()
+    {
+        if (!_fading || _group == null)
+            return;
+        _fadeElapsed += Time.unscaledDeltaTime;
+        var t = Mathf.Clamp01(_fadeElapsed / _fadeDuration);
+        t = t * t * (3f - 2f * t);
+        _group.alpha = Mathf.Lerp(_fadeFrom, _fadeTo, t);
+        if (_fadeElapsed < _fadeDuration)
+            return;
+        _fading = false;
+        _group.alpha = _fadeTo;
+        var completed = _fadeCompleted;
+        _fadeCompleted = null;
+        completed?.Invoke();
+    }
+
+    private void LateUpdate()
+    {
+        if (_owner != null)
+        {
+            ApplyVisualStyle(_owner.ResolveVisualStyle());
+            UpdatePosition();
+        }
+    }
+
+    private void ApplyVisualStyle(EmTooltipVisualStyle style)
+    {
+        if (_background == null)
+            return;
+        if (style.RoundedCorners && style.BackgroundSprite != null)
+        {
+            _background.sprite = style.BackgroundSprite;
+            _background.type = Image.Type.Sliced;
+            _background.fillCenter = true;
+            return;
+        }
+        _background.sprite = null;
+        _background.type = Image.Type.Simple;
+        _background.fillCenter = true;
+    }
+
+    private void UpdatePosition()
+    {
+        if (_bounds == null || _panel == null)
+            return;
+        var camera = _canvas != null && _canvas.renderMode != RenderMode.ScreenSpaceOverlay ? _canvas.worldCamera : null;
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(_bounds, Input.mousePosition, camera, out var cursor))
+            return;
+        var bounds = _bounds.rect;
+        var width = _panel.rect.width;
+        var height = _panel.rect.height;
+        var x = cursor.x + 22f;
+        var y = cursor.y - 18f;
+        if (x + width > bounds.xMax - 12f)
+            x = cursor.x - width - 22f;
+        if (y - height < bounds.yMin + 12f)
+            y = cursor.y + height + 18f;
+        x = Mathf.Clamp(x, bounds.xMin + 12f, bounds.xMax - width - 12f);
+        y = Mathf.Clamp(y, bounds.yMin + height + 12f, bounds.yMax - 12f);
+        _panel.localPosition = new Vector3(x, y, 0f);
+    }
+
+    private static void SetTopLeft(RectTransform rect, float x, float y, float width, float height)
+    {
+        rect.anchorMin = new Vector2(0f, 1f);
+        rect.anchorMax = new Vector2(0f, 1f);
+        rect.pivot = new Vector2(0f, 1f);
+        rect.anchoredPosition = new Vector2(x, -y);
+        rect.sizeDelta = new Vector2(width, height);
+    }
+}

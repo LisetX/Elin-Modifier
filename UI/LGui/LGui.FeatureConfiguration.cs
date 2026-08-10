@@ -11,6 +11,7 @@ public sealed partial class ElinModifierPlugin
     {
         switch (id)
         {
+            case LGuiFeatureId.AiInstruction: return _modules.AiInstruction.Enabled;
             case LGuiFeatureId.LowPerformance: return _lowPerformanceMode;
             case LGuiFeatureId.UnlockFrameRate: return _unlockFrameRate;
             case LGuiFeatureId.InvincibleMode: return _invincibleMode;
@@ -589,6 +590,7 @@ public sealed partial class ElinModifierPlugin
     {
         switch (id)
         {
+            case LGuiFeatureId.AiInstruction: SetAiInstruction(value); break;
             case LGuiFeatureId.LowPerformance: SetLowPerformanceMode(value); break;
             case LGuiFeatureId.UnlockFrameRate: SetUnlockFrameRate(value); break;
             case LGuiFeatureId.InvincibleMode: SetInvincibleMode(value); break;

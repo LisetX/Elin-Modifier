@@ -14,6 +14,7 @@ internal sealed class ElinModifierGameServices : IElinModifierGameServices
         Ui = new GameUiAccess(binder);
         Random = new GameRandomService(binder);
         Spawn = new GameSpawnService(binder);
+        Messages = new GameMessageService(binder);
     }
 
     public IGameRuntimeContext Runtime { get; }
@@ -23,4 +24,5 @@ internal sealed class ElinModifierGameServices : IElinModifierGameServices
     public IGameUiAccess Ui { get; }
     public IGameRandomService Random { get; }
     public IGameSpawnService Spawn { get; }
+    public IGameMessageService Messages { get; }
 }

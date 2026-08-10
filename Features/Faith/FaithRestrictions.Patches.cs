@@ -49,25 +49,25 @@ public sealed partial class ElinModifierPlugin
                 {
                     if (offeringValue >= 200)
                     {
-                        Msg.Say("god_offer1", t);
+                        GameAccess.Messages.Say("god_offer1", t);
                         GameAccess.Characters.PlayerCharacter.faith.Talk("offer");
                     }
                     else if (offeringValue >= 100)
                     {
-                        Msg.Say("god_offer2", t);
+                        GameAccess.Messages.Say("god_offer2", t);
                     }
                     else if (offeringValue >= 50)
                     {
-                        Msg.Say("god_offer3", t);
+                        GameAccess.Messages.Say("god_offer3", t);
                     }
                     else
                     {
-                        Msg.Say("god_offer4", t);
+                        GameAccess.Messages.Say("god_offer4", t);
                     }
                 }
                 else
                 {
-                    Msg.Say("god_offer1", t);
+                    GameAccess.Messages.Say("god_offer1", t);
                     offeringValue += __instance.Deity.GetOfferingValue(t, 1) * takeoverMod;
                 }
 
@@ -86,7 +86,7 @@ public sealed partial class ElinModifierPlugin
                 if (piety.vBase < faithSkill)
                     messageRank = Mathf.Clamp(piety.vBase * 100 / faithSkill / 25, 0, 3);
                 if (messageRank == 4 || piety.Value != previousValue)
-                    Msg.Say("piety" + messageRank, c, c.faith.TextGodGender);
+                    GameAccess.Messages.Say("piety" + messageRank, c, c.faith.TextGodGender);
 
                 UnityEngine.Debug.Log(offeringValue + "/" + piety.Value + "/" + piety.vExp);
                 if (piety.Value > faithSkill * 8 / 10)

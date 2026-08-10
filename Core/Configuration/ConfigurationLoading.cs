@@ -135,6 +135,7 @@ public sealed partial class ElinModifierPlugin
                                       !HasJsonValue(json, "rightClickInterruptOperation") ||
                                       !HasJsonValue(json, "stealHandNoTargetLimit") ||
                                       !HasJsonValue(json, "stealHandUndetectable") ||
+                                      !HasJsonValue(json, "aiInstructionAutoCombatBySave") ||
                                       !HasJsonValue(json, "merchantAlwaysStocksMonsterBall") ||
                                       !HasJsonValue(json, "merchantMonsterBallLevelOptimization") ||
                                       !HasJsonValue(json, "ignoreSpecialNpcHatchRestriction") ||
@@ -356,6 +357,9 @@ public sealed partial class ElinModifierPlugin
             _stealHandUndetectable = ExtractBool(json, "stealHandUndetectable", false);
             _modules.MerchantRefreshNoCost.Load(
                 ExtractBool(json, "merchantRefreshNoCost", false));
+            _modules.AiInstruction.Load(
+                ExtractBool(json, "aiInstruction", false),
+                json);
             _modules.MerchantMonsterBall.Load(
                 ExtractBool(json, "merchantAlwaysStocksMonsterBall", false),
                 ExtractBool(json, "merchantMonsterBallLevelOptimization", false));
@@ -599,6 +603,7 @@ public sealed partial class ElinModifierPlugin
         _stealHandNoTargetLimit = false;
         _stealHandUndetectable = false;
         _modules.MerchantRefreshNoCost.Reset();
+        _modules.AiInstruction.Reset();
         _modules.MerchantMonsterBall.Reset();
         _modules.SpecialNpcHatch.Reset();
         _modules.SpecialNpcCapture.Reset();

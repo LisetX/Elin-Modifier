@@ -275,7 +275,7 @@ internal sealed partial class ThreatOverlayModule
         moveRect.anchorMax = Vector2.one;
         moveRect.offsetMin = Vector2.zero;
         moveRect.offsetMax = Vector2.zero;
-        marker.MoveCell = marker.MoveCellRoot.AddComponent<ThreatMoveCellGraphic>();
+        marker.MoveCell = marker.MoveCellRoot.AddComponent<ProjectedCellGraphic>();
         marker.MoveCell.color = Color.white;
         marker.MoveCell.raycastTarget = false;
         marker.MoveCellRoot.SetActive(false);

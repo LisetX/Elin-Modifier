@@ -101,7 +101,7 @@ internal sealed partial class AutomationModule
             var condition = owner?.GetCondition<ConDeathSentense>();
             if (condition != null && condition.value <= 3)
             {
-                Msg.Say("abort_sentense");
+                GameAccess.Messages.Say("abort_sentense");
                 return true;
             }
             return false;
