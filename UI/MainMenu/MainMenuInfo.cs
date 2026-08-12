@@ -201,8 +201,8 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 新增\"AI指示\"，支持\"自动寻敌\"(存档+UID隔离)，可选\"前往指定位置\"、\"攻击指定NPC\"、\"使用指定能力\"",
-                        "* Added \"AI instructions\", supporting \"Auto-target enemies\" (isolated by save and UID), with optional \"Go to specified location\", \"Attack specified NPC\", and \"Use specified ability\"."),
+                        "* 新增\"修复EA-23.335自言自语Bug\"(Nightly限定)，开启后修复最新Nightly版本自言自语的Bug",
+                        "* Added \"Fix EA-23.335 self-talk bug\" (Nightly only), which fixes the self-talk bug in the latest Nightly version when enabled."),
                 }
             };
 

@@ -251,8 +251,15 @@ public sealed partial class ElinModifierPlugin
             if (!string.IsNullOrWhiteSpace(nightlyConfigJson))
             {
                 sb.AppendLine("  \"nightlyAllowCurrencyGifts\": " + nightlyConfigJson + ",");
-                sb.AppendLine();
             }
+            var nightlyFixSelfTalkBugConfigJson = _modules.Nightly != null
+                ? (_modules.Nightly.FixSelfTalkBug ? "true" : "false")
+                : _nightlyFixSelfTalkBugConfigPassthroughJson;
+            if (!string.IsNullOrWhiteSpace(nightlyFixSelfTalkBugConfigJson))
+                sb.AppendLine("  \"nightlyFixSelfTalkBug\": " + nightlyFixSelfTalkBugConfigJson + ",");
+            if (!string.IsNullOrWhiteSpace(nightlyConfigJson) ||
+                !string.IsNullOrWhiteSpace(nightlyFixSelfTalkBugConfigJson))
+                sb.AppendLine();
 
             sb.AppendLine("  \"aiApiBase\": \"" + EscapeJson(_aiApiBase) + "\",");
             sb.AppendLine("  \"aiApiKey\": \"" + EscapeJson(_aiApiKey) + "\",");

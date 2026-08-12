@@ -152,7 +152,16 @@ public sealed partial class ElinModifierPlugin
             SaveConfig(false);
             NotifyLGuiDataDirty();
         });
-        content.sizeDelta = new Vector2(0f, 80f);
+        CreateLGuiToggleControl(content, T("修复自言自语Bug", "Fix self-talk bug"), module.FixSelfTalkBug, 64f, value =>
+        {
+            module.FixSelfTalkBug = value;
+            module.Log = value
+                ? T("修复自言自语Bug已开启", "Self-talk bug fix enabled")
+                : T("修复自言自语Bug已关闭", "Self-talk bug fix disabled");
+            SaveConfig(false);
+            NotifyLGuiDataDirty();
+        });
+        content.sizeDelta = new Vector2(0f, 136f);
     }
     private float AddLGuiAiInput(RectTransform parent, string label, Func<string> read, Action<string> write, float y, float width, bool password = false, Action<InputField>? capture = null)
     {

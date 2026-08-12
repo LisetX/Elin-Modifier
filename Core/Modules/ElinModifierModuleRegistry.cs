@@ -61,7 +61,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
             AiInstruction = new AiInstructionModule(host);
             MerchantRefreshNoCost = new MerchantRefreshNoCostModule(binder);
             MerchantMonsterBall = new MerchantMonsterBallModule();
-            Nightly = NightlyModule.TryCreate();
+            Nightly = NightlyModule.TryCreate(binder);
             MoreInfo = new MoreInfoModule(host);
             ExceptionTrace = new ExceptionTraceModule(host);
 

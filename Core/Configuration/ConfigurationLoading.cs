@@ -232,7 +232,9 @@ public sealed partial class ElinModifierPlugin
                                        !HasJsonValue(json, "moongateUploadUpdateKeys") ||
                                        HasJsonValue(json, "moongateCloudHistoryIndexApi") ||
                                        HasJsonValue(json, "moongateCloudRevisionHistoryApi") ||
-                                       (_modules.Nightly != null && !HasJsonValue(json, "nightlyAllowCurrencyGifts")) ||
+                                       (_modules.Nightly != null &&
+                                        (!HasJsonValue(json, "nightlyAllowCurrencyGifts") ||
+                                         !HasJsonValue(json, "nightlyFixSelfTalkBug"))) ||
                                        !HasJsonValue(json, "aiApiBase") ||
                                       !HasJsonValue(json, "aiApiKey") ||
                                       !HasJsonValue(json, "aiModelName") ||
@@ -490,12 +492,17 @@ public sealed partial class ElinModifierPlugin
             if (_modules.Nightly != null)
             {
                 _modules.Nightly.AllowCurrencyGifts = ExtractBool(json, "nightlyAllowCurrencyGifts", false);
+                _modules.Nightly.FixSelfTalkBug = ExtractBool(json, "nightlyFixSelfTalkBug", false);
                 _nightlyConfigPassthroughJson = _modules.Nightly.AllowCurrencyGifts ? "true" : "false";
+                _nightlyFixSelfTalkBugConfigPassthroughJson =
+                    _modules.Nightly.FixSelfTalkBug ? "true" : "false";
             }
             else
             {
                 _nightlyConfigPassthroughJson = ConfigurationValueDocument.For(json)
                     .GetRawJson("nightlyAllowCurrencyGifts");
+                _nightlyFixSelfTalkBugConfigPassthroughJson = ConfigurationValueDocument.For(json)
+                    .GetRawJson("nightlyFixSelfTalkBug");
             }
             _aiApiBase = ExtractString(json, "aiApiBase", _aiApiBase);
             _aiApiKey = ExtractString(json, "aiApiKey", _aiApiKey);
@@ -615,11 +622,14 @@ public sealed partial class ElinModifierPlugin
         if (_modules.Nightly != null)
         {
             _modules.Nightly.AllowCurrencyGifts = false;
+            _modules.Nightly.FixSelfTalkBug = false;
             _nightlyConfigPassthroughJson = "false";
+            _nightlyFixSelfTalkBugConfigPassthroughJson = "false";
         }
         else
         {
             _nightlyConfigPassthroughJson = "";
+            _nightlyFixSelfTalkBugConfigPassthroughJson = "";
         }
         _modules.CharacterProtection.Reset();
         _rodStackingTarget = null;

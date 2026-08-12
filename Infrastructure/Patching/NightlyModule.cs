@@ -8,19 +8,28 @@ using Steamworks;
 internal sealed class NightlyModule
 {
     private static NightlyModule? _active;
+    private readonly IBoundGameValue<Card> _actTarget;
     private bool _initialized;
 
-    private NightlyModule(string branchName)
+    private NightlyModule(string branchName, IGameMemberBinder binder)
     {
         BranchName = branchName;
+        _actTarget = binder.BindStaticValue<Card>(
+            typeof(Act),
+            GameValueAccess.ReadWrite,
+            "TC");
     }
 
     internal string BranchName { get; }
     internal bool AllowCurrencyGifts { get; set; }
+    internal bool FixSelfTalkBug { get; set; }
     internal string Log { get; set; } = "Ready";
 
-    internal static NightlyModule? TryCreate()
+    internal static NightlyModule? TryCreate(IGameMemberBinder binder)
     {
+        if (binder == null)
+            throw new ArgumentNullException(nameof(binder));
+
         try
         {
             string branchName;
@@ -28,7 +37,7 @@ internal sealed class NightlyModule
                 return null;
             if (!string.Equals(branchName, "nightly", StringComparison.OrdinalIgnoreCase))
                 return null;
-            return new NightlyModule(branchName);
+            return new NightlyModule(branchName, binder);
         }
         catch
         {
@@ -57,10 +66,24 @@ internal sealed class NightlyModule
             var onGiftTranspiler = AccessTools.Method(
                 typeof(NightlyModule),
                 nameof(CurrencyGiftAffinityTranspiler));
+            var canPerform = AccessTools.Method(
+                typeof(Act),
+                "CanPerform",
+                new[] { typeof(Chara), typeof(Card), typeof(Point) });
+            var canPerformPrefix = AccessTools.Method(
+                typeof(NightlyModule),
+                nameof(ChatTargetPrefix));
+            var canPerformPostfix = AccessTools.Method(
+                typeof(NightlyModule),
+                nameof(ChatTargetPostfix));
             if (canAcceptGift == null || canAcceptGiftPostfix == null)
                 throw new MissingMethodException("Chara.CanAcceptGift Nightly patch target was not found.");
             if (onGift == null || onGiftTranspiler == null)
                 throw new MissingMethodException("Affinity.OnGift Nightly patch target was not found.");
+            if (canPerform == null || canPerformPrefix == null || canPerformPostfix == null)
+                throw new MissingMethodException("Act.CanPerform Nightly patch target was not found.");
+            if (!_actTarget.IsBound)
+                throw new MissingMemberException("Act.TC Nightly patch target was not found.");
 
             var harmony = harmonyModule.GetGroupHarmony("nightly");
             harmony.Patch(
@@ -69,6 +92,10 @@ internal sealed class NightlyModule
             harmony.Patch(
                 canAcceptGift,
                 postfix: new HarmonyMethod(canAcceptGiftPostfix));
+            harmony.Patch(
+                canPerform,
+                prefix: new HarmonyMethod(canPerformPrefix),
+                postfix: new HarmonyMethod(canPerformPostfix));
             _active = this;
             _initialized = true;
             Log = "Nightly patches ready";
@@ -132,6 +159,30 @@ internal sealed class NightlyModule
     {
         var module = _active;
         return module != null && module.AllowCurrencyGifts ? stableAffinity : 0;
+    }
+
+    private static void ChatTargetPrefix(Act __instance, Card __1, out Card? __state)
+    {
+        var module = _active;
+        __state = module != null &&
+                  module.FixSelfTalkBug &&
+                  __instance is ActChat &&
+                  __1 is Chara
+            ? __1
+            : null;
+    }
+
+    private static void ChatTargetPostfix(Act __instance, Card? __state, bool __result)
+    {
+        var module = _active;
+        if (module == null ||
+            !module.FixSelfTalkBug ||
+            __instance is not ActChat ||
+            __state == null ||
+            !__result)
+            return;
+
+        module._actTarget.TrySet(null, __state);
     }
 
     private static void CanAcceptGiftPostfix(Chara __instance, Card __1, ref bool __result)
