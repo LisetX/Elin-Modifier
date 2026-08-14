@@ -6,7 +6,7 @@ using HarmonyLib;
 
 internal sealed class HarmonyPatchModule
 {
-    private const string HarmonyIdPrefix = "local.elin.modifier";
+    private const string HarmonyIdPrefix = "liset.elin.modifier";
 
     private readonly Dictionary<string, Harmony> _groups =
         new Dictionary<string, Harmony>(StringComparer.Ordinal);

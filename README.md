@@ -1,8 +1,8 @@
 # Elin Modifier
 
 - 作者：Liset
-- 当前源码版本：2.6.3
-- 插件 ID：`local.elin.modifier`
+- 当前源码版本：2.6.4
+- 插件 ID：`liset.elin.modifier`
 - E-mail：liset@m9.pw
 - QQ群：771844665
 

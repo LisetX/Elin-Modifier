@@ -36,7 +36,6 @@ internal sealed partial class WatermarkModule
     private float _watermarkFpsSampleAt;
     private int _watermarkFpsSampleFrame;
     private int _watermarkFps;
-    private DateTime _watermarkProcessStartUtc;
     private bool _watermarkConfigDirty;
 
     internal WatermarkModule(ElinModifierPlugin host)
@@ -243,9 +242,6 @@ internal sealed partial class WatermarkModule
             _watermarkCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
             _watermarkCanvas.sortingOrder = 31990;
 
-            try { _watermarkProcessStartUtc = System.Diagnostics.Process.GetCurrentProcess().StartTime.ToUniversalTime(); }
-            catch { _watermarkProcessStartUtc = DateTime.UtcNow - TimeSpan.FromSeconds(Time.realtimeSinceStartup); }
-
             _watermarkCanvasScaler = _watermarkRoot.GetComponent<CanvasScaler>();
             _watermarkCanvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             _watermarkCanvasScaler.referenceResolution = new Vector2(2560f, 1440f);
@@ -316,20 +312,28 @@ internal sealed partial class WatermarkModule
 
         _watermarkText.text = "Elin Modifier v" + version +
                               " | " + T("帧数", "FPS") + ": " + _watermarkFps.ToString(CultureInfo.InvariantCulture) +
-                              " | " + T("当前时间", "Current time") + ": " + DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture) +
-                              " | " + T("游戏时长", "Session time") + ": " + GetWatermarkProcessUptime();
+                              " | " + T("游戏时间", "Game time") + ": " + GetWatermarkGameTime() +
+                              " | " + T("现实时间", "Real time") + ": " + DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture);
         UpdateWatermarkLayout();
     }
 
-    private string GetWatermarkProcessUptime()
+    private static string GetWatermarkGameTime()
     {
-        var elapsed = DateTime.UtcNow - _watermarkProcessStartUtc;
-        if (elapsed < TimeSpan.Zero)
-            elapsed = TimeSpan.Zero;
-        var totalHours = Math.Max(0L, (long)elapsed.TotalHours);
-        return totalHours.ToString("00", CultureInfo.InvariantCulture) + ":" +
-               elapsed.Minutes.ToString("00", CultureInfo.InvariantCulture) + ":" +
-               elapsed.Seconds.ToString("00", CultureInfo.InvariantCulture);
+        try
+        {
+            if (!GameAccess.IsInitialized || !GameAccess.Clock.TryGetCurrent(out var value))
+                return "--";
+
+            return value.Year.ToString(CultureInfo.InvariantCulture) + "/" +
+                   value.Month.ToString(CultureInfo.InvariantCulture) + "/" +
+                   value.Day.ToString(CultureInfo.InvariantCulture) + " " +
+                   value.Hour.ToString("00", CultureInfo.InvariantCulture) + ":" +
+                   value.Minute.ToString("00", CultureInfo.InvariantCulture);
+        }
+        catch
+        {
+            return "--";
+        }
     }
 
     internal void ApplyVisualSettings()

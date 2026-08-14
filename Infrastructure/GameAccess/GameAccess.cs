@@ -7,6 +7,7 @@ internal static class GameAccess
 
     internal static bool IsInitialized => Volatile.Read(ref _current) != null;
     internal static IGameRuntimeContext Runtime => Current.Runtime;
+    internal static IGameClockAccess Clock => Current.Clock;
     internal static IGameSourceRepository Sources => Current.Sources;
     internal static ICharacterGameAccess Characters => Current.Characters;
     internal static IWorldGameAccess World => Current.World;

@@ -201,8 +201,8 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 新增\"修复EA-23.335自言自语Bug\"(Nightly限定)，开启后修复最新Nightly版本自言自语的Bug",
-                        "* Added \"Fix EA-23.335 self-talk bug\" (Nightly only), which fixes the self-talk bug in the latest Nightly version when enabled."),
+                        "* 水印优化，新增\"游戏时间\"显示",
+                        "* Optimized the watermark and added the \"Game time\" display."),
                 }
             };
 

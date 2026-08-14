@@ -163,6 +163,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
     private void RegisterGameServiceInterfaces(IElinModifierGameServices gameServices)
     {
         _services.Register<IGameRuntimeContext>(gameServices.Runtime);
+        _services.Register<IGameClockAccess>(gameServices.Clock);
         _services.Register<IGameSourceRepository>(gameServices.Sources);
         _services.Register<ICharacterGameAccess>(gameServices.Characters);
         _services.Register<IWorldGameAccess>(gameServices.World);

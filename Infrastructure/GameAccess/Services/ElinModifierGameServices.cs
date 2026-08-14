@@ -8,6 +8,7 @@ internal sealed class ElinModifierGameServices : IElinModifierGameServices
             throw new ArgumentNullException("binder");
 
         Runtime = new GameRuntimeContext(binder);
+        Clock = new GameClockAccess(binder);
         Sources = new GameSourceRepository(binder);
         Characters = new CharacterGameAccess(binder);
         World = new WorldGameAccess(binder);
@@ -18,6 +19,7 @@ internal sealed class ElinModifierGameServices : IElinModifierGameServices
     }
 
     public IGameRuntimeContext Runtime { get; }
+    public IGameClockAccess Clock { get; }
     public IGameSourceRepository Sources { get; }
     public ICharacterGameAccess Characters { get; }
     public IWorldGameAccess World { get; }

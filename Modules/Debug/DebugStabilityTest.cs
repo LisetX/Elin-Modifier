@@ -152,7 +152,7 @@ public sealed partial class ElinModifierPlugin
             var text = (record.Source ?? "") + "\n" + (record.Level ?? "") + "\n" + (record.Trace ?? "");
             return text.IndexOf("ElinModifierPlugin", StringComparison.OrdinalIgnoreCase) >= 0 ||
                    text.IndexOf("Elin Modifier", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                   text.IndexOf("local.elin.modifier", StringComparison.OrdinalIgnoreCase) >= 0;
+                   text.IndexOf("liset.elin.modifier", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         string BuildModifierErrorFeatureSummary()

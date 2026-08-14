@@ -240,7 +240,7 @@ public sealed partial class ElinModifierPlugin
             return;
 
         var guid = GetDebugPluginGuid(info);
-        if (string.Equals(guid, "local.elin.modifier", StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(guid, "liset.elin.modifier", StringComparison.OrdinalIgnoreCase))
             return;
 
         var instanceType = instance == null ? null : instance.GetType();

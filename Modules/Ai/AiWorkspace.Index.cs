@@ -28,7 +28,7 @@ public sealed partial class ElinModifierPlugin
     private void EnsureAiRuntimeHarmony()
     {
         if (_aiRuntimeHarmony == null)
-            _aiRuntimeHarmony = new Harmony("local.elin.modifier.ai.runtime");
+            _aiRuntimeHarmony = new Harmony("liset.elin.modifier.ai.runtime");
     }
     private static string GetAiRuntimeWorkspaceDirectory()
     {

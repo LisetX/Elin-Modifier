@@ -3,6 +3,7 @@ using System.Collections.Generic;
 internal interface IElinModifierGameServices
 {
     IGameRuntimeContext Runtime { get; }
+    IGameClockAccess Clock { get; }
     IGameSourceRepository Sources { get; }
     ICharacterGameAccess Characters { get; }
     IWorldGameAccess World { get; }
@@ -21,6 +22,29 @@ internal interface IGameRuntimeContext
     GameData? GameData { get; }
     CoreDebug? Debug { get; }
     string? CurrentSaveId { get; }
+}
+
+internal readonly struct GameClockSnapshot
+{
+    internal GameClockSnapshot(int year, int month, int day, int hour, int minute)
+    {
+        Year = year;
+        Month = month;
+        Day = day;
+        Hour = hour;
+        Minute = minute;
+    }
+
+    internal int Year { get; }
+    internal int Month { get; }
+    internal int Day { get; }
+    internal int Hour { get; }
+    internal int Minute { get; }
+}
+
+internal interface IGameClockAccess
+{
+    bool TryGetCurrent(out GameClockSnapshot snapshot);
 }
 
 internal interface IGameSourceRepository
