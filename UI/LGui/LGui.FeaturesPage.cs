@@ -52,7 +52,9 @@ public sealed partial class ElinModifierPlugin
         AddLGuiFeature(LGuiFeatureId.ShowBuffSpecificValues, T("显示Buff具体信息", "Show detailed Buff information"));
         AddLGuiFeature(LGuiFeatureId.ShowItemPanelEnchantLevels, T("显示物品面板附魔等级", "Show item panel enchantment levels"));
         AddLGuiFeature(LGuiFeatureId.ShowItemPanelItemValue, T("显示物品面板物品价值", "Show item value in item panel"));
+        AddLGuiFeature(LGuiFeatureId.ShowItemPanelMilkBonus, T("显示物品面板奶的加成", "Show milk bonus in item panel"));
         AddLGuiFeature(LGuiFeatureId.ShowMainAbilityExperience, T("显示主能力经验值", "Show main ability experience"));
+        AddLGuiFeature(LGuiFeatureId.OneClickQuestCompletion, T("一键完成委托", "One-click quest completion"));
         AddLGuiFeature(LGuiFeatureId.EquipmentComparison, T("装备对比", "Equipment comparison"));
         AddLGuiFeature(LGuiFeatureId.IgnoreFriendlyFire, T("无视友伤", "Ignore friendly fire"));
         AddLGuiFeature(LGuiFeatureId.WorkbenchIngredientReadingOptimization, T("工作台素材读取优化", "Workbench ingredient loading optimization"));

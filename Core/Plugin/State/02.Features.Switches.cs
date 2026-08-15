@@ -46,6 +46,7 @@ public sealed partial class ElinModifierPlugin
     private int _showBuffSpecificValuesTextFontSizeOffset;
     private bool _showItemPanelEnchantLevels;
     private bool _showItemPanelItemValue;
+    private bool _showItemPanelMilkBonus;
     private bool _showMainAbilityExperience;
     private bool _showMainAbilityExperienceInSkillTracker = true;
     private bool _equipmentComparison;

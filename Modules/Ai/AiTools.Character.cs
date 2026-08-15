@@ -82,6 +82,10 @@ public sealed partial class ElinModifierPlugin
             case "showitempanelitemvalue":
             case "item_panel_item_value":
             case "显示物品面板物品价值": SetShowItemPanelItemValue(enabled); break;
+            case "show_item_panel_milk_bonus":
+            case "showitempanelmilkbonus":
+            case "item_panel_milk_bonus":
+            case "显示物品面板奶的加成": SetShowItemPanelMilkBonus(enabled); break;
             case "show_main_ability_experience":
             case "showmainabilityexperience":
             case "main_ability_experience":
@@ -90,6 +94,9 @@ public sealed partial class ElinModifierPlugin
             case "showmainabilityexperienceinskilltracker":
             case "main_ability_experience_in_skill_tracker":
             case "是否在技能追踪器显示": SetShowMainAbilityExperienceInSkillTracker(enabled); break;
+            case "one_click_quest_completion":
+            case "oneclickquestcompletion":
+            case "一键完成委托": SetOneClickQuestCompletion(enabled); break;
             case "equipment_comparison":
             case "equipmentcomparison":
             case "装备对比": SetEquipmentComparison(enabled); break;

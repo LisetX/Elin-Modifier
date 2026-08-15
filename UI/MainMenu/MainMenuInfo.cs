@@ -201,8 +201,11 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 水印优化，新增\"游戏时间\"显示",
-                        "* Optimized the watermark and added the \"Game time\" display."),
+                        "* 新增\"一键完成委托\"，支持告示板一键完成、任务列表一键完成",
+                        "* Added \"One-click quest completion\", supporting one-click completion from the quest board and quest list."),
+                    host.TranslateModuleText(
+                        "* 新增\"显示物品面板奶的加成\"，计算基准为100有效潜力",
+                        "* Added \"Show milk bonuses in item panel\", calculated using a baseline of 100 effective potential."),
                 }
             };
 

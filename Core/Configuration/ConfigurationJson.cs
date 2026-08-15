@@ -67,8 +67,10 @@ public sealed partial class ElinModifierPlugin
         var itemLast = json.IndexOf("\"itemMoreInfoPlantStatsColor\"", StringComparison.Ordinal);
         var buffDetails = json.IndexOf("\"showBuffSpecificValues\"", StringComparison.Ordinal);
         var itemPanelValue = json.IndexOf("\"showItemPanelItemValue\"", StringComparison.Ordinal);
+        var itemPanelMilkBonus = json.IndexOf("\"showItemPanelMilkBonus\"", StringComparison.Ordinal);
         var mainAbilityExperience = json.IndexOf("\"showMainAbilityExperience\"", StringComparison.Ordinal);
         var mainAbilityExperienceInSkillTracker = json.IndexOf("\"showMainAbilityExperienceInSkillTracker\"", StringComparison.Ordinal);
+        var oneClickQuestCompletion = json.IndexOf("\"oneClickQuestCompletion\"", StringComparison.Ordinal);
         var equipmentComparison = json.IndexOf("\"equipmentComparison\"", StringComparison.Ordinal);
         var ignoreFriendlyFire = json.IndexOf("\"ignoreFriendlyFire\"", StringComparison.Ordinal);
         var workbenchIngredientReadingOptimization = json.IndexOf("\"workbenchIngredientReadingOptimization\"", StringComparison.Ordinal);
@@ -131,9 +133,11 @@ public sealed partial class ElinModifierPlugin
                itemMain < itemLast &&
                itemLast < buffDetails &&
                buffDetails < itemPanelValue &&
-               itemPanelValue < mainAbilityExperience &&
+               itemPanelValue < itemPanelMilkBonus &&
+               itemPanelMilkBonus < mainAbilityExperience &&
                mainAbilityExperience < mainAbilityExperienceInSkillTracker &&
-               mainAbilityExperienceInSkillTracker < equipmentComparison &&
+               mainAbilityExperienceInSkillTracker < oneClickQuestCompletion &&
+               oneClickQuestCompletion < equipmentComparison &&
                equipmentComparison < ignoreFriendlyFire &&
                ignoreFriendlyFire < workbenchIngredientReadingOptimization &&
                workbenchIngredientReadingOptimization < experienceMultiplier &&

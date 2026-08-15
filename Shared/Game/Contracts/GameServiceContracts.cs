@@ -10,6 +10,7 @@ internal interface IElinModifierGameServices
     IGameUiAccess Ui { get; }
     IGameRandomService Random { get; }
     IGameSpawnService Spawn { get; }
+    IMilkBonusPreviewService MilkBonusPreview { get; }
     IGameMessageService Messages { get; }
 }
 
@@ -118,4 +119,23 @@ internal interface IGameSpawnService
     Thing? CreateThing(string id, string materialAlias, int level);
     Thing? CreateThingFromCategory(string categoryId, int level);
     Chara? CreateCharacter(string id, int level);
+}
+
+internal readonly struct MilkBonusPreviewEntry
+{
+    internal MilkBonusPreviewEntry(string name, double value, UnityEngine.Sprite? icon)
+    {
+        Name = name;
+        Value = value;
+        Icon = icon;
+    }
+
+    internal string Name { get; }
+    internal double Value { get; }
+    internal UnityEngine.Sprite? Icon { get; }
+}
+
+internal interface IMilkBonusPreviewService
+{
+    IReadOnlyList<MilkBonusPreviewEntry>? Calculate(Thing milk);
 }

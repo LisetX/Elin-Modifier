@@ -14,6 +14,7 @@ internal static class GameAccess
     internal static IGameUiAccess Ui => Current.Ui;
     internal static IGameRandomService Random => Current.Random;
     internal static IGameSpawnService Spawn => Current.Spawn;
+    internal static IMilkBonusPreviewService MilkBonusPreview => Current.MilkBonusPreview;
     internal static IGameMessageService Messages => Current.Messages;
 
     internal static void Initialize(IElinModifierGameServices services)

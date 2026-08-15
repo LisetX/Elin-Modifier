@@ -37,6 +37,7 @@ public sealed partial class ElinModifierPlugin
         {
             try
             {
+                AppendItemPanelMilkBonus(__instance, n);
                 if (Instance != null && Instance._showFoodRot && ShouldShowFoodRot(__instance) && n != null)
                 {
                     try { n.AddText(GetFoodRotText(__instance), FontColor.FoodMisc); }

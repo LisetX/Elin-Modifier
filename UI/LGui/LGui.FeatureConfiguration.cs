@@ -22,7 +22,9 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.ShowBuffSpecificValues: return _showBuffSpecificValues;
             case LGuiFeatureId.ShowItemPanelEnchantLevels: return _showItemPanelEnchantLevels;
             case LGuiFeatureId.ShowItemPanelItemValue: return _showItemPanelItemValue;
+            case LGuiFeatureId.ShowItemPanelMilkBonus: return _showItemPanelMilkBonus;
             case LGuiFeatureId.ShowMainAbilityExperience: return _showMainAbilityExperience;
+            case LGuiFeatureId.OneClickQuestCompletion: return _modules.OneClickQuestCompletion.Enabled;
             case LGuiFeatureId.EquipmentComparison: return _equipmentComparison;
             case LGuiFeatureId.IgnoreFriendlyFire: return _modules.CharacterProtection.IgnoreFriendlyFire;
             case LGuiFeatureId.WorkbenchIngredientReadingOptimization: return _workbenchIngredientReadingOptimization;
@@ -601,7 +603,9 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.ShowBuffSpecificValues: SetShowBuffSpecificValues(value); break;
             case LGuiFeatureId.ShowItemPanelEnchantLevels: SetShowItemPanelEnchantLevels(value); break;
             case LGuiFeatureId.ShowItemPanelItemValue: SetShowItemPanelItemValue(value); break;
+            case LGuiFeatureId.ShowItemPanelMilkBonus: SetShowItemPanelMilkBonus(value); break;
             case LGuiFeatureId.ShowMainAbilityExperience: SetShowMainAbilityExperience(value); break;
+            case LGuiFeatureId.OneClickQuestCompletion: SetOneClickQuestCompletion(value); break;
             case LGuiFeatureId.EquipmentComparison: SetEquipmentComparison(value); break;
             case LGuiFeatureId.IgnoreFriendlyFire: SetIgnoreFriendlyFire(value); break;
             case LGuiFeatureId.WorkbenchIngredientReadingOptimization: SetWorkbenchIngredientReadingOptimization(value); break;

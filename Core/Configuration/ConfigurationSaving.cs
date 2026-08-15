@@ -164,8 +164,10 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"showBuffSpecificValuesTextFontSizeOffset\": " + Clamp(_showBuffSpecificValuesTextFontSizeOffset, -8, 8).ToString(CultureInfo.InvariantCulture) + ",");
             sb.AppendLine("  \"showItemPanelEnchantLevels\": " + (_showItemPanelEnchantLevels ? "true" : "false") + ",");
             sb.AppendLine("  \"showItemPanelItemValue\": " + (_showItemPanelItemValue ? "true" : "false") + ",");
+            sb.AppendLine("  \"showItemPanelMilkBonus\": " + (_showItemPanelMilkBonus ? "true" : "false") + ",");
             sb.AppendLine("  \"showMainAbilityExperience\": " + (_showMainAbilityExperience ? "true" : "false") + ",");
             sb.AppendLine("  \"showMainAbilityExperienceInSkillTracker\": " + (_showMainAbilityExperienceInSkillTracker ? "true" : "false") + ",");
+            sb.AppendLine("  \"oneClickQuestCompletion\": " + (_modules.OneClickQuestCompletion.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"equipmentComparison\": " + (_equipmentComparison ? "true" : "false") + ",");
             sb.AppendLine("  \"ignoreFriendlyFire\": " + (_modules.CharacterProtection.IgnoreFriendlyFire ? "true" : "false") + ",");
             sb.AppendLine("  \"workbenchIngredientReadingOptimization\": " + (_workbenchIngredientReadingOptimization ? "true" : "false") + ",");

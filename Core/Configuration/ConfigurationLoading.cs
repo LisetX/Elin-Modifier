@@ -104,8 +104,10 @@ public sealed partial class ElinModifierPlugin
                                       !HasJsonValue(json, "showBuffSpecificValuesTextFontSizeOffset") ||
                                       !HasJsonValue(json, "showItemPanelEnchantLevels") ||
                                       !HasJsonValue(json, "showItemPanelItemValue") ||
+                                      !HasJsonValue(json, "showItemPanelMilkBonus") ||
                                       !HasJsonValue(json, "showMainAbilityExperience") ||
                                       !HasJsonValue(json, "showMainAbilityExperienceInSkillTracker") ||
+                                      !HasJsonValue(json, "oneClickQuestCompletion") ||
                                       !HasJsonValue(json, "equipmentComparison") ||
                                       !HasJsonValue(json, "ignoreFriendlyFire") ||
                                       !HasJsonValue(json, "workbenchIngredientReadingOptimization") ||
@@ -310,10 +312,13 @@ public sealed partial class ElinModifierPlugin
             _showBuffSpecificValuesTextFontSizeOffset = Clamp(ExtractInt(json, "showBuffSpecificValuesTextFontSizeOffset", legacyBuffFontSizeOffset), -8, 8);
             _showItemPanelEnchantLevels = ExtractBool(json, "showItemPanelEnchantLevels", _showItemPanelEnchantLevels);
             _showItemPanelItemValue = ExtractBool(json, "showItemPanelItemValue", _showItemPanelItemValue);
+            _showItemPanelMilkBonus = ExtractBool(json, "showItemPanelMilkBonus", _showItemPanelMilkBonus);
             _showMainAbilityExperience = ExtractBool(json, "showMainAbilityExperience",
                 ExtractBool(json, "showCharacterPanelExperience", _showMainAbilityExperience));
             _showMainAbilityExperienceInSkillTracker = ExtractBool(json, "showMainAbilityExperienceInSkillTracker", true);
             RefreshMainAbilityExperienceTracker(_showMainAbilityExperience && _showMainAbilityExperienceInSkillTracker);
+            _modules.OneClickQuestCompletion.Load(
+                ExtractBool(json, "oneClickQuestCompletion", false));
             _equipmentComparison = ExtractBool(json, "equipmentComparison", false);
             if (!_equipmentComparison)
                 DestroyEquipmentComparisonTooltip();
@@ -574,9 +579,11 @@ public sealed partial class ElinModifierPlugin
         _showBuffSpecificValuesTextFontSizeOffset = 0;
         _showItemPanelEnchantLevels = false;
         _showItemPanelItemValue = false;
+        _showItemPanelMilkBonus = false;
         _showMainAbilityExperience = false;
         _showMainAbilityExperienceInSkillTracker = true;
         RefreshMainAbilityExperienceTracker(false);
+        _modules.OneClickQuestCompletion.Reset();
         _equipmentComparison = false;
         DestroyEquipmentComparisonTooltip();
         _workbenchIngredientReadingOptimization = false;

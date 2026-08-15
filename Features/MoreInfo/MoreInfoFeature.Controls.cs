@@ -83,6 +83,13 @@ public sealed partial class ElinModifierPlugin
             ? T("显示物品面板物品价值已开启", "Item panel item value enabled")
             : T("显示物品面板物品价值已关闭", "Item panel item value disabled");
     }
+    private void SetShowItemPanelMilkBonus(bool enabled)
+    {
+        _showItemPanelMilkBonus = enabled;
+        _log = enabled
+            ? T("显示物品面板奶的加成已开启", "Item panel milk bonus enabled")
+            : T("显示物品面板奶的加成已关闭", "Item panel milk bonus disabled");
+    }
     private void SetShowMainAbilityExperience(bool enabled)
     {
         _showMainAbilityExperience = enabled;

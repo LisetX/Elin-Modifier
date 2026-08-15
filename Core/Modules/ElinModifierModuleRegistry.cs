@@ -60,6 +60,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
             RightClickInterrupt = new RightClickInterruptModule();
             AiInstruction = new AiInstructionModule(host);
             MerchantRefreshNoCost = new MerchantRefreshNoCostModule(binder);
+            OneClickQuestCompletion = new OneClickQuestCompletionModule(host, _gameServices.Runtime, binder);
             MerchantMonsterBall = new MerchantMonsterBallModule();
             Nightly = NightlyModule.TryCreate(binder);
             MoreInfo = new MoreInfoModule(host);
@@ -131,6 +132,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
     internal RightClickInterruptModule RightClickInterrupt { get; }
     internal AiInstructionModule AiInstruction { get; }
     internal MerchantRefreshNoCostModule MerchantRefreshNoCost { get; }
+    internal OneClickQuestCompletionModule OneClickQuestCompletion { get; }
     internal MerchantMonsterBallModule MerchantMonsterBall { get; }
     internal NightlyModule? Nightly { get; }
     internal MoreInfoModule MoreInfo { get; }
@@ -170,6 +172,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         _services.Register<IGameUiAccess>(gameServices.Ui);
         _services.Register<IGameRandomService>(gameServices.Random);
         _services.Register<IGameSpawnService>(gameServices.Spawn);
+        _services.Register<IMilkBonusPreviewService>(gameServices.MilkBonusPreview);
         _services.Register<IGameMessageService>(gameServices.Messages);
     }
 
@@ -256,6 +259,8 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
             lateTick: AiInstruction.LateTick,
             shutdown: AiInstruction.Shutdown);
         Register("feature.merchant-refresh-no-cost", 1310, 0, MerchantRefreshNoCost);
+        Register("feature.one-click-quest-completion", 1315, 0, OneClickQuestCompletion,
+            shutdown: OneClickQuestCompletion.Reset);
         Register("feature.merchant-monster-ball", 1320, 0, MerchantMonsterBall);
         Register("module.more-info", 1330, 0, MoreInfo);
         Register("module.exception-trace", 1340, 0, ExceptionTrace);
