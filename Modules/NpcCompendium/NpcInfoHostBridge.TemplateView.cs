@@ -16,7 +16,8 @@ public sealed partial class ElinModifierPlugin
         float y,
         LGuiNpcTooltipView? tooltip,
         bool enableTooltip,
-        int fixedColumnCount)
+        int fixedColumnCount,
+        bool displayRandomRangeOnly = false)
     {
         if (values == null || values.Count == 0)
             return CreateLGuiNpcInfoEmptyState(content, rowPrefix + "Empty", T("无", "None"), y);
@@ -38,18 +39,7 @@ public sealed partial class ElinModifierPlugin
                 var cellWidth = cellRight - cellX;
                 var hasIcon = CreateLGuiNpcTemplateValueIcon(row, entry, cellX + 10f, 6f, 30f);
                 var label = entry.Name;
-                var formattedValue = entry.IsResistance
-                    ? FormatLGuiNpcResistance(entry.Value)
-                    : entry.IsWeight
-                        ? (entry.Value / 1000f).ToString("0.0", CultureInfo.InvariantCulture)
-                        : entry.Value.ToString(CultureInfo.InvariantCulture);
-                var randomRange = "";
-                if (entry.HasRandomRange)
-                {
-                    var maximum = FormatLGuiNpcTemplateRangeValue(entry, entry.RandomMaximum);
-                    var minimum = FormatLGuiNpcTemplateRangeValue(entry, entry.RandomMinimum);
-                    randomRange = " [" + maximum + "~" + minimum + "]";
-                }
+                var formattedValue = FormatLGuiNpcTemplateDisplayValue(entry, displayRandomRangeOnly);
                 if (entry.IsResistance)
                 {
                     if (_language == "zh")
@@ -62,7 +52,7 @@ public sealed partial class ElinModifierPlugin
                         label += " resistance";
                     }
                 }
-                var displayText = label + " : " + formattedValue + randomRange;
+                var displayText = label + " : " + formattedValue;
                 var valueText = CreateLGuiNpcInfoCell(
                     row,
                     displayText,
@@ -245,6 +235,26 @@ public sealed partial class ElinModifierPlugin
         return entry.IsWeight
             ? (value / 1000f).ToString("0.0", CultureInfo.InvariantCulture)
             : value.ToString(CultureInfo.InvariantCulture);
+    }
+
+    private string FormatLGuiNpcTemplateDisplayValue(NpcTemplateValue entry, bool displayRandomRangeOnly)
+    {
+        if (displayRandomRangeOnly && entry.HasRandomRange)
+        {
+            var minimum = FormatLGuiNpcTemplateRangeValue(entry, entry.RandomMinimum);
+            var maximum = FormatLGuiNpcTemplateRangeValue(entry, entry.RandomMaximum);
+            return entry.RandomMinimum == entry.RandomMaximum ? minimum : minimum + "~" + maximum;
+        }
+        var value = entry.IsResistance
+            ? FormatLGuiNpcResistance(entry.Value)
+            : entry.IsWeight
+                ? (entry.Value / 1000f).ToString("0.0", CultureInfo.InvariantCulture)
+                : entry.Value.ToString(CultureInfo.InvariantCulture);
+        if (!entry.HasRandomRange)
+            return value;
+        var rangeMinimum = FormatLGuiNpcTemplateRangeValue(entry, entry.RandomMinimum);
+        var rangeMaximum = FormatLGuiNpcTemplateRangeValue(entry, entry.RandomMaximum);
+        return value + " [" + rangeMinimum + "~" + rangeMaximum + "]";
     }
 
     private bool CreateLGuiNpcTemplateValueIcon(

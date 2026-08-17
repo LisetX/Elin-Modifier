@@ -201,17 +201,11 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 新增NPC图鉴\"快捷查询\"，与NPC互动(游戏默认鼠标中键)可以快速跳转至该NPC的图鉴页面",
-                        "* Added NPC Compendium \"Quick Lookup\"; interact with an NPC (middle mouse button by default) to jump directly to that NPC's compendium page."),
+                        "* \"NPC图鉴\"新增\"肢体\"信息显示",
+                        "* Added \"Body parts\" information to \"NPC Compendium\"."),
                     host.TranslateModuleText(
-                        "* \"显示物品面板奶的加成\"显示优化",
-                        "* Improved display for \"Show milk bonuses in item panel\"."),
-                    host.TranslateModuleText(
-                        "* \"敌对威胁标记\"中\"行为预测\"默认值调整为关闭",
-                        "* Changed the default value of \"Behavior prediction\" under \"Hostile threat markers\" to off."),
-                    host.TranslateModuleText(
-                        "* \"玩家信息\"优化",
-                        "* Improved \"Player Info\"."),
+                        "* \"NPC图鉴\"显示优化",
+                        "* Improved \"NPC Compendium\" display."),
                 }
             };
 

@@ -113,6 +113,10 @@ public sealed partial class ElinModifierPlugin
         });
 
         y = Math.Max(y + 10f, 334f);
+        y = AddLGuiSectionTitle(content, T("肢体", "Body parts"), y);
+        y = CreateLGuiNpcBodySlotGrid(content, analysis.Template.BodySlots, y);
+
+        y += 10f;
         y = AddLGuiSectionTitle(content, T("装备", "Equipment"), y);
         y = CreateLGuiNpcEquipmentGrid(content, analysis.Template.Equipment, y, templateTooltip);
 
@@ -141,7 +145,8 @@ public sealed partial class ElinModifierPlugin
             y,
             templateTooltip,
             true,
-            4);
+            4,
+            true);
 
         y += 10f;
         y = AddLGuiSectionTitle(content, T("技能", "Skills"), y);
@@ -152,7 +157,8 @@ public sealed partial class ElinModifierPlugin
             y,
             templateTooltip,
             true,
-            3);
+            3,
+            true);
 
         y += 10f;
         y = AddLGuiSectionTitle(content, T("专长", "Feats"), y);
@@ -163,7 +169,8 @@ public sealed partial class ElinModifierPlugin
             y,
             templateTooltip,
             true,
-            4);
+            4,
+            true);
 
         y += 10f;
         y = AddLGuiSectionTitle(content, T("法术", "Spells"), y);

@@ -48,6 +48,7 @@ internal sealed partial class NpcInfoModule
         catch
         {
         }
+        PopulateNpcBodySlots(template, result);
         if (fixedItemIds.Count == 0)
             return;
 
@@ -105,6 +106,51 @@ internal sealed partial class NpcInfoModule
                 isRanged,
                 true,
                 seen);
+        }
+    }
+
+    private static void PopulateNpcBodySlots(
+        Chara template,
+        NpcTemplateInfo result)
+    {
+        var slots = template.body?.slots;
+        if (slots == null)
+            return;
+        for (var i = 0; i < slots.Count; i++)
+        {
+            var slot = slots[i];
+            if (slot == null || slot.elementId == 0 || slot.elementId == 44)
+                continue;
+            SourceElement.Row element;
+            try { element = slot.element; }
+            catch { continue; }
+            if (element == null)
+                continue;
+            var name = "";
+            try { name = slot.name; } catch { }
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                try { name = element.GetName(); } catch { }
+            }
+            result.BodySlots.Add(new NpcBodySlotEntry
+            {
+                ElementId = slot.elementId,
+                Index = i,
+                Name = string.IsNullOrWhiteSpace(name) ? element.alias ?? slot.elementId.ToString(CultureInfo.InvariantCulture) : name,
+                Element = element
+            });
+        }
+        var duplicateGroups = result.BodySlots
+            .GroupBy(entry => entry.ElementId)
+            .Where(group => group.Count() > 1);
+        foreach (var group in duplicateGroups)
+        {
+            var partIndex = 1;
+            foreach (var entry in group)
+            {
+                entry.Name += " " + partIndex.ToString(CultureInfo.InvariantCulture);
+                partIndex++;
+            }
         }
     }
 

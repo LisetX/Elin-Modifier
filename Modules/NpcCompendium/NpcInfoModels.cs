@@ -65,6 +65,14 @@ internal sealed class NpcEquipmentEntry
     internal Thing Item = null!;
 }
 
+internal sealed class NpcBodySlotEntry
+{
+    internal int ElementId;
+    internal int Index;
+    internal string Name = "";
+    internal SourceElement.Row Element = null!;
+}
+
 internal sealed class NpcTemplateInfo
 {
     internal bool Loaded;
@@ -81,6 +89,7 @@ internal sealed class NpcTemplateInfo
     internal string Error = "";
     internal readonly Dictionary<int, NpcTemplateRandomRange> RandomRanges =
         new Dictionary<int, NpcTemplateRandomRange>();
+    internal readonly List<NpcBodySlotEntry> BodySlots = new List<NpcBodySlotEntry>();
     internal readonly List<NpcEquipmentEntry> Equipment = new List<NpcEquipmentEntry>();
     internal readonly List<NpcTemplateValue> MainAbilities = new List<NpcTemplateValue>();
     internal readonly List<NpcTemplateValue> Skills = new List<NpcTemplateValue>();

@@ -9,6 +9,71 @@ using UnityEngine.UI;
 public sealed partial class ElinModifierPlugin
 {
 
+    private float CreateLGuiNpcBodySlotGrid(
+        RectTransform content,
+        IReadOnlyList<NpcBodySlotEntry> bodySlots,
+        float y)
+    {
+        if (bodySlots == null || bodySlots.Count == 0)
+            return CreateLGuiNpcInfoEmptyState(content, "NpcBodySlotEmpty", T("无", "None"), y);
+
+        const int columnCount = 4;
+        const float rowHeight = 42f;
+        const float rowStep = 46f;
+        for (var start = 0; start < bodySlots.Count; start += columnCount)
+        {
+            var rowIndex = start / columnCount;
+            var row = CreateLGuiNpcInfoRow(content, "NpcBodySlotRow" + rowIndex, rowIndex, y, rowHeight, false);
+            for (var column = 0; column < columnCount && start + column < bodySlots.Count; column++)
+            {
+                var entry = bodySlots[start + column];
+                var cellX = Mathf.Round(1360f * column / columnCount);
+                var cellRight = Mathf.Round(1360f * (column + 1) / columnCount);
+                var cellWidth = cellRight - cellX;
+                CreateLGuiNpcBodySlotIcon(row, entry, cellX + 10f, 5f, 32f);
+                CreateLGuiNpcInfoCell(
+                    row,
+                    entry.Name,
+                    cellX + 50f,
+                    0f,
+                    cellWidth - 60f,
+                    rowHeight,
+                    TextAnchor.MiddleLeft,
+                    14);
+            }
+            y += rowStep;
+        }
+        return y;
+    }
+
+    private bool CreateLGuiNpcBodySlotIcon(
+        RectTransform row,
+        NpcBodySlotEntry entry,
+        float x,
+        float y,
+        float size)
+    {
+        try
+        {
+            var iconRect = CreateLGuiRect(row, "NpcBodySlotIcon" + entry.Index);
+            PlaceLGuiRect(iconRect, x, y, size, size);
+            var image = iconRect.gameObject.AddComponent<Image>();
+            image.preserveAspect = true;
+            image.raycastTarget = false;
+            image.color = Color.white;
+            image.sprite = SpriteSheet.Get("Media/Graphics/Icon/Element/", "eq_" + entry.Element.alias);
+            if (image.sprite == null)
+                image.sprite = entry.Element.GetSprite();
+            var hasSprite = image.sprite != null;
+            image.gameObject.SetActive(hasSprite);
+            return hasSprite;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     private float CreateLGuiNpcEquipmentGrid(
         RectTransform content,
         IReadOnlyList<NpcEquipmentEntry> equipment,
