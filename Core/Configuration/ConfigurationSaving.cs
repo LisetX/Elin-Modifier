@@ -183,6 +183,9 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"cropHarvestMultiplier\": " + _modules.PlantHarvestMultiplier.CropHarvestMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
             sb.AppendLine("  \"seedReapingMultiplier\": " + _modules.PlantHarvestMultiplier.SeedReapingMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
             sb.AppendLine("  \"ignoreCropGrowthConditions\": " + (_modules.IgnoreCropGrowthConditions.Enabled ? "true" : "false") + ",");
+            sb.AppendLine("  \"allFeatsLearnable\": " + (_modules.AllFeatsLearnable.Enabled ? "true" : "false") + ",");
+            sb.AppendLine("  \"characterPanelGenes\": " + (_modules.CharacterPanelGenes.Enabled ? "true" : "false") + ",");
+            sb.AppendLine("  \"allowPcGeneImplant\": " + (_modules.AllowPcGeneImplant.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"foodRestoresSpEnabled\": " + (_modules.Progression.FoodRestoresSpEnabled ? "true" : "false") + ",");
             sb.AppendLine("  \"foodRestoresSpPercent\": " + Clamp(_modules.Progression.FoodRestoresSpPercent, 1, 100).ToString(CultureInfo.InvariantCulture) + ",");
             sb.AppendLine("  \"dismantleAlwaysReturnsMaterials\": " + (_modules.GuaranteedGatheringRewards.DismantleAlwaysReturnsMaterials ? "true" : "false") + ",");

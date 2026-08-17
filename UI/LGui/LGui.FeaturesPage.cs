@@ -61,6 +61,9 @@ public sealed partial class ElinModifierPlugin
         AddLGuiFeature(LGuiFeatureId.ExperienceMultiplier, T("经验倍率修改", "Experience multiplier modifier"));
         AddLGuiFeature(LGuiFeatureId.PlantHarvestMultiplier, T("种植收获倍率", "Plant harvest multiplier"));
         AddLGuiFeature(LGuiFeatureId.IgnoreCropGrowthConditions, T("无视作物生长条件", "Ignore crop growth conditions"));
+        AddLGuiFeature(LGuiFeatureId.AllFeatsLearnable, T("全部专长可学习", "All feats learnable"));
+        AddLGuiFeature(LGuiFeatureId.CharacterPanelGenes, T("人物面板显示基因", "Show genes in character panel"));
+        AddLGuiFeature(LGuiFeatureId.AllowPcGeneImplant, T("允许PC植入基因", "Allow PC gene implantation"));
         AddLGuiFeature(LGuiFeatureId.FoodRestoresSp, T("食用食物恢复SP", "Restore SP by eating food"));
         AddLGuiFeature(LGuiFeatureId.DismantleAlwaysReturnsMaterials, T("分解必返还材料", "Dismantling always returns materials"));
         AddLGuiFeature(LGuiFeatureId.DismantlingAlwaysLearnsRecipe, T("分解物品必获配方", "Always learn dismantled-item recipes"));

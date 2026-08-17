@@ -31,6 +31,9 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.ExperienceMultiplier: return _modules.Progression.ExperienceMultiplierEnabled;
             case LGuiFeatureId.PlantHarvestMultiplier: return _modules.PlantHarvestMultiplier.Enabled;
             case LGuiFeatureId.IgnoreCropGrowthConditions: return _modules.IgnoreCropGrowthConditions.Enabled;
+            case LGuiFeatureId.AllFeatsLearnable: return _modules.AllFeatsLearnable.Enabled;
+            case LGuiFeatureId.CharacterPanelGenes: return _modules.CharacterPanelGenes.Enabled;
+            case LGuiFeatureId.AllowPcGeneImplant: return _modules.AllowPcGeneImplant.Enabled;
             case LGuiFeatureId.FoodRestoresSp: return _modules.Progression.FoodRestoresSpEnabled;
             case LGuiFeatureId.DismantleAlwaysReturnsMaterials: return _modules.GuaranteedGatheringRewards.DismantleAlwaysReturnsMaterials;
             case LGuiFeatureId.DismantlingAlwaysLearnsRecipe: return _modules.GuaranteedGatheringRewards.DismantlingAlwaysLearnsRecipe;
@@ -612,6 +615,9 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.ExperienceMultiplier: SetExperienceMultiplierEnabled(value); break;
             case LGuiFeatureId.PlantHarvestMultiplier: SetPlantHarvestMultiplierEnabled(value); break;
             case LGuiFeatureId.IgnoreCropGrowthConditions: SetIgnoreCropGrowthConditions(value); break;
+            case LGuiFeatureId.AllFeatsLearnable: SetAllFeatsLearnable(value); break;
+            case LGuiFeatureId.CharacterPanelGenes: SetCharacterPanelGenes(value); break;
+            case LGuiFeatureId.AllowPcGeneImplant: SetAllowPcGeneImplant(value); break;
             case LGuiFeatureId.FoodRestoresSp: SetFoodRestoresSpEnabled(value); break;
             case LGuiFeatureId.DismantleAlwaysReturnsMaterials: SetDismantleAlwaysReturnsMaterials(value); break;
             case LGuiFeatureId.DismantlingAlwaysLearnsRecipe: SetDismantlingAlwaysLearnsRecipe(value); break;

@@ -119,6 +119,15 @@ public sealed partial class ElinModifierPlugin
             case "ignore_crop_growth_conditions":
             case "ignorecropgrowthconditions":
             case "无视作物生长条件": SetIgnoreCropGrowthConditions(enabled); break;
+            case "all_feats_learnable":
+            case "allfeatslearnable":
+            case "全部专长可学习": SetAllFeatsLearnable(enabled); break;
+            case "character_panel_genes":
+            case "characterpanelgenes":
+            case "人物面板显示基因": SetCharacterPanelGenes(enabled); break;
+            case "allow_pc_gene_implant":
+            case "allowpcgeneimplant":
+            case "允许pc植入基因": SetAllowPcGeneImplant(enabled); break;
             case "experience_multiplier_include_pc_faction":
             case "experience_multiplier_include_allies":
             case "是否对队友生效": SetExperienceMultiplierIncludePcFaction(enabled); break;

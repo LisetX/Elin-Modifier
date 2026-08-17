@@ -50,6 +50,15 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
             Progression = new ProgressionModule();
             PlantHarvestMultiplier = new PlantHarvestMultiplierModule();
             IgnoreCropGrowthConditions = new IgnoreCropGrowthConditionsModule();
+            AllFeatsLearnable = new AllFeatsLearnableModule(
+                host,
+                _gameServices.Sources,
+                _gameServices.Characters,
+                binder);
+            CharacterPanelGenes = new CharacterPanelGenesModule(binder);
+            AllowPcGeneImplant = new AllowPcGeneImplantModule(
+                _gameServices.Characters,
+                binder);
             GuaranteedGatheringRewards = new GuaranteedGatheringRewardsModule();
             SpecialNpcHatch = new SpecialNpcHatchModule();
             SpecialNpcCapture = new SpecialNpcCaptureModule();
@@ -122,6 +131,9 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
     internal ProgressionModule Progression { get; }
     internal PlantHarvestMultiplierModule PlantHarvestMultiplier { get; }
     internal IgnoreCropGrowthConditionsModule IgnoreCropGrowthConditions { get; }
+    internal AllFeatsLearnableModule AllFeatsLearnable { get; }
+    internal CharacterPanelGenesModule CharacterPanelGenes { get; }
+    internal AllowPcGeneImplantModule AllowPcGeneImplant { get; }
     internal GuaranteedGatheringRewardsModule GuaranteedGatheringRewards { get; }
     internal SpecialNpcHatchModule SpecialNpcHatch { get; }
     internal SpecialNpcCaptureModule SpecialNpcCapture { get; }
@@ -244,6 +256,9 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         Register("feature.progression", 1210, 0, Progression);
         Register("feature.plant-harvest-multiplier", 1220, 0, PlantHarvestMultiplier);
         Register("feature.ignore-crop-growth-conditions", 1230, 0, IgnoreCropGrowthConditions);
+        Register("feature.all-feats-learnable", 1233, 0, AllFeatsLearnable);
+        Register("feature.character-panel-genes", 1235, 0, CharacterPanelGenes);
+        Register("feature.allow-pc-gene-implant", 1236, 0, AllowPcGeneImplant);
         Register("feature.guaranteed-gathering-rewards", 1240, 0, GuaranteedGatheringRewards);
         Register("feature.special-npc-hatch", 1250, 0, SpecialNpcHatch);
         Register("feature.special-npc-capture", 1260, 0, SpecialNpcCapture);

@@ -48,6 +48,30 @@ public sealed partial class ElinModifierPlugin
             ? T("无视作物生长条件已开启", "Ignore crop growth conditions enabled")
             : T("无视作物生长条件已关闭", "Ignore crop growth conditions disabled");
     }
+    private void SetAllFeatsLearnable(bool enabled)
+    {
+        if (!_modules.AllFeatsLearnable.SetEnabled(enabled))
+            return;
+        _log = enabled
+            ? T("全部专长可学习已开启", "All feats learnable enabled")
+            : T("全部专长可学习已关闭", "All feats learnable disabled");
+    }
+    private void SetCharacterPanelGenes(bool enabled)
+    {
+        if (!_modules.CharacterPanelGenes.SetEnabled(enabled))
+            return;
+        _log = enabled
+            ? T("人物面板显示基因已开启", "Character panel gene display enabled")
+            : T("人物面板显示基因已关闭", "Character panel gene display disabled");
+    }
+    private void SetAllowPcGeneImplant(bool enabled)
+    {
+        if (!_modules.AllowPcGeneImplant.SetEnabled(enabled))
+            return;
+        _log = enabled
+            ? T("允许PC植入基因已开启", "PC gene implantation enabled")
+            : T("允许PC植入基因已关闭", "PC gene implantation disabled");
+    }
     private bool TryApplyPlantHarvestMultiplierSettings(out string status)
     {
         if (!_modules.PlantHarvestMultiplier.TryApplyMultiplierTextFields())

@@ -122,6 +122,8 @@ public sealed partial class ElinModifierPlugin
                                       !HasJsonValue(json, "cropHarvestMultiplier") ||
                                       !HasJsonValue(json, "seedReapingMultiplier") ||
                                       !HasJsonValue(json, "ignoreCropGrowthConditions") ||
+                                      !HasJsonValue(json, "allFeatsLearnable") ||
+                                      !HasJsonValue(json, "characterPanelGenes") ||
                                       !HasJsonValue(json, "foodRestoresSpEnabled") ||
                                       !HasJsonValue(json, "foodRestoresSpPercent") ||
                                       !HasJsonValue(json, "optimizeMeleeHitChance") ||
@@ -344,6 +346,12 @@ public sealed partial class ElinModifierPlugin
                 ExtractFloat(json, "seedReapingMultiplier", 1f));
             _modules.IgnoreCropGrowthConditions.Load(
                 ExtractBool(json, "ignoreCropGrowthConditions", false));
+            _modules.AllFeatsLearnable.Load(
+                ExtractBool(json, "allFeatsLearnable", false));
+            _modules.CharacterPanelGenes.Load(
+                ExtractBool(json, "characterPanelGenes", false));
+            _modules.AllowPcGeneImplant.Load(
+                ExtractBool(json, "allowPcGeneImplant", false));
             _modules.Progression.FoodRestoresSpEnabled = ExtractBool(json, "foodRestoresSpEnabled", false);
             _modules.Progression.FoodRestoresSpPercent = Clamp(ExtractInt(json, "foodRestoresSpPercent", 10), 1, 100);
             _modules.GuaranteedGatheringRewards.Load(
@@ -602,6 +610,9 @@ public sealed partial class ElinModifierPlugin
         SyncExperienceMultiplierTextFields();
         _modules.PlantHarvestMultiplier.Reset();
         _modules.IgnoreCropGrowthConditions.Reset();
+        _modules.AllFeatsLearnable.Reset();
+        _modules.CharacterPanelGenes.Reset();
+        _modules.AllowPcGeneImplant.Reset();
         _modules.Progression.FoodRestoresSpEnabled = false;
         _modules.Progression.FoodRestoresSpPercent = 10;
         _modules.GuaranteedGatheringRewards.Reset();
