@@ -58,7 +58,8 @@ public sealed partial class ElinModifierPlugin
         y = AddLGuiBoundInput(content, T("父亲修饰ID", "Father prefix ID"), () => _playerInfoDadAdvId, value => _playerInfoDadAdvId = value, y, 180f);
         y = AddLGuiBoundInput(content, T("母亲类型ID", "Mother type ID"), () => _playerInfoMomId, value => _playerInfoMomId = value, y, 180f);
         y = AddLGuiBoundInput(content, T("母亲修饰ID", "Mother prefix ID"), () => _playerInfoMomAdvId, value => _playerInfoMomAdvId = value, y, 180f);
-        y = AddLGuiBoundInput(content, T("喜欢物品ID", "Liked item ID"), () => _playerInfoLikeId, value => _playerInfoLikeId = value, y);
+        y = AddLGuiBoundInput(content, T("喜欢类别ID", "Favorite category ID"), () => _playerInfoLikeCategoryId, value => _playerInfoLikeCategoryId = value, y);
+        y = AddLGuiBoundInput(content, T("喜欢食物ID", "Favorite food ID"), () => _playerInfoLikeFoodId, value => _playerInfoLikeFoodId = value, y);
 
         y = AddLGuiSectionTitle(content, T("列表ID", "ID Lists"), y + 8f);
         y = AddLGuiBoundInput(content, T("专业领域ID", "Domain IDs"), () => _playerInfoDomains, value => _playerInfoDomains = value, y, 720f);

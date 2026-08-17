@@ -63,6 +63,7 @@ public sealed partial class ElinModifierPlugin
         var lowPerformance = json.IndexOf("\"lowPerformanceMode\"", StringComparison.Ordinal);
         var npcMain = json.IndexOf("\"showNpcMoreInfo\"", StringComparison.Ordinal);
         var npcLast = json.IndexOf("\"npcMoreInfoBuffColor\"", StringComparison.Ordinal);
+        var npcCompendiumQuickLookup = json.IndexOf("\"npcCompendiumQuickLookup\"", StringComparison.Ordinal);
         var itemMain = json.IndexOf("\"showItemMoreInfo\"", StringComparison.Ordinal);
         var itemLast = json.IndexOf("\"itemMoreInfoPlantStatsColor\"", StringComparison.Ordinal);
         var buffDetails = json.IndexOf("\"showBuffSpecificValues\"", StringComparison.Ordinal);
@@ -129,7 +130,8 @@ public sealed partial class ElinModifierPlugin
                language < lowPerformance &&
                lowPerformance < npcMain &&
                npcMain < npcLast &&
-               npcLast < itemMain &&
+               npcLast < npcCompendiumQuickLookup &&
+               npcCompendiumQuickLookup < itemMain &&
                itemMain < itemLast &&
                itemLast < buffDetails &&
                buffDetails < itemPanelValue &&

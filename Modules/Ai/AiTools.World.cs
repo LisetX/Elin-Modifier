@@ -404,7 +404,9 @@ public sealed partial class ElinModifierPlugin
         ApplyAiOptionalInt(args, "father_prefix_id", value => _playerInfoDadAdvId = value.ToString(CultureInfo.InvariantCulture));
         ApplyAiOptionalInt(args, "mother_type_id", value => _playerInfoMomId = value.ToString(CultureInfo.InvariantCulture));
         ApplyAiOptionalInt(args, "mother_prefix_id", value => _playerInfoMomAdvId = value.ToString(CultureInfo.InvariantCulture));
-        ApplyAiOptionalString(args, "liked_item_id", value => _playerInfoLikeId = value);
+        ApplyAiOptionalString(args, "liked_category_id", value => _playerInfoLikeCategoryId = value);
+        ApplyAiOptionalString(args, "liked_food_id", value => _playerInfoLikeFoodId = value);
+        ApplyAiOptionalString(args, "liked_item_id", value => _playerInfoLikeFoodId = value);
         ApplyAiOptionalString(args, "domain_ids", value => _playerInfoDomains = value);
         ApplyAiOptionalString(args, "hobby_ids", value => _playerInfoHobbies = value);
         ApplyAiOptionalString(args, "work_ids", value => _playerInfoWorks = value);

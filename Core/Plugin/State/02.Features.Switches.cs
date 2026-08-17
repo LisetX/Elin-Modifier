@@ -37,7 +37,7 @@ public sealed partial class ElinModifierPlugin
     private int _originalVSyncCount;
     private int _originalTargetFrameRate;
     private bool _hostileThreatMarker;
-    private bool _hostileThreatBehaviorPrediction = true;
+    private bool _hostileThreatBehaviorPrediction;
     private bool _hostileThreatPredecisionLock;
     private bool _showNpcMoreInfo;
     private bool _showItemMoreInfo;

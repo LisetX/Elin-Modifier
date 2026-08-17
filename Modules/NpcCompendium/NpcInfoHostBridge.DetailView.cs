@@ -9,12 +9,27 @@ using UnityEngine.UI;
 public sealed partial class ElinModifierPlugin
 {
 
+    internal bool OpenLGuiNpcInformationFromInteraction(string npcId)
+    {
+        if (!IsLGuiInitialized() || !_modules.NpcInfo.HasNpc(npcId))
+            return false;
+
+        _modules.NpcInfo.ShowCurrentZone = false;
+        var alreadyOnNpcInfoPage = _lGuiPage == LGuiPage.NpcInfo;
+        ShowLGui();
+        if (!alreadyOnNpcInfoPage)
+            SwitchLGuiPage(LGuiPage.NpcInfo);
+        OpenLGuiNpcInformation(npcId, restoreMainOnClose: false);
+        return true;
+    }
+
     private void OpenLGuiNpcInformation(
         string npcId,
         int additionalLevel = 0,
         int startingDangerLevel = 1,
         NpcTemplateInfo? templateOverride = null,
-        float? restoredScrollPosition = null)
+        float? restoredScrollPosition = null,
+        bool restoreMainOnClose = true)
     {
         additionalLevel = Math.Max(0, additionalLevel);
         startingDangerLevel = Math.Max(1, startingDangerLevel);
@@ -41,7 +56,7 @@ public sealed partial class ElinModifierPlugin
             if (title != null)
                 PlaceLGuiRect(title, 78f, 14f, 1486f, 48f);
         }
-        _lGuiModalRestoreMainOnClose = true;
+        _lGuiModalRestoreMainOnClose = restoreMainOnClose;
         var templateTooltip = CreateLGuiNpcTemplateTooltip(modal);
         var y = 6f;
 
@@ -93,7 +108,8 @@ public sealed partial class ElinModifierPlugin
                 nextAdditionalLevel,
                 startingDangerLevel,
                 null,
-                scrollPosition);
+                scrollPosition,
+                restoreMainOnClose);
         });
 
         y = Math.Max(y + 10f, 334f);
@@ -205,7 +221,8 @@ public sealed partial class ElinModifierPlugin
                 additionalLevel,
                 nextStartingDangerLevel,
                 analysis.Template,
-                scrollPosition);
+                scrollPosition,
+                restoreMainOnClose);
         });
         if (analysis.Locations.Count == 0)
         {

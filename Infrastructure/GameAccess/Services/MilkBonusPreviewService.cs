@@ -112,8 +112,12 @@ internal sealed class MilkBonusPreviewService : IMilkBonusPreviewService
         if (sourceElements == null)
             return;
 
+        var orderedElements = new List<Element>(sourceElements);
+        orderedElements.Sort((left, right) =>
+            GetInt(_elementValueWithoutLink, right).CompareTo(GetInt(_elementValueWithoutLink, left)));
+
         var divisor = 100;
-        foreach (var sourceElement in sourceElements)
+        foreach (var sourceElement in orderedElements)
         {
             AppendBonus(result, sourceElement, divisor);
             divisor += 50;

@@ -48,6 +48,14 @@ public sealed partial class ElinModifierPlugin
                 module.ZonePage = 0;
                 SwitchLGuiPage(LGuiPage.NpcInfo);
             });
+        var quickLookup = CreateLGuiToggle(content, "NpcInfoQuickLookup", 388f, y, 260f, 46f, out var quickLookupLabel);
+        quickLookupLabel.text = T("快捷查询", "Quick lookup");
+        quickLookup.isOn = module.QuickLookupEnabled;
+        quickLookup.onValueChanged.AddListener(value =>
+        {
+            module.LoadQuickLookup(value);
+            SaveConfig(false);
+        });
         CreateLGuiButton(
             content,
             "RefreshNpcInformation",

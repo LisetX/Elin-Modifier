@@ -25,12 +25,22 @@ using UnityEngine;
 
 public sealed partial class ElinModifierPlugin
 {
+    [HarmonyPatch(typeof(Chara), "GetFavCat")]
+    private static class CharaGetFavCatPlayerInfoPatch
+    {
+        private static void Postfix(Chara __instance, ref SourceCategory.Row __result)
+        {
+            if (TryGetPlayerLikedCategoryOverride(__instance, out var overrideRow) && overrideRow != null)
+                __result = overrideRow;
+        }
+    }
+
     [HarmonyPatch(typeof(Chara), "GetFavFood")]
     private static class CharaGetFavFoodPlayerInfoPatch
     {
         private static void Postfix(Chara __instance, ref SourceThing.Row __result)
         {
-            if (TryGetPlayerLikedItemOverride(__instance, out var overrideRow) && overrideRow != null)
+            if (TryGetPlayerLikedFoodOverride(__instance, out var overrideRow) && overrideRow != null)
                 __result = overrideRow;
         }
     }

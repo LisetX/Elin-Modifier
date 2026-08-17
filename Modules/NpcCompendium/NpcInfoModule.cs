@@ -36,7 +36,24 @@ internal sealed partial class NpcInfoModule
     internal int NpcPage { get; set; }
     internal int ZonePage { get; set; }
     internal bool ShowCurrentZone { get; set; }
+    internal bool QuickLookupEnabled { get; private set; } = true;
     internal string Log { get; private set; } = "";
+
+    internal void LoadQuickLookup(bool enabled)
+    {
+        QuickLookupEnabled = enabled;
+    }
+
+    internal void ResetQuickLookup()
+    {
+        QuickLookupEnabled = true;
+    }
+
+    internal bool HasNpc(string id)
+    {
+        EnsureData();
+        return !string.IsNullOrWhiteSpace(id) && _npcById.ContainsKey(id);
+    }
 
     internal IReadOnlyList<NpcRecord> GetFilteredNpcs()
     {

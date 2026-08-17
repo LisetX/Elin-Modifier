@@ -211,6 +211,7 @@ public sealed partial class ElinModifierPlugin
                                       !HasJsonValue(json, "npcMoreInfoResistColor") ||
                                       !HasJsonValue(json, "npcMoreInfoAttributeColor") ||
                                       !HasJsonValue(json, "npcMoreInfoBuffColor") ||
+                                      !HasJsonValue(json, "npcCompendiumQuickLookup") ||
                                       !HasJsonValue(json, "infinitePlayerSight") ||
                                       !HasJsonValue(json, "showFoodRot") ||
                                       !HasJsonValue(json, "ignoreFoodDecay") ||
@@ -300,7 +301,7 @@ public sealed partial class ElinModifierPlugin
             _ignoreBuffEffectsBuff = ExtractBool(json, "ignoreBuffEffectsBuff", _ignoreBuffEffectsBuff);
             _ignoreBuffEffectsIncludeParty = ExtractBool(json, "ignoreBuffEffectsIncludeParty", _ignoreBuffEffectsIncludeParty);
             _hostileThreatMarker = ExtractBool(json, "hostileThreatMarker", _hostileThreatMarker);
-            _hostileThreatBehaviorPrediction = ExtractBool(json, "hostileThreatBehaviorPrediction", true);
+            _hostileThreatBehaviorPrediction = ExtractBool(json, "hostileThreatBehaviorPrediction", false);
             _hostileThreatPredecisionLock = ExtractBool(json, "hostileThreatPredecisionLock", false);
             if (!_hostileThreatMarker || !_hostileThreatBehaviorPrediction || !_hostileThreatPredecisionLock)
                 _modules.ThreatOverlay.ClearLockedDecisions();
@@ -468,6 +469,7 @@ public sealed partial class ElinModifierPlugin
             _npcMoreInfoResistColor = NormalizeHoverInfoColor(ExtractString(json, "npcMoreInfoResistColor", DefaultNpcMoreInfoResistColor), DefaultNpcMoreInfoResistColor);
             _npcMoreInfoAttributeColor = NormalizeHoverInfoColor(ExtractString(json, "npcMoreInfoAttributeColor", DefaultNpcMoreInfoAttributeColor), DefaultNpcMoreInfoAttributeColor);
             _npcMoreInfoBuffColor = NormalizeHoverInfoColor(ExtractString(json, "npcMoreInfoBuffColor", DefaultNpcMoreInfoBuffColor), DefaultNpcMoreInfoBuffColor);
+            _modules.NpcInfo.LoadQuickLookup(ExtractBool(json, "npcCompendiumQuickLookup", true));
             SyncNpcMoreInfoColorInputs();
             SyncItemMoreInfoColorInputs();
             InvalidateNpcMoreInfoCaches();
@@ -569,7 +571,7 @@ public sealed partial class ElinModifierPlugin
         _ignoreBuffEffectsIncludeParty = false;
         _ignoreBuffEffectsTrackedPartyMembers.Clear();
         _hostileThreatMarker = false;
-        _hostileThreatBehaviorPrediction = true;
+        _hostileThreatBehaviorPrediction = false;
         _hostileThreatPredecisionLock = false;
         _modules.ThreatOverlay.ClearLockedDecisions();
         _showNpcMoreInfo = false;
@@ -683,6 +685,7 @@ public sealed partial class ElinModifierPlugin
         _showNpcMoreInfoFeatsExtraFontSize = 0;
         _showNpcMoreInfoCombatExtraFontSize = 0;
         ResetNpcMoreInfoColors(false);
+        _modules.NpcInfo.ResetQuickLookup();
         _infinitePlayerSight = false;
         _showFoodRot = false;
         _ignoreFoodDecay = false;

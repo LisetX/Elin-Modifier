@@ -47,7 +47,8 @@ public sealed partial class ElinModifierPlugin
     private string _playerInfoDadAdvId = "";
     private string _playerInfoMomId = "";
     private string _playerInfoMomAdvId = "";
-    private string _playerInfoLikeId = "";
+    private string _playerInfoLikeCategoryId = "";
+    private string _playerInfoLikeFoodId = "";
     private string _playerInfoDomains = "";
     private string _playerInfoHobbies = "";
     private string _playerInfoWorks = "";

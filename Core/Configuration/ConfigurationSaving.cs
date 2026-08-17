@@ -137,6 +137,7 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"npcMoreInfoResistColor\": \"" + EscapeJson(_npcMoreInfoResistColor) + "\",");
             sb.AppendLine("  \"npcMoreInfoAttributeColor\": \"" + EscapeJson(_npcMoreInfoAttributeColor) + "\",");
             sb.AppendLine("  \"npcMoreInfoBuffColor\": \"" + EscapeJson(_npcMoreInfoBuffColor) + "\",");
+            sb.AppendLine("  \"npcCompendiumQuickLookup\": " + (_modules.NpcInfo.QuickLookupEnabled ? "true" : "false") + ",");
             sb.AppendLine();
 
             sb.AppendLine("  \"showItemMoreInfo\": " + (_showItemMoreInfo ? "true" : "false") + ",");

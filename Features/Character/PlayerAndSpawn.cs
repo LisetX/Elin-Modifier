@@ -60,7 +60,8 @@ public sealed partial class ElinModifierPlugin
             _playerInfoDadAdvId = bio.idAdvDad.ToString(CultureInfo.InvariantCulture);
             _playerInfoMomId = bio.idMom.ToString(CultureInfo.InvariantCulture);
             _playerInfoMomAdvId = bio.idAdvMom.ToString(CultureInfo.InvariantCulture);
-            _playerInfoLikeId = pc.GetFavFood()?.id ?? bio.idLike ?? "";
+            _playerInfoLikeCategoryId = pc.GetFavCat()?.id ?? "";
+            _playerInfoLikeFoodId = pc.GetFavFood()?.id ?? "";
             _playerInfoDomains = JoinIntList(player.domains);
             _playerInfoHobbies = JoinIntList(GetCharaIntList(pc, "_hobbies"));
             _playerInfoWorks = JoinIntList(GetCharaIntList(pc, "_works"));
@@ -116,7 +117,8 @@ public sealed partial class ElinModifierPlugin
         ApplyPlayerInfoInt(T("母亲类型ID", "Mother type ID"), _playerInfoMomId, errors, value => bio.idMom = value);
         ApplyPlayerInfoInt(T("母亲修饰ID", "Mother prefix ID"), _playerInfoMomAdvId, errors, value => bio.idAdvMom = value);
 
-        TryApplyPlayerInfo(T("喜欢物品ID", "Liked item ID"), () => SetPlayerLikedItemId(pc, bio, _playerInfoLikeId), errors);
+        TryApplyPlayerInfo(T("喜欢类别ID", "Favorite category ID"), () => SetPlayerLikedCategoryId(pc, bio, _playerInfoLikeCategoryId), errors);
+        TryApplyPlayerInfo(T("喜欢食物ID", "Favorite food ID"), () => SetPlayerLikedFoodId(pc, bio, _playerInfoLikeFoodId), errors);
         TryApplyPlayerInfo(T("所属势力ID", "Faction ID"), () => pc.idFaction = (_playerInfoFactionId ?? "").Trim(), errors);
         TryApplyPlayerInfo(T("信仰ID", "Faith ID"), () =>
         {
@@ -174,7 +176,7 @@ public sealed partial class ElinModifierPlugin
         return pc.bio;
     }
 
-    private static void SetPlayerLikedItemId(Chara pc, Biography bio, string? value)
+    private static void SetPlayerLikedFoodId(Chara pc, Biography bio, string? value)
     {
         var id = (value ?? "").Trim();
         if (string.IsNullOrEmpty(id))
@@ -195,14 +197,43 @@ public sealed partial class ElinModifierPlugin
             Array.Resize(ref old, 3);
             bio.strs = old;
         }
-        bio.strs[1] = PlayerLikedItemOverridePrefix + id;
+        bio.strs[1] = PlayerLikedFoodOverridePrefix + id;
         if (!string.Equals(pc.bio?.idLike, id, StringComparison.Ordinal))
-            throw new InvalidOperationException("喜欢物品ID写入后未保留");
+            throw new InvalidOperationException("喜欢食物ID写入后未保留");
     }
 
-    private const string PlayerLikedItemOverridePrefix = "ElinModifierLikedItem:";
+    private static void SetPlayerLikedCategoryId(Chara pc, Biography bio, string? value)
+    {
+        var id = (value ?? "").Trim();
+        if (string.IsNullOrEmpty(id))
+        {
+            if (bio.strs != null && bio.strs.Length > 2)
+                bio.strs[2] = "";
+            return;
+        }
 
-    private static bool TryGetPlayerLikedItemOverride(Chara chara, out SourceThing.Row? row)
+        var categories = GameAccess.Sources.Categories?.map;
+        if (categories == null || !categories.ContainsKey(id))
+            throw new ArgumentException("未找到类别ID: " + id);
+        EnsureBiographyStringCapacity(bio);
+        bio.strs[2] = PlayerLikedCategoryOverridePrefix + id;
+        if (!TryGetPlayerLikedCategoryOverride(pc, out var row) || row == null || !string.Equals(row.id, id, StringComparison.Ordinal))
+            throw new InvalidOperationException("喜欢类别ID写入后未保留");
+    }
+
+    private static void EnsureBiographyStringCapacity(Biography bio)
+    {
+        if (bio.strs != null && bio.strs.Length >= 3)
+            return;
+        var old = bio.strs ?? Array.Empty<string>();
+        Array.Resize(ref old, 3);
+        bio.strs = old;
+    }
+
+    private const string PlayerLikedFoodOverridePrefix = "ElinModifierLikedItem:";
+    private const string PlayerLikedCategoryOverridePrefix = "ElinModifierLikedCategory:";
+
+    private static bool TryGetPlayerLikedFoodOverride(Chara chara, out SourceThing.Row? row)
     {
         row = null;
         try
@@ -211,10 +242,32 @@ public sealed partial class ElinModifierPlugin
                 return false;
             var strs = chara.bio?.strs;
             if (strs == null || strs.Length < 2 || string.IsNullOrEmpty(strs[1]) ||
-                !strs[1].StartsWith(PlayerLikedItemOverridePrefix, StringComparison.Ordinal))
+                !strs[1].StartsWith(PlayerLikedFoodOverridePrefix, StringComparison.Ordinal))
                 return false;
-            var id = strs[1].Substring(PlayerLikedItemOverridePrefix.Length);
+            var id = strs[1].Substring(PlayerLikedFoodOverridePrefix.Length);
             return !string.IsNullOrEmpty(id) && GameAccess.Sources.Things.map.TryGetValue(id, out row);
+        }
+        catch
+        {
+            row = null;
+            return false;
+        }
+    }
+
+    private static bool TryGetPlayerLikedCategoryOverride(Chara chara, out SourceCategory.Row? row)
+    {
+        row = null;
+        try
+        {
+            if (chara == null || !chara.IsPC)
+                return false;
+            var strs = chara.bio?.strs;
+            if (strs == null || strs.Length < 3 || string.IsNullOrEmpty(strs[2]) ||
+                !strs[2].StartsWith(PlayerLikedCategoryOverridePrefix, StringComparison.Ordinal))
+                return false;
+            var id = strs[2].Substring(PlayerLikedCategoryOverridePrefix.Length);
+            var categories = GameAccess.Sources.Categories?.map;
+            return !string.IsNullOrEmpty(id) && categories != null && categories.TryGetValue(id, out row);
         }
         catch
         {

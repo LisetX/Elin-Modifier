@@ -551,7 +551,7 @@ public sealed partial class ElinModifierPlugin
                     "name", "alias", "honorific", "race_id", "job_id", "faith_id", "faction_id",
                     "gender", "age", "height_cm", "weight_kg", "birth_year", "birth_month", "birth_day",
                     "home_word_id", "location_word_id", "father_type_id", "father_prefix_id",
-                    "mother_type_id", "mother_prefix_id", "liked_item_id",
+                    "mother_type_id", "mother_prefix_id", "liked_category_id", "liked_food_id", "liked_item_id",
                     "domain_ids", "hobby_ids", "work_ids", "background_text"
                 };
             default:

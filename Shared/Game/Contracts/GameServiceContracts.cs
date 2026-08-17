@@ -69,6 +69,7 @@ internal interface ICharacterGameAccess
 {
     Chara? PlayerCharacter { get; }
     ElementContainer? PlayerElements { get; }
+    string? GetId(Card card);
     ElementContainer? GetElements(Card card);
     string? GetName(Card card, NameStyle style, int article);
     int GetElementValue(Card card, int elementId);

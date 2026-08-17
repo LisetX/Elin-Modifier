@@ -3,6 +3,7 @@ using System;
 internal sealed class CharacterGameAccess : ICharacterGameAccess
 {
     private readonly IBoundGameValue<Chara> _playerCharacter;
+    private readonly IBoundGameValue<string> _id;
     private readonly IBoundGameValue<ElementContainerCard> _elements;
     private readonly IBoundGameMethod _getName;
     private readonly IBoundGameMethod _getElementValue;
@@ -14,6 +15,7 @@ internal sealed class CharacterGameAccess : ICharacterGameAccess
             throw new ArgumentNullException("binder");
 
         _playerCharacter = binder.BindStaticValue<Chara>(typeof(EClass), GameValueAccess.Read, "pc");
+        _id = binder.BindInstanceValue<string>(typeof(Card), GameValueAccess.Read, "id");
         _elements = binder.BindInstanceValue<ElementContainerCard>(typeof(Card), GameValueAccess.Read, "elements");
         _getName = binder.BindInstanceMethod(
             typeof(Card),
@@ -40,6 +42,11 @@ internal sealed class CharacterGameAccess : ICharacterGameAccess
             var playerCharacter = PlayerCharacter;
             return playerCharacter == null ? null : GetElements(playerCharacter);
         }
+    }
+
+    public string? GetId(Card card)
+    {
+        return GameAccessServiceHelpers.GetReference(_id, card);
     }
 
     public ElementContainer? GetElements(Card card)
