@@ -88,7 +88,9 @@ public sealed partial class ElinModifierPlugin
                id == LGuiFeatureId.ShowBuffSpecificValues || id == LGuiFeatureId.ShowMainAbilityExperience ||
                id == LGuiFeatureId.ExperienceMultiplier ||
                id == LGuiFeatureId.PlantHarvestMultiplier ||
-               id == LGuiFeatureId.FoodRestoresSp || id == LGuiFeatureId.OptimizeMeleeHitChance ||
+               id == LGuiFeatureId.FoodRestoresSp ||
+               id == LGuiFeatureId.DismantleAlwaysReturnsMaterials ||
+               id == LGuiFeatureId.OptimizeMeleeHitChance ||
                id == LGuiFeatureId.AttackCannotBeInterrupted || id == LGuiFeatureId.AllPurposeWorkbench ||
                id == LGuiFeatureId.KillGrowth;
     }
@@ -115,6 +117,8 @@ public sealed partial class ElinModifierPlugin
             titleText = T("种植收获倍率", "Plant harvest multiplier");
         if (id == LGuiFeatureId.FoodRestoresSp)
             titleText = T("食用食物恢复SP", "Restore SP by eating food");
+        if (id == LGuiFeatureId.DismantleAlwaysReturnsMaterials)
+            titleText = T("分解必返还材料", "Dismantling always returns materials");
         if (id == LGuiFeatureId.OptimizeMeleeHitChance)
             titleText = T("优化近战命中率逻辑", "Optimize melee hit chance logic");
         if (id == LGuiFeatureId.AttackCannotBeInterrupted)
@@ -126,6 +130,7 @@ public sealed partial class ElinModifierPlugin
             id == LGuiFeatureId.ShowBuffSpecificValues ? 300f :
             id == LGuiFeatureId.ShowMainAbilityExperience ? 300f :
             id == LGuiFeatureId.FoodRestoresSp ? 300f :
+            id == LGuiFeatureId.DismantleAlwaysReturnsMaterials ? 300f :
             id == LGuiFeatureId.OptimizeMeleeHitChance ? 300f :
             id == LGuiFeatureId.AttackCannotBeInterrupted ? 300f :
             id == LGuiFeatureId.AllPurposeWorkbench ? 300f :
@@ -137,6 +142,21 @@ public sealed partial class ElinModifierPlugin
         if (modal == null)
             return;
         _lGuiModalRestoreMainOnClose = true;
+
+        if (id == LGuiFeatureId.DismantleAlwaysReturnsMaterials)
+        {
+            CreateLGuiToggleControl(
+                content,
+                T(
+                    "原版分解机制(适配万物炼金)",
+                    "Vanilla dismantling mechanism (Everything Alchemy compatibility)"),
+                _modules.GuaranteedGatheringRewards.UseVanillaDismantleMechanism,
+                10f,
+                SetUseVanillaDismantleMechanism);
+            content.sizeDelta = new Vector2(0f, 90f);
+            ApplyLGuiVisualSettings();
+            return;
+        }
 
         if (id == LGuiFeatureId.ShowMainAbilityExperience)
         {

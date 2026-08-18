@@ -201,14 +201,14 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 新增\"全部专长可学习\"，开启后游戏内所有专长可学习，基础专长消耗点数为5点",
-                        "* Added \"All feats learnable\"; when enabled, all feats in the game can be learned, with a base cost of 5 feat points."),
+                        "* \"分解必返还材料\"优化，分解系数计算移除小数部分",
+                        "* Optimized \"Dismantling always returns materials\" by removing the decimal portion from dismantling coefficient calculations."),
                     host.TranslateModuleText(
-                        "* 新增\"人物面板显示基因\"，开启后和史莱姆一样在特质页可以看NPC及PC的基因",
-                        "* Added \"Show genes on character panel\"; when enabled, NPC and PC genes can be viewed on the Traits page like a slime."),
+                        "* \"分解必返还材料\"新增\"原版分解机制\"选项，适配万物炼金",
+                        "* Added a \"Vanilla dismantling mechanism\" option to \"Dismantling always returns materials\" for Everything Alchemy compatibility."),
                     host.TranslateModuleText(
-                        "* 新增\"允许PC植入基因\"，开启后PC(无论种族)均可通过原版NPC机制进行基因植入、移除",
-                        "* Added \"Allow PC gene implantation\"; when enabled, the PC can use the original NPC mechanism to implant and remove genes regardless of race."),
+                        "* 修复\"右键打断操作\"回调过早导致的UI竞态",
+                        "* Fixed a UI race condition caused by the \"Right-click interrupts operations\" callback running too early."),
                 }
             };
 

@@ -29,6 +29,9 @@ internal sealed class RightClickInterruptModule
 
         try
         {
+            if (GameAccess.Ui.IsPointerOverUi)
+                return;
+
             var pc = GameAccess.Characters.PlayerCharacter;
             var goal = pc?.ai;
             var current = goal?.Current;

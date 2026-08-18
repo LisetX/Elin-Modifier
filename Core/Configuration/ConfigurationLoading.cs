@@ -356,6 +356,7 @@ public sealed partial class ElinModifierPlugin
             _modules.Progression.FoodRestoresSpPercent = Clamp(ExtractInt(json, "foodRestoresSpPercent", 10), 1, 100);
             _modules.GuaranteedGatheringRewards.Load(
                 ExtractBool(json, "dismantleAlwaysReturnsMaterials", false),
+                ExtractBool(json, "useVanillaDismantleMechanism", false),
                 ExtractBool(json, "dismantlingAlwaysLearnsRecipe", false));
             _modules.Progression.OptimizeMeleeHitChance = ExtractBool(json, "optimizeMeleeHitChance", false);
             _modules.Progression.OptimizeMeleeHitChanceIncludeParty = ExtractBool(json, "optimizeMeleeHitChanceIncludeParty", true);

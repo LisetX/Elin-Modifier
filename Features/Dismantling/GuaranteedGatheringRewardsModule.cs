@@ -1,22 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
 using HarmonyLib;
 
 internal sealed class GuaranteedGatheringRewardsModule
 {
     internal bool DismantleAlwaysReturnsMaterials { get; private set; }
+    internal bool UseVanillaDismantleMechanism { get; private set; }
     internal bool DismantlingAlwaysLearnsRecipe { get; private set; }
 
-    internal void Load(bool dismantleAlwaysReturnsMaterials, bool dismantlingAlwaysLearnsRecipe)
+    internal void Load(
+        bool dismantleAlwaysReturnsMaterials,
+        bool useVanillaDismantleMechanism,
+        bool dismantlingAlwaysLearnsRecipe)
     {
         DismantleAlwaysReturnsMaterials = dismantleAlwaysReturnsMaterials;
+        UseVanillaDismantleMechanism = useVanillaDismantleMechanism;
         DismantlingAlwaysLearnsRecipe = dismantlingAlwaysLearnsRecipe;
     }
 
     internal void Reset()
     {
         DismantleAlwaysReturnsMaterials = false;
+        UseVanillaDismantleMechanism = false;
         DismantlingAlwaysLearnsRecipe = false;
     }
 
@@ -25,6 +32,14 @@ internal sealed class GuaranteedGatheringRewardsModule
         if (DismantleAlwaysReturnsMaterials == enabled)
             return false;
         DismantleAlwaysReturnsMaterials = enabled;
+        return true;
+    }
+
+    internal bool SetUseVanillaDismantleMechanism(bool enabled)
+    {
+        if (UseVanillaDismantleMechanism == enabled)
+            return false;
+        UseVanillaDismantleMechanism = enabled;
         return true;
     }
 
@@ -82,8 +97,18 @@ internal static class GuaranteedGatheringRewardsPatchContext
     private static bool IsDismantleMaterialReturnEnabled =>
         Current?.DismantleAlwaysReturnsMaterials == true;
 
+    private static bool UseVanillaDismantleMechanism =>
+        Current?.UseVanillaDismantleMechanism == true;
+
     private static bool IsDismantlingRecipeEnabled =>
         Current?.DismantlingAlwaysLearnsRecipe == true;
+
+    private static float ResolveDismantleCoefficientForCurrentMode(float coefficient)
+    {
+        return GuaranteedGatheringRewardsPolicy.ResolveDismantleCoefficient(
+            coefficient,
+            IsDismantleMaterialReturnEnabled && !UseVanillaDismantleMechanism);
+    }
 
     [HarmonyPatch]
     private static class TaskHarvestMaterialRollScopePatch
@@ -127,6 +152,9 @@ internal static class GuaranteedGatheringRewardsPatchContext
                 __state = state;
                 _forceDismantleMaterialRoll = true;
 
+                if (UseVanillaDismantleMechanism)
+                    return;
+
                 if (!TryPrepareFullRecipeRefund(__instance, state))
                     return;
 
@@ -137,6 +165,41 @@ internal static class GuaranteedGatheringRewardsPatchContext
             {
                 _suppressOriginalDismantledOutput = false;
             }
+        }
+
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        {
+            var codes = new List<CodeInstruction>(instructions);
+            var resolver = AccessTools.DeclaredMethod(
+                typeof(GuaranteedGatheringRewardsPatchContext),
+                nameof(ResolveDismantleCoefficientForCurrentMode),
+                new[] { typeof(float) });
+            if (resolver == null)
+                return codes;
+
+            var remainderIndex = -1;
+            var divisionIndex = -1;
+            for (var i = 0; i < codes.Count; i++)
+            {
+                if (remainderIndex < 0 && codes[i].opcode == OpCodes.Rem)
+                {
+                    remainderIndex = i;
+                    continue;
+                }
+
+                if (remainderIndex >= 0 && codes[i].opcode == OpCodes.Div)
+                {
+                    divisionIndex = i;
+                    break;
+                }
+            }
+
+            if (remainderIndex < 0 || divisionIndex < 0 || divisionIndex - remainderIndex > 6)
+                return codes;
+
+            codes.Insert(divisionIndex, new CodeInstruction(OpCodes.Call, resolver));
+            codes.Insert(remainderIndex, new CodeInstruction(OpCodes.Call, resolver));
+            return codes;
         }
 
         private static void Postfix(DismantleRefundState? __state)
@@ -208,6 +271,7 @@ internal static class GuaranteedGatheringRewardsPatchContext
 
             if (!GuaranteedGatheringRewardsPolicy.ShouldUseFullRecipeRefund(
                     true,
+                    UseVanillaDismantleMechanism,
                     recipeExists,
                     requiredIngredients.Count > 0,
                     preservesOriginalRestriction))

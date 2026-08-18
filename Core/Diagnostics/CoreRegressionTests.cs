@@ -60,19 +60,31 @@ internal static class CoreRegressionTests
             GatheringThresholdPolicy.NormalizeRequiredSkillLevel(-1) == 0);
         Check(result, "disabled guaranteed dismantle preserves original roll",
             Math.Abs(GuaranteedGatheringRewardsPolicy.ResolveDismantleRoll(0.75f, false) - 0.75f) < 0.0001f);
-        Check(result, "enabled guaranteed dismantle forces successful roll",
+        Check(result, "enabled guaranteed dismantle rounds fractional result upward",
             GuaranteedGatheringRewardsPolicy.ResolveDismantleRoll(0.75f, true) ==
             GuaranteedGatheringRewardsPolicy.GuaranteedDismantleRoll);
+        Check(result, "disabled dismantle coefficient preserves vanilla decimal",
+            Math.Abs(GuaranteedGatheringRewardsPolicy.ResolveDismantleCoefficient(2.2f, false) - 2.2f) < 0.0001f);
+        Check(result, "enabled dismantle coefficient truncates log divisor",
+            GuaranteedGatheringRewardsPolicy.ResolveDismantleCoefficient(2.2f, true) == 2f);
+        Check(result, "enabled dismantle coefficient truncates fish divisor",
+            GuaranteedGatheringRewardsPolicy.ResolveDismantleCoefficient(4.4f, true) == 4f);
+        Check(result, "enabled dismantle coefficient keeps minimum divisor",
+            GuaranteedGatheringRewardsPolicy.ResolveDismantleCoefficient(0.75f, true) == 1f);
         Check(result, "full dismantle refund returns every proportional ingredient",
             GuaranteedGatheringRewardsPolicy.CalculateFullRefundCount(2, 3, 2) == 3);
-        Check(result, "full dismantle refund rounds indivisible ingredient upward",
+        Check(result, "full dismantle refund rounds indivisible ingredient count upward",
+            GuaranteedGatheringRewardsPolicy.CalculateFullRefundCount(1, 3, 2) == 2);
+        Check(result, "full dismantle refund guarantees one ingredient",
             GuaranteedGatheringRewardsPolicy.CalculateFullRefundCount(1, 1, 2) == 1);
         Check(result, "full dismantle refund ignores invalid ingredient counts",
             GuaranteedGatheringRewardsPolicy.CalculateFullRefundCount(0, 10, 1) == 0);
         Check(result, "full dismantle refund requires a valid unrestricted recipe",
-            GuaranteedGatheringRewardsPolicy.ShouldUseFullRecipeRefund(true, true, true, true));
+            GuaranteedGatheringRewardsPolicy.ShouldUseFullRecipeRefund(true, false, true, true, true));
+        Check(result, "vanilla dismantle mechanism skips full recipe refund",
+            !GuaranteedGatheringRewardsPolicy.ShouldUseFullRecipeRefund(true, true, true, true, true));
         Check(result, "full dismantle refund preserves original restrictions",
-            !GuaranteedGatheringRewardsPolicy.ShouldUseFullRecipeRefund(true, true, true, false));
+            !GuaranteedGatheringRewardsPolicy.ShouldUseFullRecipeRefund(true, false, true, true, false));
         Check(result, "matching dismantled recipe attempt forces original discovery roll",
             GuaranteedGatheringRewardsPolicy.IsMatchingDismantleRecipeAttempt(
                 true, "chair", "chair", 100, 100));

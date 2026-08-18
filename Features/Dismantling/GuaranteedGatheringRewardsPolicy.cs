@@ -7,6 +7,14 @@ internal static class GuaranteedGatheringRewardsPolicy
         return enabled ? GuaranteedDismantleRoll : originalRoll;
     }
 
+    internal static float ResolveDismantleCoefficient(float originalCoefficient, bool enabled)
+    {
+        if (!enabled)
+            return originalCoefficient;
+
+        return Math.Max(1f, (float)Math.Truncate(originalCoefficient));
+    }
+
     internal static int CalculateFullRefundCount(int required, int itemCount, int craftResultCount)
     {
         if (required <= 0 || itemCount <= 0)
@@ -20,11 +28,13 @@ internal static class GuaranteedGatheringRewardsPolicy
 
     internal static bool ShouldUseFullRecipeRefund(
         bool enabled,
+        bool useVanillaDismantleMechanism,
         bool recipeExists,
         bool hasRequiredIngredients,
         bool preservesOriginalRestriction)
     {
         return enabled &&
+               !useVanillaDismantleMechanism &&
                recipeExists &&
                hasRequiredIngredients &&
                preservesOriginalRestriction;

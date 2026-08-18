@@ -106,6 +106,10 @@ public sealed partial class ElinModifierPlugin
             ? T("分解必返还材料已开启", "Guaranteed dismantling material returns enabled")
             : T("分解必返还材料已关闭", "Guaranteed dismantling material returns disabled");
     }
+    private void SetUseVanillaDismantleMechanism(bool enabled)
+    {
+        _modules.GuaranteedGatheringRewards.SetUseVanillaDismantleMechanism(enabled);
+    }
     private void SetDismantlingAlwaysLearnsRecipe(bool enabled)
     {
         if (!_modules.GuaranteedGatheringRewards.SetDismantlingAlwaysLearnsRecipe(enabled))

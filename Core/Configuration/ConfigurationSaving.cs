@@ -189,6 +189,7 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"foodRestoresSpEnabled\": " + (_modules.Progression.FoodRestoresSpEnabled ? "true" : "false") + ",");
             sb.AppendLine("  \"foodRestoresSpPercent\": " + Clamp(_modules.Progression.FoodRestoresSpPercent, 1, 100).ToString(CultureInfo.InvariantCulture) + ",");
             sb.AppendLine("  \"dismantleAlwaysReturnsMaterials\": " + (_modules.GuaranteedGatheringRewards.DismantleAlwaysReturnsMaterials ? "true" : "false") + ",");
+            sb.AppendLine("  \"useVanillaDismantleMechanism\": " + (_modules.GuaranteedGatheringRewards.UseVanillaDismantleMechanism ? "true" : "false") + ",");
             sb.AppendLine("  \"dismantlingAlwaysLearnsRecipe\": " + (_modules.GuaranteedGatheringRewards.DismantlingAlwaysLearnsRecipe ? "true" : "false") + ",");
             sb.AppendLine("  \"optimizeMeleeHitChance\": " + (_modules.Progression.OptimizeMeleeHitChance ? "true" : "false") + ",");
             sb.AppendLine("  \"optimizeMeleeHitChanceIncludeParty\": " + (_modules.Progression.OptimizeMeleeHitChanceIncludeParty ? "true" : "false") + ",");
