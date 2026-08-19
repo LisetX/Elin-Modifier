@@ -201,20 +201,11 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 屏蔽\"UGC Download state: k_EResultTimeout \"报错",
-                        "* Suppress the \"UGC Download state: k_EResultTimeout \" error"),
+                        "* \"显示物品面板奶的加成\"显示优化",
+                        "* Optimized the display of \"Show Milk Bonuses in Item Panel\""),
                     host.TranslateModuleText(
-                        "* \"NPC图鉴\"优化，\"能力\"显示更多信息",
-                        "* Optimized the \"NPC Compendium\" so \"Abilities\" display more information"),
-                    host.TranslateModuleText(
-                        "* 修正\"NPC图鉴\"部分图标显示",
-                        "* Corrected the display of some icons in the \"NPC Compendium\""),
-                    host.TranslateModuleText(
-                        "* 部分控件适配UI主题方案",
-                        "* Adapted some controls to the UI theme"),
-                    host.TranslateModuleText(
-                        "* 水印绘制异常修复",
-                        "* Fixed a watermark rendering issue"),
+                        "* 稳定性提升",
+                        "* Improved stability"),
                 }
             };
 

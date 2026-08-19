@@ -67,8 +67,8 @@ internal sealed class MilkBonusPreviewService : IMilkBonusPreviewService
             return result;
         var attributes = GameAccessServiceHelpers.InvokeReference<List<Element>>(_listBestAttributes, sourceElements);
         var skills = GameAccessServiceHelpers.InvokeReference<List<Element>>(_listBestSkills, sourceElements);
-        AppendBonuses(result, attributes);
-        AppendBonuses(result, skills);
+        AppendBonuses(result, attributes, true);
+        AppendBonuses(result, skills, false);
         return result;
     }
 
@@ -107,7 +107,10 @@ internal sealed class MilkBonusPreviewService : IMilkBonusPreviewService
         }
     }
 
-    private void AppendBonuses(List<MilkBonusPreviewEntry> result, List<Element>? sourceElements)
+    private void AppendBonuses(
+        List<MilkBonusPreviewEntry> result,
+        List<Element>? sourceElements,
+        bool isMainAbility)
     {
         if (sourceElements == null)
             return;
@@ -119,12 +122,16 @@ internal sealed class MilkBonusPreviewService : IMilkBonusPreviewService
         var divisor = 100;
         foreach (var sourceElement in orderedElements)
         {
-            AppendBonus(result, sourceElement, divisor);
+            AppendBonus(result, sourceElement, divisor, isMainAbility);
             divisor += 50;
         }
     }
 
-    private void AppendBonus(List<MilkBonusPreviewEntry> result, Element sourceElement, int divisor)
+    private void AppendBonus(
+        List<MilkBonusPreviewEntry> result,
+        Element sourceElement,
+        int divisor,
+        bool isMainAbility)
     {
         var sourceValue = GetInt(_elementValueWithoutLink, sourceElement);
         var value = sourceValue * 100.0 / divisor / 2.0;
@@ -135,7 +142,7 @@ internal sealed class MilkBonusPreviewService : IMilkBonusPreviewService
         if (!string.IsNullOrEmpty(name))
         {
             var icon = GameAccessServiceHelpers.InvokeReference<UnityEngine.Sprite>(_getElementIcon, sourceElement, "");
-            result.Add(new MilkBonusPreviewEntry(name, value, icon));
+            result.Add(new MilkBonusPreviewEntry(name, value, icon, isMainAbility));
         }
     }
 

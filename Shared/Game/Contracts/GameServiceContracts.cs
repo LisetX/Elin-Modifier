@@ -124,16 +124,18 @@ internal interface IGameSpawnService
 
 internal readonly struct MilkBonusPreviewEntry
 {
-    internal MilkBonusPreviewEntry(string name, double value, UnityEngine.Sprite? icon)
+    internal MilkBonusPreviewEntry(string name, double value, UnityEngine.Sprite? icon, bool isMainAbility)
     {
         Name = name;
         Value = value;
         Icon = icon;
+        IsMainAbility = isMainAbility;
     }
 
     internal string Name { get; }
     internal double Value { get; }
     internal UnityEngine.Sprite? Icon { get; }
+    internal bool IsMainAbility { get; }
 }
 
 internal interface IMilkBonusPreviewService
