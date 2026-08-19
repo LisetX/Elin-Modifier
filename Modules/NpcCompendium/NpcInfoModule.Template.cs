@@ -214,6 +214,7 @@ internal sealed partial class NpcInfoModule
             PopulateTemplateTooltips(template, result.Skills, false);
             PopulateTemplateTooltips(template, result.Feats, true);
             PopulateTemplateTooltips(template, result.Spells, false);
+            PopulateNpcTemplateAbilityTooltips(template, result.Spells);
             PopulateTemplateTooltips(template, result.Enchantments, false);
         }
         catch (Exception ex)
@@ -953,5 +954,247 @@ internal sealed partial class NpcInfoModule
         if (effect.Length == 0 || string.Equals(description, effect, StringComparison.Ordinal))
             return description;
         return description + "\n" + effect;
+    }
+
+    private static void PopulateNpcTemplateAbilityTooltips(
+        Chara template,
+        IReadOnlyList<NpcTemplateValue> values)
+    {
+        for (var i = 0; i < values.Count; i++)
+        {
+            var entry = values[i];
+            try
+            {
+                var element = template.elements.GetElement(entry.Id);
+                if (element == null)
+                {
+                    element = Element.Create(entry.Id, entry.Value);
+                    element.owner = template.elements;
+                }
+
+                var act = ResolveNpcTemplateAct(template, element, entry.Id);
+                if (act == null)
+                    continue;
+
+                var source = element.source;
+                try
+                {
+                    var description = source?.GetDetail();
+                    if (!string.IsNullOrWhiteSpace(description))
+                        entry.TooltipText = description;
+                }
+                catch
+                {
+                }
+                var tooltip = new NpcAbilityTooltipInfo
+                {
+                    DisplayLevel = element.DisplayValue,
+                    Target = ResolveNpcTemplateAbilityTarget(act),
+                    Power = element.GetPower(template),
+                    HasPower = source != null && source.lvFactor > 0
+                };
+                if (element is Spell)
+                {
+                    tooltip.HasSuccessRate = true;
+                    tooltip.SuccessRate = Mathf.Clamp(template.CalcCastingChance(element, 1), 0, 100);
+                }
+
+                tooltip.RelatedAbility = ResolveNpcTemplateRelatedAbility(source, out tooltip.RelatedAbilitySource);
+                PopulateNpcTemplateAbilityNotes(template, act, element, source, tooltip);
+                PopulateNpcTemplateAbilityCost(template, element, tooltip);
+                entry.AbilityTooltip = tooltip;
+            }
+            catch
+            {
+            }
+        }
+    }
+
+    private static Act? ResolveNpcTemplateAct(Chara template, Element element, int id)
+    {
+        try
+        {
+            if (element.act != null)
+                return element.act;
+        }
+        catch
+        {
+        }
+
+        try
+        {
+            var items = template.ability?.list?.items;
+            if (items != null)
+            {
+                for (var i = 0; i < items.Count; i++)
+                {
+                    var act = items[i]?.act;
+                    if (act != null && act.id == id)
+                        return act;
+                }
+            }
+        }
+        catch
+        {
+        }
+
+        try { return ACT.Create(id); }
+        catch { return null; }
+    }
+
+    private static string ResolveNpcTemplateAbilityTarget(Act act)
+    {
+        try { return act.TargetType.ToString().lang(); }
+        catch
+        {
+            try { return act.TargetType.ToString(); }
+            catch { return "-"; }
+        }
+    }
+
+    private static string ResolveNpcTemplateRelatedAbility(
+        SourceElement.Row? source,
+        out SourceElement.Row? relatedSource)
+    {
+        relatedSource = null;
+        if (source == null || string.IsNullOrWhiteSpace(source.aliasParent))
+            return "";
+        try
+        {
+            var elements = GameAccess.Sources.Elements;
+            if (elements?.alias != null &&
+                elements.alias.TryGetValue(source.aliasParent, out var row) &&
+                row != null)
+            {
+                relatedSource = row;
+                return row.GetName() ?? source.aliasParent;
+            }
+        }
+        catch
+        {
+        }
+        return source.aliasParent;
+    }
+
+    private static void PopulateNpcTemplateAbilityCost(
+        Chara template,
+        Element element,
+        NpcAbilityTooltipInfo tooltip)
+    {
+        try
+        {
+            var cost = element.GetCost(template);
+            if (cost.type == Act.CostType.None || cost.cost <= 0)
+                return;
+            var adjusted = cost.cost;
+            if (cost.type == Act.CostType.MP)
+            {
+                var reduction = template.Evalue(483);
+                if (reduction > 0)
+                    adjusted = cost.cost * 100 / (100 + (int)Mathf.Sqrt(reduction * 10) * 3);
+            }
+            tooltip.CostType = cost.type;
+            tooltip.Cost = adjusted;
+            tooltip.BaseCost = cost.cost;
+        }
+        catch
+        {
+        }
+    }
+
+    private static void PopulateNpcTemplateAbilityNotes(
+        Chara template,
+        Act act,
+        Element element,
+        SourceElement.Row? source,
+        NpcAbilityTooltipInfo tooltip)
+    {
+        var extra = "";
+        try { extra = source?.GetText("textExtra", false) ?? ""; }
+        catch
+        {
+        }
+        if (!string.IsNullOrWhiteSpace(extra))
+        {
+            var entries = extra.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            for (var i = 0; i < entries.Length; i++)
+            {
+                var note = entries[i].Trim();
+                if (note.Length == 0)
+                    continue;
+                if (note.StartsWith("@", StringComparison.Ordinal))
+                {
+                    note = ResolveNpcTemplateAbilityConditionName(
+                        template,
+                        note.Substring(1),
+                        tooltip.Power);
+                }
+                else
+                {
+                    note = note.Replace("#calc", tooltip.Power.ToString(CultureInfo.InvariantCulture))
+                        .Replace("#ele", tooltip.RelatedAbility.ToLowerInvariant())
+                        .Replace(';', ',');
+                }
+                AddUniqueNpcTemplateAbilityNote(tooltip.Notes, note);
+            }
+        }
+
+        if (ContainsTag(source?.tag, "syncRide"))
+            AddUniqueNpcTemplateAbilityNote(tooltip.Notes, SafeNpcTemplateAbilityLanguage("hintSyncRide"));
+        try
+        {
+            if (GameAccess.Characters.PlayerCharacter?.HasElement(1274) == true &&
+                ContainsTag(source?.tag, "dontForget"))
+                AddUniqueNpcTemplateAbilityNote(tooltip.Notes, SafeNpcTemplateAbilityLanguage("hintDontForget"));
+        }
+        catch
+        {
+        }
+        try
+        {
+            if (act.HaveLongPressAction && element.id != 8230 && element.id != 8232)
+                AddUniqueNpcTemplateAbilityNote(tooltip.Notes, SafeNpcTemplateAbilityLanguage("hintPartyAbility"));
+        }
+        catch
+        {
+        }
+        try
+        {
+            if (!act.LocalAct)
+                AddUniqueNpcTemplateAbilityNote(tooltip.Notes, SafeNpcTemplateAbilityLanguage("isGlobalAct"));
+        }
+        catch
+        {
+        }
+    }
+
+    private static string ResolveNpcTemplateAbilityConditionName(Chara template, string alias, int power)
+    {
+        if (string.IsNullOrWhiteSpace(alias))
+            return "";
+        try
+        {
+            var condition = Condition.Create(alias, power, null);
+            if (condition == null)
+                return "";
+            condition.owner = template;
+            return condition.Name ?? "";
+        }
+        catch
+        {
+            return "";
+        }
+    }
+
+    private static string SafeNpcTemplateAbilityLanguage(string key)
+    {
+        try { return key.lang() ?? ""; }
+        catch { return ""; }
+    }
+
+    private static void AddUniqueNpcTemplateAbilityNote(List<string> notes, string note)
+    {
+        if (!string.IsNullOrWhiteSpace(note) && !notes.Contains(note))
+            notes.Add(note);
     }
 }

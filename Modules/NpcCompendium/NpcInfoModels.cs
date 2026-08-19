@@ -46,6 +46,23 @@ internal sealed class NpcTemplateValue
     internal bool HasRandomRange;
     internal int RandomMinimum;
     internal int RandomMaximum;
+    internal NpcAbilityTooltipInfo? AbilityTooltip;
+}
+
+internal sealed class NpcAbilityTooltipInfo
+{
+    internal int DisplayLevel;
+    internal string Target = "";
+    internal bool HasSuccessRate;
+    internal int SuccessRate;
+    internal string RelatedAbility = "";
+    internal SourceElement.Row? RelatedAbilitySource;
+    internal bool HasPower;
+    internal int Power;
+    internal Act.CostType CostType;
+    internal int Cost;
+    internal int BaseCost;
+    internal readonly List<string> Notes = new List<string>();
 }
 
 internal sealed class NpcTemplateRandomRange

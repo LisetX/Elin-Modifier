@@ -81,7 +81,9 @@ internal sealed partial class WatermarkModule
     private static bool ShouldIgnoreWatermarkError(string message, string stackTrace)
     {
         return (message ?? "").IndexOf("Failed to load the Steam App List", StringComparison.OrdinalIgnoreCase) >= 0 ||
-               (stackTrace ?? "").IndexOf("Failed to load the Steam App List", StringComparison.OrdinalIgnoreCase) >= 0;
+               (stackTrace ?? "").IndexOf("Failed to load the Steam App List", StringComparison.OrdinalIgnoreCase) >= 0 ||
+               (message ?? "").IndexOf("unexpected result state: k_EResultTimeout", StringComparison.OrdinalIgnoreCase) >= 0 ||
+               (stackTrace ?? "").IndexOf("unexpected result state: k_EResultTimeout", StringComparison.OrdinalIgnoreCase) >= 0;
     }
     private static string BuildWatermarkErrorMessageSignature(string level, string message)
     {

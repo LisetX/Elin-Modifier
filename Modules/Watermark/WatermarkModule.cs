@@ -17,9 +17,7 @@ internal sealed partial class WatermarkModule
     private Canvas? _watermarkCanvas;
     private CanvasScaler? _watermarkCanvasScaler;
     private RectTransform? _watermarkBar;
-    private RectTransform? _watermarkAccentRect;
     private Image? _watermarkBackground;
-    private Image? _watermarkAccent;
     private Text? _watermarkText;
     private Texture2D? _watermarkCapsuleTexture;
     private Sprite? _watermarkCapsuleSprite;
@@ -266,15 +264,6 @@ internal sealed partial class WatermarkModule
                 () => _watermarkPositionLocked,
                 () => _watermarkConfigDirty = true);
 
-            _watermarkAccentRect = CreateLGuiRect(_watermarkBar, "Accent");
-            _watermarkAccentRect.anchorMin = new Vector2(0f, 0f);
-            _watermarkAccentRect.anchorMax = new Vector2(1f, 0f);
-            _watermarkAccentRect.pivot = new Vector2(0.5f, 0f);
-            _watermarkAccentRect.offsetMin = new Vector2(21f, 0f);
-            _watermarkAccentRect.offsetMax = new Vector2(-21f, 2f);
-            _watermarkAccent = _watermarkAccentRect.gameObject.AddComponent<Image>();
-            _watermarkAccent.raycastTarget = false;
-
             _watermarkText = CreateLGuiText(
                 _watermarkBar,
                 "WatermarkText",
@@ -353,7 +342,6 @@ internal sealed partial class WatermarkModule
             _watermarkBar.localScale = Vector3.one * GetWatermarkRelativeScale();
 
         var lightTheme = _uiStyleIndex == 5;
-        var accent = _host.ModuleUiStyleColor;
         var alpha = Clamp(_uiAlpha * 0.92f, 0.45f, 0.92f);
         if (_watermarkBackground != null)
         {
@@ -361,8 +349,6 @@ internal sealed partial class WatermarkModule
                 ? new Color(0.94f, 0.94f, 0.91f, alpha)
                 : new Color(0.035f, 0.04f, 0.05f, alpha);
         }
-        if (_watermarkAccent != null)
-            _watermarkAccent.color = new Color(accent.r, accent.g, accent.b, 0.92f);
         if (_watermarkText != null)
         {
             _watermarkText.color = GetActiveUiTextColor();
@@ -460,13 +446,6 @@ internal sealed partial class WatermarkModule
         var rightPadding = leftPadding;
 
         StretchLGuiRect(_watermarkText.rectTransform, leftPadding, 3f, rightPadding, 4f);
-        if (_watermarkAccentRect != null)
-        {
-            var capRadius = barHeight * 0.5f;
-            _watermarkAccentRect.offsetMin = new Vector2(capRadius, 0f);
-            _watermarkAccentRect.offsetMax = new Vector2(-capRadius, 2f);
-        }
-
         if (_watermarkCapsuleSprite == null ||
             Mathf.Abs(_watermarkCurrentHeight - _watermarkTargetHeight) <= 0.5f)
             EnsureWatermarkCapsuleSprite(barHeight);
@@ -643,9 +622,7 @@ internal sealed partial class WatermarkModule
         _watermarkCanvas = null;
         _watermarkCanvasScaler = null;
         _watermarkBar = null;
-        _watermarkAccentRect = null;
         _watermarkBackground = null;
-        _watermarkAccent = null;
         _watermarkText = null;
         _watermarkCapsuleSprite = null;
         _watermarkCapsuleTexture = null;

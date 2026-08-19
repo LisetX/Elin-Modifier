@@ -12,6 +12,7 @@ public sealed partial class ElinModifierPlugin
     {
         private const float MinimumWidth = 180f;
         private const float MaximumWidth = 420f;
+        private const float MaximumBodyHeight = 340f;
         private const float FadeInSeconds = 0.14f;
         private const float FadeOutSeconds = 0.12f;
         private RectTransform? _bounds;
@@ -21,7 +22,9 @@ public sealed partial class ElinModifierPlugin
         private LGuiFadeDriver? _fade;
         private Text? _title;
         private Text? _body;
+        private Image? _background;
         private LGuiNpcTooltipTarget? _owner;
+        private Func<EmTooltipVisualStyle>? _styleProvider;
         private int _transition;
 
         internal void Initialize(
@@ -31,7 +34,9 @@ public sealed partial class ElinModifierPlugin
             CanvasGroup group,
             LGuiFadeDriver fade,
             Text title,
-            Text body)
+            Text body,
+            Image background,
+            Func<EmTooltipVisualStyle> styleProvider)
         {
             _bounds = bounds;
             _panel = panel;
@@ -40,6 +45,8 @@ public sealed partial class ElinModifierPlugin
             _fade = fade;
             _title = title;
             _body = body;
+            _background = background;
+            _styleProvider = styleProvider;
             _fade.SetImmediate(0f, false);
         }
 
@@ -50,6 +57,7 @@ public sealed partial class ElinModifierPlugin
             _owner = owner;
             _transition++;
             _panel.gameObject.SetActive(true);
+            ApplyVisualStyle();
             _title.text = title ?? "";
             _body.text = body ?? "";
             RefreshLayout();
@@ -74,7 +82,35 @@ public sealed partial class ElinModifierPlugin
         private void LateUpdate()
         {
             if (_owner != null)
+            {
+                ApplyVisualStyle();
                 UpdatePosition();
+            }
+        }
+
+        private void ApplyVisualStyle()
+        {
+            if (_background == null || _title == null || _body == null)
+                return;
+            EmTooltipVisualStyle style;
+            try { style = _styleProvider?.Invoke() ?? default; }
+            catch { style = default; }
+            _background.color = style.HasPalette
+                ? style.BackgroundColor
+                : new Color(0.025f, 0.03f, 0.04f, 1f);
+            if (style.RoundedCorners && style.BackgroundSprite != null)
+            {
+                _background.sprite = style.BackgroundSprite;
+                _background.type = Image.Type.Sliced;
+            }
+            else
+            {
+                _background.sprite = null;
+                _background.type = Image.Type.Simple;
+            }
+            _background.fillCenter = true;
+            _title.color = style.ResolveTitleColor();
+            _body.color = style.ResolveContentColor(Color.white, true);
         }
 
         private void RefreshLayout()
@@ -82,7 +118,7 @@ public sealed partial class ElinModifierPlugin
             if (_panel == null || _title == null || _body == null)
                 return;
             SetTopLeft(_title.rectTransform, 14f, 8f, MaximumWidth - 28f, 24f);
-            SetTopLeft(_body.rectTransform, 14f, 33f, MaximumWidth - 28f, 220f);
+            SetTopLeft(_body.rectTransform, 14f, 33f, MaximumWidth - 28f, MaximumBodyHeight);
             LayoutRebuilder.ForceRebuildLayoutImmediate(_title.rectTransform);
             LayoutRebuilder.ForceRebuildLayoutImmediate(_body.rectTransform);
             var width = Mathf.Clamp(
@@ -90,9 +126,9 @@ public sealed partial class ElinModifierPlugin
                 MinimumWidth,
                 MaximumWidth);
             SetTopLeft(_title.rectTransform, 14f, 8f, width - 28f, 24f);
-            SetTopLeft(_body.rectTransform, 14f, 33f, width - 28f, 220f);
+            SetTopLeft(_body.rectTransform, 14f, 33f, width - 28f, MaximumBodyHeight);
             LayoutRebuilder.ForceRebuildLayoutImmediate(_body.rectTransform);
-            var bodyHeight = Mathf.Clamp(_body.preferredHeight, 20f, 220f);
+            var bodyHeight = Mathf.Clamp(_body.preferredHeight, 20f, MaximumBodyHeight);
             var panelHeight = 43f + bodyHeight;
             _panel.sizeDelta = new Vector2(width, panelHeight);
             SetTopLeft(_body.rectTransform, 14f, 33f, width - 28f, bodyHeight);

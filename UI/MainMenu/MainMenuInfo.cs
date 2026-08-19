@@ -201,14 +201,20 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* \"分解必返还材料\"优化，分解系数计算移除小数部分",
-                        "* Optimized \"Dismantling always returns materials\" by removing the decimal portion from dismantling coefficient calculations."),
+                        "* 屏蔽\"UGC Download state: k_EResultTimeout \"报错",
+                        "* Suppress the \"UGC Download state: k_EResultTimeout \" error"),
                     host.TranslateModuleText(
-                        "* \"分解必返还材料\"新增\"原版分解机制\"选项，适配万物炼金",
-                        "* Added a \"Vanilla dismantling mechanism\" option to \"Dismantling always returns materials\" for Everything Alchemy compatibility."),
+                        "* \"NPC图鉴\"优化，\"能力\"显示更多信息",
+                        "* Optimized the \"NPC Compendium\" so \"Abilities\" display more information"),
                     host.TranslateModuleText(
-                        "* 修复\"右键打断操作\"回调过早导致的UI竞态",
-                        "* Fixed a UI race condition caused by the \"Right-click interrupts operations\" callback running too early."),
+                        "* 修正\"NPC图鉴\"部分图标显示",
+                        "* Corrected the display of some icons in the \"NPC Compendium\""),
+                    host.TranslateModuleText(
+                        "* 部分控件适配UI主题方案",
+                        "* Adapted some controls to the UI theme"),
+                    host.TranslateModuleText(
+                        "* 水印绘制异常修复",
+                        "* Fixed a watermark rendering issue"),
                 }
             };
 

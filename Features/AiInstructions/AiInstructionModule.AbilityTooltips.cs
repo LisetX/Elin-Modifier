@@ -40,9 +40,7 @@ internal sealed partial class AiInstructionModule
 
     private EmTooltipVisualStyle ResolveAbilityTooltipVisualStyle()
     {
-        if (!_host.ModuleUiRoundedCorners)
-            return default;
-        return new EmTooltipVisualStyle(true, _host.GetModuleStandardRoundedSprite());
+        return _host.ResolveModuleEmTooltipVisualStyle();
     }
 
     private EmTooltipContent BuildAbilityTooltip(Chara actor, AbilityChoice choice)

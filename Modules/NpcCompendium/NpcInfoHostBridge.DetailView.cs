@@ -173,15 +173,17 @@ public sealed partial class ElinModifierPlugin
             true);
 
         y += 10f;
-        y = AddLGuiSectionTitle(content, T("法术", "Spells"), y);
+        y = AddLGuiSectionTitle(content, T("能力", "Abilities"), y);
         y = CreateLGuiNpcTemplateValueGrid(
             content,
-            "NpcSpell",
+            "NpcAbility",
             analysis.Template.Spells,
             y,
             templateTooltip,
             true,
-            4);
+            4,
+            false,
+            true);
 
         y += 10f;
         y = AddLGuiSectionTitle(content, T("抗性", "Resistances"), y);
