@@ -6,7 +6,7 @@ using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 using HarmonyLib;
 
-internal sealed class AllowPcGeneImplantModule
+internal sealed partial class AllowPcGeneImplantModule
 {
     private sealed class PendingImmediateImplant
     {
@@ -30,11 +30,15 @@ internal sealed class AllowPcGeneImplantModule
     private readonly IBoundGameMethod _applyDna;
     private readonly IBoundGameMethod _destroyCard;
     private readonly ConstructorInfo? _geneInventoryConstructor;
+    private readonly PcGeneAbilityProjection _abilityProjection;
+    private readonly PcGeneAbilityMutationIsolation _abilityMutationIsolation;
     private readonly ConditionalWeakTable<InvOwnerGene, PendingImmediateImplant>
         _pendingImmediateImplants =
             new ConditionalWeakTable<InvOwnerGene, PendingImmediateImplant>();
 
     internal AllowPcGeneImplantModule(
+        IGameRuntimeContext runtime,
+        IGameSourceRepository sources,
         ICharacterGameAccess characters,
         IGameMemberBinder binder)
     {
@@ -83,6 +87,14 @@ internal sealed class AllowPcGeneImplantModule
         _geneInventoryConstructor = AccessTools.Constructor(
             typeof(InvOwnerGene),
             new[] { typeof(Card), typeof(Chara) });
+        _abilityProjection = new PcGeneAbilityProjection(
+            runtime,
+            sources,
+            characters,
+            binder);
+        _abilityMutationIsolation = new PcGeneAbilityMutationIsolation(
+            characters,
+            binder);
     }
 
     internal bool Enabled { get; private set; }
@@ -90,11 +102,13 @@ internal sealed class AllowPcGeneImplantModule
     internal void Load(bool enabled)
     {
         Enabled = enabled;
+        _abilityProjection.Synchronize(Enabled, true);
     }
 
     internal void Reset()
     {
         Enabled = false;
+        _abilityProjection.Reset(true);
     }
 
     internal bool SetEnabled(bool enabled)
@@ -102,7 +116,13 @@ internal sealed class AllowPcGeneImplantModule
         if (Enabled == enabled)
             return false;
         Enabled = enabled;
+        _abilityProjection.Synchronize(Enabled, true);
         return true;
+    }
+
+    internal void Tick()
+    {
+        _abilityProjection.Synchronize(Enabled, true);
     }
 
     internal void AppendPlayerCharacter(BaseList list)
@@ -181,10 +201,13 @@ internal sealed class AllowPcGeneImplantModule
                 dna,
                 new object?[] { pending.Target },
                 out _))
+        {
             _destroyCard.TryInvoke(
                 pending.Gene,
                 Array.Empty<object?>(),
                 out _);
+            _abilityProjection.Synchronize(Enabled, true);
+        }
     }
 
     private bool IsReady =>
@@ -199,7 +222,7 @@ internal sealed class AllowPcGeneImplantModule
         _geneInventoryConstructor != null;
 }
 
-internal static class AllowPcGeneImplantPatchContext
+internal static partial class AllowPcGeneImplantPatchContext
 {
     internal static AllowPcGeneImplantModule? Current =>
         ElinModifierPlugin.ActiveModules?.AllowPcGeneImplant;
@@ -237,7 +260,7 @@ internal static class AllowPcGeneImplantPatchContext
 
 }
 
-internal static class AllowPcGeneImplantReflection
+internal static partial class AllowPcGeneImplantReflection
 {
     internal static readonly Lazy<MethodInfo?> TargetListCallback =
         new Lazy<MethodInfo?>(ResolveTargetListCallback);

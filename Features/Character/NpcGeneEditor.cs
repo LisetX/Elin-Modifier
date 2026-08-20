@@ -138,15 +138,15 @@ public sealed partial class ElinModifierPlugin
         }
         return result;
     }
-    private void ApplyNpcGeneChange(Chara target)
+    private void ApplyNpcGeneChange(Chara target, bool isPc = false)
     {
-        ApplyNpcGeneChangeInternal(target, false);
+        ApplyNpcGeneChangeInternal(target, false, isPc);
     }
-    private void AddNpcGene(Chara target)
+    private void AddNpcGene(Chara target, bool isPc = false)
     {
-        ApplyNpcGeneChangeInternal(target, true);
+        ApplyNpcGeneChangeInternal(target, true, isPc);
     }
-    private void DeleteNpcGene(Chara target)
+    private void DeleteNpcGene(Chara target, bool isPc = false)
     {
         if (!CanEditNpcGene(target))
             return;
@@ -156,15 +156,18 @@ public sealed partial class ElinModifierPlugin
             _log = T("未选中基因", "No gene selected");
             return;
         }
-        DeleteNpcGeneAt(target, _npcGeneSelectedIndex);
+        DeleteNpcGeneAt(target, _npcGeneSelectedIndex, isPc);
     }
-    private void DeleteNpcGeneAt(Chara target, int index)
+    private void DeleteNpcGeneAt(
+        Chara target,
+        int index,
+        bool isPc = false)
     {
         try
         {
             if (!CanEditNpcGene(target))
             {
-                _log = T("目标NPC不存在", "Target NPC does not exist");
+                _log = T("未获取到人物数据", "No character data");
                 return;
             }
 
@@ -179,7 +182,7 @@ public sealed partial class ElinModifierPlugin
             RemoveNpcGeneSilently(target, dna);
             try { target.RemoveAllStances(); } catch { }
             try { target.Refresh(false); } catch { }
-            InvalidateCachedUiValues(GetTargetCachePrefix(target, false));
+            InvalidateCachedUiValues(GetTargetCachePrefix(target, isPc));
 
             _npcGeneSelectedIndex = genes.Count == 0 ? -1 : Math.Min(index, genes.Count - 1);
             if (_npcGeneSelectedIndex >= 0)
@@ -187,20 +190,25 @@ public sealed partial class ElinModifierPlugin
             else
                 ResetNpcGeneEditorDraft(target);
 
-            _log = T("已删除NPC基因: ", "Deleted NPC gene: ") + SafeName(target);
+            _log = isPc
+                ? T("已删除玩家基因: ", "Deleted player gene: ") + SafeName(target)
+                : T("已删除NPC基因: ", "Deleted NPC gene: ") + SafeName(target);
         }
         catch (Exception ex)
         {
             _log = T("删除NPC基因失败: ", "Delete NPC gene failed: ") + ex.Message;
         }
     }
-    private void ApplyNpcGeneChangeInternal(Chara target, bool addNew)
+    private void ApplyNpcGeneChangeInternal(
+        Chara target,
+        bool addNew,
+        bool isPc)
     {
         try
         {
             if (!CanEditNpcGene(target))
             {
-                _log = T("目标NPC不存在", "Target NPC does not exist");
+                _log = T("未获取到人物数据", "No character data");
                 return;
             }
 
@@ -243,12 +251,18 @@ public sealed partial class ElinModifierPlugin
             }
 
             try { target.Refresh(false); } catch { }
-            InvalidateCachedUiValues(GetTargetCachePrefix(target, false));
+            InvalidateCachedUiValues(GetTargetCachePrefix(target, isPc));
 
             if (_npcGeneSelectedIndex >= 0 && _npcGeneSelectedIndex < currentGenes.Count)
                 LoadNpcGeneEditorFields(target, currentGenes[_npcGeneSelectedIndex], _npcGeneSelectedIndex);
 
-            _log = (editingExisting ? T("已修改NPC基因: ", "Modified NPC gene: ") : T("已新增NPC基因: ", "Added NPC gene: ")) + SafeName(target);
+            _log = isPc
+                ? (editingExisting
+                    ? T("已修改玩家基因: ", "Modified player gene: ")
+                    : T("已新增玩家基因: ", "Added player gene: ")) + SafeName(target)
+                : (editingExisting
+                    ? T("已修改NPC基因: ", "Modified NPC gene: ")
+                    : T("已新增NPC基因: ", "Added NPC gene: ")) + SafeName(target);
         }
         catch (Exception ex)
         {

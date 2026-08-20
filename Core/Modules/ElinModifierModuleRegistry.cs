@@ -57,6 +57,8 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
                 binder);
             CharacterPanelGenes = new CharacterPanelGenesModule(binder);
             AllowPcGeneImplant = new AllowPcGeneImplantModule(
+                _gameServices.Runtime,
+                _gameServices.Sources,
                 _gameServices.Characters,
                 binder);
             GuaranteedGatheringRewards = new GuaranteedGatheringRewardsModule();
@@ -258,7 +260,9 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         Register("feature.ignore-crop-growth-conditions", 1230, 0, IgnoreCropGrowthConditions);
         Register("feature.all-feats-learnable", 1233, 0, AllFeatsLearnable);
         Register("feature.character-panel-genes", 1235, 0, CharacterPanelGenes);
-        Register("feature.allow-pc-gene-implant", 1236, 0, AllowPcGeneImplant);
+        Register("feature.allow-pc-gene-implant", 1236, 0, AllowPcGeneImplant,
+            tick: AllowPcGeneImplant.Tick,
+            shutdown: AllowPcGeneImplant.Reset);
         Register("feature.guaranteed-gathering-rewards", 1240, 0, GuaranteedGatheringRewards);
         Register("feature.special-npc-hatch", 1250, 0, SpecialNpcHatch);
         Register("feature.special-npc-capture", 1260, 0, SpecialNpcCapture);

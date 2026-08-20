@@ -98,6 +98,10 @@ public sealed partial class ElinModifierPlugin
             AddLGuiCharacterActionSection("npcRelationship", T("NPC关系与信仰", "NPC relation & faith"), target, false);
             AddLGuiCharacterActionSection("npcGene", T("基因编辑", "Gene editor"), target, false);
         }
+        else
+        {
+            AddLGuiCharacterActionSection("playerGene", T("基因编辑", "Gene editor"), target, true);
+        }
         AddLGuiCharacterActionSection("etherDisease", T("以太病编辑", "Ether disease editor"), target, isPc);
         _lGuiCharacterList.SetItems(_lGuiCharacterRows);
     }
@@ -115,7 +119,8 @@ public sealed partial class ElinModifierPlugin
                 AddLGuiNpcRelationshipRows(target);
                 break;
             case "npcGene":
-                AddLGuiNpcGeneRows(target);
+            case "playerGene":
+                AddLGuiGeneRows(target, isPc);
                 break;
             case "etherDisease":
                 AddLGuiEtherDiseaseRows(target, isPc);
@@ -241,39 +246,39 @@ public sealed partial class ElinModifierPlugin
     {
         _lGuiCharacterRows.Add(new LGuiCharacterRow(label, target, isPc, action, index, "", payload, summary, depth));
     }
-    private void AddLGuiNpcGeneRows(Chara target)
+    private void AddLGuiGeneRows(Chara target, bool isPc)
     {
         SyncNpcGeneEditorState(target);
         var genes = GetNpcGeneList(target);
-        AddLGuiCharacterAction(target, false, T("应用当前基因修改", "Apply gene changes"), LGuiCharacterAction.NpcGeneApply);
-        AddLGuiCharacterAction(target, false, T("新增基因", "Add gene"), LGuiCharacterAction.NpcGeneAdd);
+        AddLGuiCharacterAction(target, isPc, T("应用当前基因修改", "Apply gene changes"), LGuiCharacterAction.NpcGeneApply);
+        AddLGuiCharacterAction(target, isPc, T("新增基因", "Add gene"), LGuiCharacterAction.NpcGeneAdd);
 
         for (var i = 0; i < genes.Count; i++)
         {
             var prefix = i == _npcGeneSelectedIndex ? "-> " : "";
             _lGuiCharacterRows.Add(new LGuiCharacterRow(
                 prefix + (i + 1).ToString(CultureInfo.InvariantCulture) + ". " + GetNpcGeneSummary(genes[i]),
-                target, false, LGuiCharacterAction.NpcGeneSelect, i, "", "", i == _npcGeneSelectedIndex ? T("当前选中", "Selected") : "", 2));
+                target, isPc, LGuiCharacterAction.NpcGeneSelect, i, "", "", i == _npcGeneSelectedIndex ? T("当前选中", "Selected") : "", 2));
         }
 
         if (genes.Count == 0)
-            AddLGuiCharacterAction(target, false, T("-> 无", "-> None"), LGuiCharacterAction.ReadOnly, -1, "", "", 2);
+            AddLGuiCharacterAction(target, isPc, T("-> 无", "-> None"), LGuiCharacterAction.ReadOnly, -1, "", "", 2);
 
-        AddLGuiCharacterActionInput(target, false, T("源ID", "Source ID"), T("当前: ", "Current: ") + _npcGeneSourceId, LGuiCharacterAction.NpcGeneField, "source", _npcGeneSourceId);
-        AddLGuiCharacterAction(target, false, T("类别", "Category"), LGuiCharacterAction.NpcGeneTypePopup, -1, "", T("当前: ", "Current: ") + GetNpcGeneTypeLabel(_npcGeneTypeIndex));
-        AddLGuiCharacterActionInput(target, false, T("等级", "Level"), T("当前: ", "Current: ") + _npcGeneLv, LGuiCharacterAction.NpcGeneField, "level", _npcGeneLv);
-        AddLGuiCharacterActionInput(target, false, T("种子", "Seed"), T("当前: ", "Current: ") + _npcGeneSeed, LGuiCharacterAction.NpcGeneField, "seed", _npcGeneSeed);
-        AddLGuiCharacterActionInput(target, false, T("费用", "Cost"), T("当前: ", "Current: ") + _npcGeneCost, LGuiCharacterAction.NpcGeneField, "cost", _npcGeneCost);
-        AddLGuiCharacterActionInput(target, false, T("槽位", "Slots"), T("当前: ", "Current: ") + _npcGeneSlot, LGuiCharacterAction.NpcGeneField, "slot", _npcGeneSlot);
+        AddLGuiCharacterActionInput(target, isPc, T("源ID", "Source ID"), T("当前: ", "Current: ") + _npcGeneSourceId, LGuiCharacterAction.NpcGeneField, "source", _npcGeneSourceId);
+        AddLGuiCharacterAction(target, isPc, T("类别", "Category"), LGuiCharacterAction.NpcGeneTypePopup, -1, "", T("当前: ", "Current: ") + GetNpcGeneTypeLabel(_npcGeneTypeIndex));
+        AddLGuiCharacterActionInput(target, isPc, T("等级", "Level"), T("当前: ", "Current: ") + _npcGeneLv, LGuiCharacterAction.NpcGeneField, "level", _npcGeneLv);
+        AddLGuiCharacterActionInput(target, isPc, T("种子", "Seed"), T("当前: ", "Current: ") + _npcGeneSeed, LGuiCharacterAction.NpcGeneField, "seed", _npcGeneSeed);
+        AddLGuiCharacterActionInput(target, isPc, T("费用", "Cost"), T("当前: ", "Current: ") + _npcGeneCost, LGuiCharacterAction.NpcGeneField, "cost", _npcGeneCost);
+        AddLGuiCharacterActionInput(target, isPc, T("槽位", "Slots"), T("当前: ", "Current: ") + _npcGeneSlot, LGuiCharacterAction.NpcGeneField, "slot", _npcGeneSlot);
 
         for (var i = 0; i < _npcGeneEditorValues.Count; i++)
         {
             var value = _npcGeneEditorValues[i];
-            AddLGuiCharacterActionInput(target, false, T("基因效果ID", "Gene effect ID") + ": " + GetGeneEffectName(value.ElementId), T("当前: ", "Current: ") + value.ElementId, LGuiCharacterAction.NpcGeneEffectId, "effectId", value.ElementId, i, 2);
-            AddLGuiCharacterActionInput(target, false, T("基因效果数值", "Gene effect value"), T("当前: ", "Current: ") + value.Value, LGuiCharacterAction.NpcGeneEffectValue, "effectValue", value.Value, i, 2);
+            AddLGuiCharacterActionInput(target, isPc, T("基因效果ID", "Gene effect ID") + ": " + GetGeneEffectName(value.ElementId), T("当前: ", "Current: ") + value.ElementId, LGuiCharacterAction.NpcGeneEffectId, "effectId", value.ElementId, i, 2);
+            AddLGuiCharacterActionInput(target, isPc, T("基因效果数值", "Gene effect value"), T("当前: ", "Current: ") + value.Value, LGuiCharacterAction.NpcGeneEffectValue, "effectValue", value.Value, i, 2);
         }
-        AddLGuiCharacterAction(target, false, T("添加基因效果", "Add gene effect"), LGuiCharacterAction.NpcGeneEffectAdd, -1, "", "", 2);
-        AddLGuiCharacterAction(target, false, T("基因对应表", "Gene table"), LGuiCharacterAction.NpcGeneEffectTablePopup, -1, "", "", 2);
+        AddLGuiCharacterAction(target, isPc, T("添加基因效果", "Add gene effect"), LGuiCharacterAction.NpcGeneEffectAdd, -1, "", "", 2);
+        AddLGuiCharacterAction(target, isPc, T("基因对应表", "Gene table"), LGuiCharacterAction.NpcGeneEffectTablePopup, -1, "", "", 2);
     }
     private void AddLGuiEtherDiseaseRows(Chara target, bool isPc)
     {

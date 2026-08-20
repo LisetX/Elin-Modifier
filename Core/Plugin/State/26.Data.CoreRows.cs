@@ -34,7 +34,8 @@ public sealed partial class ElinModifierPlugin
         new RowDef("61", "玛那", RowKind.Element),
         new RowDef("62", "活力", RowKind.Element),
         new RowDef("79", "速度", RowKind.Element),
-        new RowDef("feat", "专长点", RowKind.CharaIntProperty)
+        new RowDef("feat", "专长点", RowKind.CharaIntProperty),
+        new RowDef("MaxGeneSlot", "基因槽数量", RowKind.GeneSlot)
     };
     private readonly RowDef[] _npcStatusRows =
     {

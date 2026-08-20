@@ -165,16 +165,16 @@ public sealed partial class ElinModifierPlugin
                     LoadNpcGeneEditorFields(target, genes[model.ActionIndex], model.ActionIndex);
                 break;
             case LGuiCharacterAction.NpcGeneApply:
-                ApplyNpcGeneChange(target);
+                ApplyNpcGeneChange(target, model.IsPc);
                 break;
             case LGuiCharacterAction.NpcGeneAdd:
-                AddNpcGene(target);
+                AddNpcGene(target, model.IsPc);
                 break;
             case LGuiCharacterAction.NpcGeneTypePopup:
                 OpenLGuiNpcGeneTypeSelector(target, false);
                 return;
             case LGuiCharacterAction.NpcGeneField:
-                ApplyLGuiNpcGeneField(target, model.ActionPayload, text);
+                ApplyLGuiNpcGeneField(target, model.ActionPayload, text, model.IsPc);
                 break;
             case LGuiCharacterAction.NpcGeneEffectId:
             case LGuiCharacterAction.NpcGeneEffectValue:
@@ -184,7 +184,7 @@ public sealed partial class ElinModifierPlugin
                         _npcGeneEditorValues[model.ActionIndex].ElementId = text;
                     else
                         _npcGeneEditorValues[model.ActionIndex].Value = text;
-                    ApplyNpcGeneChange(target);
+                    ApplyNpcGeneChange(target, model.IsPc);
                 }
                 break;
             case LGuiCharacterAction.NpcGeneEffectAdd:
@@ -219,7 +219,11 @@ public sealed partial class ElinModifierPlugin
         MarkCharacterDataDirty();
         RebuildLGuiCharacterRows();
     }
-    private void ApplyLGuiNpcGeneField(Chara target, string field, string value)
+    private void ApplyLGuiNpcGeneField(
+        Chara target,
+        string field,
+        string value,
+        bool isPc)
     {
         switch (field)
         {
@@ -229,18 +233,18 @@ public sealed partial class ElinModifierPlugin
             case "cost": _npcGeneCost = value; break;
             case "slot": _npcGeneSlot = value; break;
         }
-        ApplyNpcGeneChange(target);
+        ApplyNpcGeneChange(target, isPc);
     }
     void ILGuiRowHandler.OnLGuiRowAuxiliary(LGuiRowView row)
     {
         if (row.BoundData is LGuiCharacterRow action && action.Target != null)
         {
             if (action.Action == LGuiCharacterAction.NpcGeneSelect)
-                DeleteNpcGeneAt(action.Target, action.ActionIndex);
+                DeleteNpcGeneAt(action.Target, action.ActionIndex, action.IsPc);
             else if (action.Action == LGuiCharacterAction.NpcGeneEffectId && action.ActionIndex >= 0 && action.ActionIndex < _npcGeneEditorValues.Count)
             {
                 _npcGeneEditorValues.RemoveAt(action.ActionIndex);
-                ApplyNpcGeneChange(action.Target);
+                ApplyNpcGeneChange(action.Target, action.IsPc);
             }
             else if (action.Action == LGuiCharacterAction.EtherSelect)
             {
