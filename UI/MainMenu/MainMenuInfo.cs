@@ -201,8 +201,8 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* [P3] 修复\"AI指示\"的\"使用指定能力\"的等级显示异常问题",
-                        "* [P3] Fixed incorrect level display in \"AI Instructions\" > \"Use Specified Ability\""),
+                        "* 新增\"主能力经验倍率\"，仅影响主能力经验的直接获取渠道，例如食物、撬锁等",
+                        "* Added \"Main Ability EXP Multiplier\", which only affects direct sources of main ability EXP, such as food and lockpicking"),
                 }
             };
 

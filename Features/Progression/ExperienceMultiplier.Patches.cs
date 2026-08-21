@@ -45,17 +45,25 @@ public sealed partial class ElinModifierPlugin
     [HarmonyPatch(typeof(ElementContainer), "ModExp", new[] { typeof(int), typeof(float), typeof(bool) })]
     private static class ElementContainerSkillExperienceMultiplierPatch
     {
-        private static void Prefix(ElementContainer __instance, int __0, ref float __1, out bool __state)
+        private static void Prefix(ElementContainer __instance, int __0, ref float __1, bool __2, out bool __state)
         {
             __state = false;
             try
             {
                 var instance = Instance;
-                if (instance == null || !instance._modules.Progression.ExperienceMultiplierEnabled || __1 <= 0f || _skillExperienceMultiplierDepth > 0)
+                if (instance == null || !instance._modules.Progression.ExperienceMultiplierEnabled || __1 <= 0f)
                     return;
                 var card = __instance?.Card;
                 var element = __instance?.GetElement(__0);
                 if (!IsExperienceMultiplierTarget(card) || element == null || element.source == null)
+                    return;
+                if (element.IsMainAttribute)
+                {
+                    if (!__2)
+                        __1 *= instance._modules.Progression.MainAbilityExperienceMultiplier;
+                    return;
+                }
+                if (_skillExperienceMultiplierDepth > 0)
                     return;
                 if (IsMagicExperienceElement(element))
                     __1 *= instance._modules.Progression.MagicExperienceMultiplier;

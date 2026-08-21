@@ -7,11 +7,13 @@ internal sealed class ProgressionModule
     internal bool ExperienceMultiplierEnabled { get; set; }
     internal bool ExperienceMultiplierIncludePcFaction { get; set; } = true;
     internal float CharacterLevelExperienceMultiplier { get; set; } = 1f;
+    internal float MainAbilityExperienceMultiplier { get; set; } = 1f;
     internal float SkillExperienceMultiplier { get; set; } = 1f;
     internal float MagicExperienceMultiplier { get; set; } = 1f;
     internal float FoodPotentialGainMultiplier { get; set; } = 1f;
     internal float TrainingPotentialGainMultiplier { get; set; } = 1f;
     internal string CharacterLevelExperienceMultiplierText { get; set; } = "1";
+    internal string MainAbilityExperienceMultiplierText { get; set; } = "1";
     internal string SkillExperienceMultiplierText { get; set; } = "1";
     internal string MagicExperienceMultiplierText { get; set; } = "1";
     internal string FoodPotentialGainMultiplierText { get; set; } = "1";
@@ -27,6 +29,7 @@ internal sealed class ProgressionModule
         ExperienceMultiplierEnabled = false;
         ExperienceMultiplierIncludePcFaction = true;
         CharacterLevelExperienceMultiplier = 1f;
+        MainAbilityExperienceMultiplier = 1f;
         SkillExperienceMultiplier = 1f;
         MagicExperienceMultiplier = 1f;
         FoodPotentialGainMultiplier = 1f;
@@ -42,6 +45,7 @@ internal sealed class ProgressionModule
     internal bool TryApplyMultiplierTextFields()
     {
         if (!TryParseMultiplier(CharacterLevelExperienceMultiplierText, out var characterLevel) ||
+            !TryParseMultiplier(MainAbilityExperienceMultiplierText, out var mainAbility) ||
             !TryParseMultiplier(SkillExperienceMultiplierText, out var skill) ||
             !TryParseMultiplier(MagicExperienceMultiplierText, out var magic) ||
             !TryParseMultiplier(FoodPotentialGainMultiplierText, out var foodPotential) ||
@@ -49,6 +53,7 @@ internal sealed class ProgressionModule
             return false;
 
         CharacterLevelExperienceMultiplier = characterLevel;
+        MainAbilityExperienceMultiplier = mainAbility;
         SkillExperienceMultiplier = skill;
         MagicExperienceMultiplier = magic;
         FoodPotentialGainMultiplier = foodPotential;
@@ -61,6 +66,8 @@ internal sealed class ProgressionModule
     {
         CharacterLevelExperienceMultiplierText =
             CharacterLevelExperienceMultiplier.ToString("0.###", CultureInfo.InvariantCulture);
+        MainAbilityExperienceMultiplierText =
+            MainAbilityExperienceMultiplier.ToString("0.###", CultureInfo.InvariantCulture);
         SkillExperienceMultiplierText =
             SkillExperienceMultiplier.ToString("0.###", CultureInfo.InvariantCulture);
         MagicExperienceMultiplierText =

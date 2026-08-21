@@ -175,6 +175,7 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"experienceMultiplierEnabled\": " + (_modules.Progression.ExperienceMultiplierEnabled ? "true" : "false") + ",");
             sb.AppendLine("  \"experienceMultiplierIncludePcFaction\": " + (_modules.Progression.ExperienceMultiplierIncludePcFaction ? "true" : "false") + ",");
             sb.AppendLine("  \"characterLevelExperienceMultiplier\": " + _modules.Progression.CharacterLevelExperienceMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
+            sb.AppendLine("  \"mainAbilityExperienceMultiplier\": " + _modules.Progression.MainAbilityExperienceMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
             sb.AppendLine("  \"skillExperienceMultiplier\": " + _modules.Progression.SkillExperienceMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
             sb.AppendLine("  \"magicExperienceMultiplier\": " + _modules.Progression.MagicExperienceMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
             sb.AppendLine("  \"foodPotentialGainMultiplier\": " + _modules.Progression.FoodPotentialGainMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");

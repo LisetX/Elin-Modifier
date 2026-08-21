@@ -135,7 +135,7 @@ public sealed partial class ElinModifierPlugin
             id == LGuiFeatureId.AttackCannotBeInterrupted ? 300f :
             id == LGuiFeatureId.AllPurposeWorkbench ? 300f :
             id == LGuiFeatureId.PlantHarvestMultiplier ? 360f :
-            id == LGuiFeatureId.ExperienceMultiplier ? 590f :
+            id == LGuiFeatureId.ExperienceMultiplier ? 648f :
             id == LGuiFeatureId.IgnoreBuffEffects ? 430f :
             id == LGuiFeatureId.KillGrowth ? 900f : id == LGuiFeatureId.ShowItemMoreInfo ? 760f : 900f;
         var modal = CreateLGuiCompleteModal("RuntimeFeatureConfiguration", titleText, out var content, 1260f, modalHeight);
@@ -247,27 +247,30 @@ public sealed partial class ElinModifierPlugin
             AddLGuiBoundInput(content, T("角色等级经验倍率", "Character level EXP multiplier"),
                 () => _modules.Progression.CharacterLevelExperienceMultiplierText,
                 value => _modules.Progression.CharacterLevelExperienceMultiplierText = value ?? "1", 68f, 360f);
+            AddLGuiBoundInput(content, T("主能力经验倍率", "Main ability EXP multiplier"),
+                () => _modules.Progression.MainAbilityExperienceMultiplierText,
+                value => _modules.Progression.MainAbilityExperienceMultiplierText = value ?? "1", 126f, 360f);
             AddLGuiBoundInput(content, T("技能经验倍率", "Skill EXP multiplier"),
                 () => _modules.Progression.SkillExperienceMultiplierText,
-                value => _modules.Progression.SkillExperienceMultiplierText = value ?? "1", 126f, 360f);
+                value => _modules.Progression.SkillExperienceMultiplierText = value ?? "1", 184f, 360f);
             AddLGuiBoundInput(content, T("魔法经验倍率", "Magic EXP multiplier"),
                 () => _modules.Progression.MagicExperienceMultiplierText,
-                value => _modules.Progression.MagicExperienceMultiplierText = value ?? "1", 184f, 360f);
+                value => _modules.Progression.MagicExperienceMultiplierText = value ?? "1", 242f, 360f);
             AddLGuiBoundInput(content, T("潜力获取倍率(食物来源)", "Potential gain multiplier (food)"),
                 () => _modules.Progression.FoodPotentialGainMultiplierText,
-                value => _modules.Progression.FoodPotentialGainMultiplierText = value ?? "1", 242f, 360f);
+                value => _modules.Progression.FoodPotentialGainMultiplierText = value ?? "1", 300f, 360f);
             AddLGuiBoundInput(content, T("潜力获取倍率(训练来源)", "Potential gain multiplier (training)"),
                 () => _modules.Progression.TrainingPotentialGainMultiplierText,
-                value => _modules.Progression.TrainingPotentialGainMultiplierText = value ?? "1", 300f, 360f);
+                value => _modules.Progression.TrainingPotentialGainMultiplierText = value ?? "1", 358f, 360f);
             var statusText = CreateLGuiText(content, "ExperienceMultiplierStatus", "", 16, TextAnchor.MiddleLeft, FontStyle.Normal);
-            PlaceLGuiRect(statusText.rectTransform, 180f, 368f, 760f, 48f);
-            CreateLGuiButton(content, "ApplyExperienceMultipliers", T("应用", "Apply"), 0f, 368f, 150f, 48f, () =>
+            PlaceLGuiRect(statusText.rectTransform, 180f, 426f, 760f, 48f);
+            CreateLGuiButton(content, "ApplyExperienceMultipliers", T("应用", "Apply"), 0f, 426f, 150f, 48f, () =>
             {
                 string status;
                 TryApplyExperienceMultiplierSettings(out status);
                 statusText.text = status;
             });
-            content.sizeDelta = new Vector2(0f, 438f);
+            content.sizeDelta = new Vector2(0f, 496f);
             ApplyLGuiVisualSettings();
             return;
         }

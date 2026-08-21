@@ -335,6 +335,7 @@ public sealed partial class ElinModifierPlugin
             _modules.Progression.ExperienceMultiplierEnabled = ExtractBool(json, "experienceMultiplierEnabled", false);
             _modules.Progression.ExperienceMultiplierIncludePcFaction = ExtractBool(json, "experienceMultiplierIncludePcFaction", true);
             _modules.Progression.CharacterLevelExperienceMultiplier = Mathf.Clamp(ExtractFloat(json, "characterLevelExperienceMultiplier", 1f), 0f, 1000000f);
+            _modules.Progression.MainAbilityExperienceMultiplier = Mathf.Clamp(ExtractFloat(json, "mainAbilityExperienceMultiplier", 1f), 0f, 1000000f);
             _modules.Progression.SkillExperienceMultiplier = Mathf.Clamp(ExtractFloat(json, "skillExperienceMultiplier", 1f), 0f, 1000000f);
             _modules.Progression.MagicExperienceMultiplier = Mathf.Clamp(ExtractFloat(json, "magicExperienceMultiplier", 1f), 0f, 1000000f);
             _modules.Progression.FoodPotentialGainMultiplier = Mathf.Clamp(ExtractFloat(json, "foodPotentialGainMultiplier", 1f), 0f, 1000000f);
@@ -604,6 +605,7 @@ public sealed partial class ElinModifierPlugin
         _modules.Progression.ExperienceMultiplierEnabled = false;
         _modules.Progression.ExperienceMultiplierIncludePcFaction = true;
         _modules.Progression.CharacterLevelExperienceMultiplier = 1f;
+        _modules.Progression.MainAbilityExperienceMultiplier = 1f;
         _modules.Progression.SkillExperienceMultiplier = 1f;
         _modules.Progression.MagicExperienceMultiplier = 1f;
         _modules.Progression.FoodPotentialGainMultiplier = 1f;
