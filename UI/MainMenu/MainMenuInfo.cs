@@ -201,14 +201,8 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* \"允许PC植入基因\"现已支持针对PC基因的能力\\法术独立映射，不覆盖PC原有能力\\法术库存，PC基因使能的能力\\法术库存无限，关闭功能后自动移除映射",
-                        "* \"Allow PC Gene Implantation\" now supports independent mapping of abilities and spells provided by PC genes without overriding existing PC ability or spell stock; gene-enabled abilities and spells have unlimited stock, and mappings are automatically removed when the feature is disabled"),
-                    host.TranslateModuleText(
-                        "* \"游戏数据修改\"支持针对PC的基因编辑",
-                        "* \"Game Data Modification\" now supports PC gene editing"),
-                    host.TranslateModuleText(
-                        "* \"游戏数据修改\"添加针对PC的基因槽的修改",
-                        "* \"Game Data Modification\" now supports modifying PC gene slots"),
+                        "* [P3] 修复\"AI指示\"的\"使用指定能力\"的等级显示异常问题",
+                        "* [P3] Fixed incorrect level display in \"AI Instructions\" > \"Use Specified Ability\""),
                 }
             };
 

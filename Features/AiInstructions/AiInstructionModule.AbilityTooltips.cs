@@ -9,6 +9,11 @@ internal sealed partial class AiInstructionModule
     {
         if (button == null)
             return;
+        if (button.keyText != null)
+        {
+            button.keyText.SetText("");
+            button.keyText.enabled = false;
+        }
         try
         {
             if (button.icon != null)
@@ -48,9 +53,24 @@ internal sealed partial class AiInstructionModule
         var ability = choice.Ability;
         var source = ability.source;
         Element? element = null;
-        try { element = actor.elements.GetOrCreateElement(ability.id); }
+        try { element = actor.elements.GetElement(ability.id); }
         catch
         {
+        }
+        var currentDisplayLevel = SafeAbilityTooltipInt(() => element?.DisplayValue ?? 0, 0);
+        var currentBaseLevel = SafeAbilityTooltipInt(() => element?.ValueWithoutLink ?? 0, 0);
+        if (element == null || choice.Level > 0 && currentDisplayLevel <= 0 && currentBaseLevel <= 0)
+        {
+            try
+            {
+                element = Element.Create(ability.id, choice.Level);
+                if (element != null)
+                    element.owner = actor.elements;
+            }
+            catch
+            {
+                element = null;
+            }
         }
 
         var title = SafeAbilityTooltipText(() => element?.FullName, choice.Name);

@@ -434,12 +434,24 @@ internal sealed partial class AiInstructionModule
 
     private static int GetAbilityLevel(Chara actor, Act ability)
     {
-        try { return Math.Max(0, actor.elements.ValueWithoutLink(ability.id)); }
+        try
+        {
+            var element = actor.elements.GetElement(ability.id);
+            if (element != null)
+            {
+                var displayLevel = Math.Max(0, element.DisplayValue);
+                if (displayLevel > 0)
+                    return displayLevel;
+                var baseLevel = Math.Max(0, element.ValueWithoutLink);
+                if (baseLevel > 0)
+                    return baseLevel;
+            }
+        }
         catch
         {
-            try { return Math.Max(0, ability.source?.LV ?? 0); }
-            catch { return 0; }
         }
+        try { return Math.Max(0, ability.source?.LV ?? 0); }
+        catch { return 0; }
     }
 
     private static bool IsValidActor(Chara? actor)
