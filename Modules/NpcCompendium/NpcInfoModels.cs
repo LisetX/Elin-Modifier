@@ -53,6 +53,8 @@ internal sealed class NpcAbilityTooltipInfo
 {
     internal int DisplayLevel;
     internal string Target = "";
+    internal bool IsPartyTarget;
+    internal int UsageChance;
     internal bool HasSuccessRate;
     internal int SuccessRate;
     internal string RelatedAbility = "";

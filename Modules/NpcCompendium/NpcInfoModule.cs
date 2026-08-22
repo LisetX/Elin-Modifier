@@ -21,6 +21,8 @@ internal sealed partial class NpcInfoModule
     private readonly Dictionary<string, string> _biomeDisplayNameCache =
         new Dictionary<string, string>(StringComparer.Ordinal);
     private readonly List<string> _spawnListIds = new List<string>();
+    private readonly Dictionary<string, string> _extendedSearchTextCache =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
     private List<BiomeProfile>? _biomes;
     private object? _sourceIdentity;
 
@@ -71,7 +73,8 @@ internal sealed partial class NpcInfoModule
                 npc.Race.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0 &&
                 npc.Job.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0 &&
                 npc.Biome.IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0 &&
-                FormatBiomeName(npc.Biome).IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0)
+                FormatBiomeName(npc.Biome).IndexOf(filter, StringComparison.OrdinalIgnoreCase) < 0 &&
+                !MatchesExtendedNpcFilter(npc, filter))
                 continue;
             result.Add(npc);
         }
@@ -86,6 +89,7 @@ internal sealed partial class NpcInfoModule
         _spawnListCache.Clear();
         _distributionCache.Clear();
         _biomeDisplayNameCache.Clear();
+        _extendedSearchTextCache.Clear();
         _spawnListIds.Clear();
         _biomes = null;
         EnsureData();

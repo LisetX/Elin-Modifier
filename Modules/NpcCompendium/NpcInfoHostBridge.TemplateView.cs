@@ -133,6 +133,12 @@ public sealed partial class ElinModifierPlugin
             entry.Name,
             null,
             BuildLGuiNpcTemplateTooltipBody(entry));
+        content.TitleSuffix =
+            T("模式:", "Mode:") +
+            (ability.IsPartyTarget ? T("群体", "Group") : T("单体", "Single")) +
+            "    " + T("使用概率:", "Usage chance:") +
+            ability.UsageChance.ToString(CultureInfo.InvariantCulture) + "%";
+        content.BaseFontSize = GetEffectiveUiFontSize();
         content.UsePlainTextColors = true;
         var chance = ability.HasSuccessRate
             ? ability.SuccessRate.ToString(CultureInfo.InvariantCulture) + "%"

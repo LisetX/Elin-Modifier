@@ -85,11 +85,13 @@ public sealed partial class ElinModifierPlugin
         var filterLabel = CreateLGuiText(
             content,
             "NpcInfoFilterLabel",
-            T("NPC名称 / ID / 种族 / 职业 / 群落", "NPC name / ID / race / job / biome"),
+            T(
+                "NPC名称 / ID / 种族 / 职业 / 群落 / 装备 / 专长 / 能力 / 附魔 / 掉落物",
+                "NPC name / ID / race / job / biome / equipment / feat / ability / enchantment / drop"),
             15,
             TextAnchor.MiddleLeft,
             FontStyle.Normal);
-        PlaceLGuiRect(filterLabel.rectTransform, 0f, y, 430f, 28f);
+        PlaceLGuiRect(filterLabel.rectTransform, 0f, y, 1360f, 28f);
         y += 28f;
         var filter = CreateLGuiInput(content, "NpcInfoFilter", T("搜索NPC", "Search NPCs"), 0f, y, 500f, 44f);
         filter.text = module.Filter;

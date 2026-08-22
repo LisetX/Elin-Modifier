@@ -201,8 +201,14 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 新增\"主能力经验倍率\"，仅影响主能力经验的直接获取渠道，例如食物、撬锁等",
-                        "* Added \"Main Ability EXP Multiplier\", which only affects direct sources of main ability EXP, such as food and lockpicking"),
+                        "* \"NPC图鉴\"优化，支持\"装备\"名字/ID、\"专长\"名字/ID、\"能力\"名字/ID、\"附魔\"名字/ID、\"掉落物\"名字/ID进行NPC检索",
+                        "* Optimized \"NPC Compendium\" with NPC searches by equipment, feat, ability, enchantment, and drop name/ID"),
+                    host.TranslateModuleText(
+                        "* \"NPC图鉴\"的\"能力\"栏优化，新增\"模式\"、\"使用概率\"显示",
+                        "* Optimized the \"Abilities\" section in \"NPC Compendium\" with mode and usage chance displays"),
+                    host.TranslateModuleText(
+                        "* \"NPC图鉴\"中\"能力\"栏部分控件进行UI设置适配",
+                        "* Adapted selected controls in the \"Abilities\" section of \"NPC Compendium\" to UI settings"),
                 }
             };
 

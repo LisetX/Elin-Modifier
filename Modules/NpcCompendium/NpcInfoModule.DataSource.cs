@@ -22,6 +22,7 @@ internal sealed partial class NpcInfoModule
         _spawnListCache.Clear();
         _distributionCache.Clear();
         _biomeDisplayNameCache.Clear();
+        _extendedSearchTextCache.Clear();
         _spawnListIds.Clear();
         _biomes = null;
         if (sourceIdentity == null)

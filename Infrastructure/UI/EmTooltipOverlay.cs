@@ -14,6 +14,8 @@ internal sealed class EmTooltipContent
     }
 
     internal string Title { get; }
+    internal string TitleSuffix { get; set; } = "";
+    internal int BaseFontSize { get; set; } = 13;
     internal Sprite? Icon { get; }
     internal string Description { get; }
     internal bool UsePlainTextColors { get; set; }
@@ -263,8 +265,14 @@ internal sealed class EmTooltipOverlay : MonoBehaviour
         if (_panel == null || _font == null)
             return;
         var width = _bounds == null ? Width : Mathf.Clamp(_bounds.rect.width - 24f, 260f, Width);
+        var baseFontSize = Mathf.Clamp(content.BaseFontSize, 1, 60);
+        var titleFontSize = Mathf.Clamp(baseFontSize + 4, 1, 60);
+        var descriptionFontSize = Mathf.Clamp(baseFontSize + 1, 1, 60);
+        var footerFontSize = Mathf.Clamp(baseFontSize + 3, 1, 60);
         var y = Margin;
-        var headerHeight = content.Icon != null ? 48f : 28f;
+        var headerHeight = content.Icon != null
+            ? Mathf.Max(48f, titleFontSize + 10f)
+            : Mathf.Max(28f, titleFontSize + 10f);
         var titleColor = content.UsePlainTextColors
             ? style.ResolveContentColor(Color.white, true)
             : style.ResolveTitleColor();
@@ -274,13 +282,19 @@ internal sealed class EmTooltipOverlay : MonoBehaviour
         if (content.Icon != null)
             CreateImage("HeaderIcon", content.Icon, Margin, y, 48f, 48f);
         var titleX = content.Icon != null ? 74f : Margin;
-        var title = CreateText("Title", content.Title, 17, FontStyle.Normal, titleColor);
+        var titleValue = content.Title;
+        if (!string.IsNullOrWhiteSpace(content.TitleSuffix))
+            titleValue += "  <size=" + baseFontSize + ">" + content.TitleSuffix + "</size>";
+        var title = CreateText("Title", titleValue, titleFontSize, FontStyle.Normal, titleColor);
+        headerHeight = Mathf.Max(
+            headerHeight,
+            Measure(title, width - titleX - Margin, titleFontSize + 10f, 180f));
         SetTopLeft(title.rectTransform, titleX, y, width - titleX - Margin, headerHeight);
         y += headerHeight + 10f;
         if (!string.IsNullOrWhiteSpace(content.Description))
         {
-            var description = CreateText("Description", content.Description, 14, FontStyle.Italic, descriptionColor);
-            var height = Measure(description, width - Margin * 2f, 22f, 150f);
+            var description = CreateText("Description", content.Description, descriptionFontSize, FontStyle.Italic, descriptionColor);
+            var height = Measure(description, width - Margin * 2f, Mathf.Max(22f, descriptionFontSize + 8f), 180f);
             SetTopLeft(description.rectTransform, Margin, y, width - Margin * 2f, height);
             y += height + 10f;
         }
@@ -292,7 +306,7 @@ internal sealed class EmTooltipOverlay : MonoBehaviour
             var lineColor = style.ResolveContentColor(line.Color, content.UsePlainTextColors);
             if (line.Icon != null && !string.IsNullOrWhiteSpace(line.Prefix))
             {
-                var prefix = CreateText("LinePrefix" + i, line.Prefix, 13, FontStyle.Normal, lineColor);
+                var prefix = CreateText("LinePrefix" + i, line.Prefix, baseFontSize, FontStyle.Normal, lineColor);
                 prefix.alignment = TextAnchor.MiddleLeft;
                 SetTopLeft(prefix.rectTransform, Margin, y, width - Margin * 2f, 24f);
                 LayoutRebuilder.ForceRebuildLayoutImmediate(prefix.rectTransform);
@@ -300,9 +314,9 @@ internal sealed class EmTooltipOverlay : MonoBehaviour
                 var iconX = Margin + prefixWidth + 7f;
                 var inlineTextX = iconX + 27f;
                 var inlineTextWidth = width - inlineTextX - Margin;
-                var inlineText = CreateText("Line" + i, line.Text, 13, FontStyle.Normal, lineColor);
+                var inlineText = CreateText("Line" + i, line.Text, baseFontSize, FontStyle.Normal, lineColor);
                 inlineText.alignment = TextAnchor.MiddleLeft;
-                var inlineHeight = Measure(inlineText, inlineTextWidth, 24f, 120f);
+                var inlineHeight = Measure(inlineText, inlineTextWidth, Mathf.Max(24f, baseFontSize + 8f), 160f);
                 SetTopLeft(prefix.rectTransform, Margin, y, prefixWidth, inlineHeight);
                 CreateImage("LineIcon" + i, line.Icon, iconX, y + Mathf.Max(0f, (inlineHeight - 22f) * 0.5f), 22f, 22f);
                 SetTopLeft(inlineText.rectTransform, inlineTextX, y, inlineTextWidth, inlineHeight);
@@ -312,8 +326,8 @@ internal sealed class EmTooltipOverlay : MonoBehaviour
             var hasIcon = line.Icon != null;
             var textX = hasIcon ? 44f : Margin;
             var textWidth = width - textX - Margin;
-            var text = CreateText("Line" + i, line.Text, 13, FontStyle.Normal, lineColor);
-            var height = Measure(text, textWidth, 24f, 120f);
+            var text = CreateText("Line" + i, line.Text, baseFontSize, FontStyle.Normal, lineColor);
+            var height = Measure(text, textWidth, Mathf.Max(24f, baseFontSize + 8f), 160f);
             if (hasIcon)
                 CreateImage("LineIcon" + i, line.Icon!, Margin, y + Mathf.Max(0f, (height - 22f) * 0.5f), 22f, 22f);
             SetTopLeft(text.rectTransform, textX, y, textWidth, height);
@@ -324,6 +338,7 @@ internal sealed class EmTooltipOverlay : MonoBehaviour
         if (footerItems.Count > 0)
         {
             y += 3f;
+            var footerHeight = Mathf.Max(24f, footerFontSize + 8f);
             var texts = new List<Text>(footerItems.Count);
             var itemWidths = new float[footerItems.Count];
             var totalWidth = 0f;
@@ -331,9 +346,9 @@ internal sealed class EmTooltipOverlay : MonoBehaviour
             {
                 var item = footerItems[i];
                 var footerColor = style.ResolveContentColor(item.Color, content.UsePlainTextColors);
-                var text = CreateText("FooterText" + i, item.Text, 16, FontStyle.Normal, footerColor);
+                var text = CreateText("FooterText" + i, item.Text, footerFontSize, FontStyle.Normal, footerColor);
                 text.alignment = TextAnchor.MiddleLeft;
-                SetTopLeft(text.rectTransform, 0f, 0f, 88f, 24f);
+                SetTopLeft(text.rectTransform, 0f, 0f, 88f, footerHeight);
                 LayoutRebuilder.ForceRebuildLayoutImmediate(text.rectTransform);
                 var textWidth = Mathf.Clamp(Mathf.Ceil(text.preferredWidth), 12f, 88f);
                 var itemWidth = 29f + textWidth;
@@ -346,11 +361,11 @@ internal sealed class EmTooltipOverlay : MonoBehaviour
             for (var i = 0; i < footerItems.Count; i++)
             {
                 var item = footerItems[i];
-                CreateImage("FooterIcon" + i, item.Icon!, x, y, 24f, 24f);
-                SetTopLeft(texts[i].rectTransform, x + 29f, y, itemWidths[i] - 29f, 24f);
+                CreateImage("FooterIcon" + i, item.Icon!, x, y + Mathf.Max(0f, (footerHeight - 24f) * 0.5f), 24f, 24f);
+                SetTopLeft(texts[i].rectTransform, x + 29f, y, itemWidths[i] - 29f, footerHeight);
                 x += itemWidths[i] + 12f;
             }
-            y += 29f;
+            y += footerHeight + 5f;
         }
         _panel.sizeDelta = new Vector2(width, y + Margin - 5f);
     }

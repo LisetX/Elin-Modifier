@@ -986,13 +986,7 @@ internal sealed partial class NpcInfoModule
                 catch
                 {
                 }
-                var tooltip = new NpcAbilityTooltipInfo
-                {
-                    DisplayLevel = element.DisplayValue,
-                    Target = ResolveNpcTemplateAbilityTarget(act),
-                    Power = element.GetPower(template),
-                    HasPower = source != null && source.lvFactor > 0
-                };
+                var tooltip = CreateNpcTemplateAbilityTooltipInfo(template, entry, act, element, source);
                 if (element is Spell)
                 {
                     tooltip.HasSuccessRate = true;
