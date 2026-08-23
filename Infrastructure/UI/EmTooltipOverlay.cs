@@ -15,6 +15,7 @@ internal sealed class EmTooltipContent
 
     internal string Title { get; }
     internal string TitleSuffix { get; set; } = "";
+    internal string DescriptionHeader { get; set; } = "";
     internal int BaseFontSize { get; set; } = 13;
     internal Sprite? Icon { get; }
     internal string Description { get; }
@@ -291,6 +292,22 @@ internal sealed class EmTooltipOverlay : MonoBehaviour
             Measure(title, width - titleX - Margin, titleFontSize + 10f, 180f));
         SetTopLeft(title.rectTransform, titleX, y, width - titleX - Margin, headerHeight);
         y += headerHeight + 10f;
+        if (!string.IsNullOrWhiteSpace(content.DescriptionHeader))
+        {
+            var descriptionHeader = CreateText(
+                "DescriptionHeader",
+                content.DescriptionHeader,
+                descriptionFontSize,
+                FontStyle.Normal,
+                descriptionColor);
+            var height = Measure(
+                descriptionHeader,
+                width - Margin * 2f,
+                Mathf.Max(22f, descriptionFontSize + 8f),
+                180f);
+            SetTopLeft(descriptionHeader.rectTransform, Margin, y, width - Margin * 2f, height);
+            y += height + 10f;
+        }
         if (!string.IsNullOrWhiteSpace(content.Description))
         {
             var description = CreateText("Description", content.Description, descriptionFontSize, FontStyle.Italic, descriptionColor);

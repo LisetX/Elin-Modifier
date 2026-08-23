@@ -119,6 +119,7 @@ internal static class CoreRegressionTests
         Check(result, "moongate container key length limit",
             MoongateContainerLimits.MaxContainerKeyLength == 20480);
         CheckNpcInfoProbabilityMath(result);
+        CheckNpcStoryAbilityCatalog(result);
         CheckNpcTemplateValueMath(result);
         CheckModuleGraph(result);
         CheckGameMemberBinder(result);
@@ -616,6 +617,21 @@ internal static class CoreRegressionTests
         var noRandomFactor = NpcTemplateValueMath.GetCharaSourceBounds(25, 100, 0);
         Check(result, "npc template non-random values stay fixed",
             noRandomFactor.FixedValue == 25 && noRandomFactor.Minimum == 25 && noRandomFactor.Maximum == 25);
+    }
+
+    private static void CheckNpcStoryAbilityCatalog(CoreRegressionTestResult result)
+    {
+        var farris = NpcStoryAbilityCatalog.GetForNpc("farris");
+        Check(result, "npc story ability farris reward",
+            farris.Count == 1 &&
+            farris[0].AbilityId == 6754 &&
+            farris[0].QuestId == "stone_dream" &&
+            farris[0].UsageChance == 50 &&
+            !farris[0].IsPartyTarget);
+        Check(result, "npc story ability id matching is case insensitive",
+            NpcStoryAbilityCatalog.GetForNpc("FARRIS").Count == 1);
+        Check(result, "npc story ability excludes unrelated npcs",
+            NpcStoryAbilityCatalog.GetForNpc("loytel").Count == 0);
     }
 
     private static void Check(CoreRegressionTestResult result, string name, bool success)

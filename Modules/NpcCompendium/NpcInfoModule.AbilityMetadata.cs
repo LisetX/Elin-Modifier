@@ -8,14 +8,18 @@ internal sealed partial class NpcInfoModule
         SourceElement.Row? source)
     {
         var item = ResolveNpcTemplateAbilityItem(template, entry.Id);
+        var isPartyTarget = item?.pt ?? entry.StoryPartyTarget ?? false;
+        var usageChance = item != null
+            ? item.chance
+            : entry.StoryUsageChance ?? 0;
         return new NpcAbilityTooltipInfo
         {
             DisplayLevel = element.DisplayValue,
             Target = ResolveNpcTemplateAbilityTarget(act),
             Power = element.GetPower(template),
             HasPower = source != null && source.lvFactor > 0,
-            IsPartyTarget = item?.pt == true || act.TargetType.ForceParty,
-            UsageChance = item == null || item.chance < 0 ? 0 : item.chance
+            IsPartyTarget = isPartyTarget || act.TargetType.ForceParty,
+            UsageChance = usageChance < 0 ? 0 : usageChance
         };
     }
 

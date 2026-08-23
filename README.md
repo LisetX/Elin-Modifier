@@ -1,7 +1,7 @@
 # Elin Modifier
 
 - 作者：Liset
-- 当前源码版本：2.7.5
+- 当前源码版本：2.7.6
 - 插件 ID：`liset.elin.modifier`
 - E-mail：liset@m9.pw
 - QQ群：771844665

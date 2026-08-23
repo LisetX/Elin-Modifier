@@ -46,6 +46,9 @@ internal sealed class NpcTemplateValue
     internal bool HasRandomRange;
     internal int RandomMinimum;
     internal int RandomMaximum;
+    internal string TriggerQuestId = "";
+    internal int? StoryUsageChance;
+    internal bool? StoryPartyTarget;
     internal NpcAbilityTooltipInfo? AbilityTooltip;
 }
 

@@ -202,6 +202,7 @@ internal sealed partial class NpcInfoModule
             }
 
             PopulateNpcTemplateCombatAbilities(template, result);
+            PopulateNpcStoryAbilities(npc, template, result);
             RemoveNpcTemplateSkillAbilityDuplicates(result);
             RemoveNpcTemplateEnchantmentDuplicates(result);
             SortTemplateValues(result.MainAbilities);

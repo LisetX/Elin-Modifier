@@ -133,6 +133,12 @@ public sealed partial class ElinModifierPlugin
             entry.Name,
             null,
             BuildLGuiNpcTemplateTooltipBody(entry));
+        if (!string.IsNullOrWhiteSpace(entry.TriggerQuestId))
+        {
+            content.DescriptionHeader =
+                T("获取条件:", "Acquisition condition:") + " " +
+                T("完成剧情任务 ", "Complete story quest ") + entry.TriggerQuestId;
+        }
         content.TitleSuffix =
             T("模式:", "Mode:") +
             (ability.IsPartyTarget ? T("群体", "Group") : T("单体", "Single")) +
