@@ -61,6 +61,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
                 _gameServices.Sources,
                 _gameServices.Characters,
                 binder);
+            AllowCurrencyGifts = new AllowCurrencyGiftsModule();
             GuaranteedGatheringRewards = new GuaranteedGatheringRewardsModule();
             SpecialNpcHatch = new SpecialNpcHatchModule();
             SpecialNpcCapture = new SpecialNpcCaptureModule();
@@ -78,7 +79,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
             ExceptionTrace = new ExceptionTraceModule(host);
 
             RegisterInfrastructure(host, logger);
-            RegisterFeatures(host);
+            RegisterFeatures(host, logger);
             RegisterRuntime(host, logger);
         }
         catch
@@ -136,6 +137,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
     internal AllFeatsLearnableModule AllFeatsLearnable { get; }
     internal CharacterPanelGenesModule CharacterPanelGenes { get; }
     internal AllowPcGeneImplantModule AllowPcGeneImplant { get; }
+    internal AllowCurrencyGiftsModule AllowCurrencyGifts { get; }
     internal GuaranteedGatheringRewardsModule GuaranteedGatheringRewards { get; }
     internal SpecialNpcHatchModule SpecialNpcHatch { get; }
     internal SpecialNpcCaptureModule SpecialNpcCapture { get; }
@@ -252,7 +254,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         }
     }
 
-    private void RegisterFeatures(ElinModifierPlugin host)
+    private void RegisterFeatures(ElinModifierPlugin host, ManualLogSource logger)
     {
         Register("feature.character-protection", 1200, 0, CharacterProtection);
         Register("feature.progression", 1210, 0, Progression);
@@ -263,6 +265,10 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         Register("feature.allow-pc-gene-implant", 1236, 0, AllowPcGeneImplant,
             tick: AllowPcGeneImplant.Tick,
             shutdown: AllowPcGeneImplant.Reset);
+        Register("feature.allow-currency-gifts", 1237, 0, AllowCurrencyGifts,
+            initialize: () => AllowCurrencyGifts.Initialize(Harmony, logger),
+            shutdown: AllowCurrencyGifts.Shutdown,
+            dependencies: new[] { "core.harmony" });
         Register("feature.guaranteed-gathering-rewards", 1240, 0, GuaranteedGatheringRewards);
         Register("feature.special-npc-hatch", 1250, 0, SpecialNpcHatch);
         Register("feature.special-npc-capture", 1260, 0, SpecialNpcCapture);

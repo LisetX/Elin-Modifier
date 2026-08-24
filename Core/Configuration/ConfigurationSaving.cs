@@ -187,6 +187,7 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"allFeatsLearnable\": " + (_modules.AllFeatsLearnable.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"characterPanelGenes\": " + (_modules.CharacterPanelGenes.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"allowPcGeneImplant\": " + (_modules.AllowPcGeneImplant.Enabled ? "true" : "false") + ",");
+            sb.AppendLine("  \"allowCurrencyGifts\": " + (_modules.AllowCurrencyGifts.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"foodRestoresSpEnabled\": " + (_modules.Progression.FoodRestoresSpEnabled ? "true" : "false") + ",");
             sb.AppendLine("  \"foodRestoresSpPercent\": " + Clamp(_modules.Progression.FoodRestoresSpPercent, 1, 100).ToString(CultureInfo.InvariantCulture) + ",");
             sb.AppendLine("  \"dismantleAlwaysReturnsMaterials\": " + (_modules.GuaranteedGatheringRewards.DismantleAlwaysReturnsMaterials ? "true" : "false") + ",");
@@ -253,20 +254,12 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"moongateUploadUpdateKeys\": " + _modules.Moongate.BuildUploadUpdateKeysJson() + ",");
             sb.AppendLine();
 
-            var nightlyConfigJson = _modules.Nightly != null
-                ? (_modules.Nightly.AllowCurrencyGifts ? "true" : "false")
-                : _nightlyConfigPassthroughJson;
-            if (!string.IsNullOrWhiteSpace(nightlyConfigJson))
-            {
-                sb.AppendLine("  \"nightlyAllowCurrencyGifts\": " + nightlyConfigJson + ",");
-            }
             var nightlyFixSelfTalkBugConfigJson = _modules.Nightly != null
                 ? (_modules.Nightly.FixSelfTalkBug ? "true" : "false")
                 : _nightlyFixSelfTalkBugConfigPassthroughJson;
             if (!string.IsNullOrWhiteSpace(nightlyFixSelfTalkBugConfigJson))
                 sb.AppendLine("  \"nightlyFixSelfTalkBug\": " + nightlyFixSelfTalkBugConfigJson + ",");
-            if (!string.IsNullOrWhiteSpace(nightlyConfigJson) ||
-                !string.IsNullOrWhiteSpace(nightlyFixSelfTalkBugConfigJson))
+            if (!string.IsNullOrWhiteSpace(nightlyFixSelfTalkBugConfigJson))
                 sb.AppendLine();
 
             sb.AppendLine("  \"aiApiBase\": \"" + EscapeJson(_aiApiBase) + "\",");

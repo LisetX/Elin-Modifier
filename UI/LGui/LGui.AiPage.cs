@@ -143,16 +143,7 @@ public sealed partial class ElinModifierPlugin
 
         var scroll = CreateLGuiScroll(_lGuiPageHost!, "NightlyScroll", 0f);
         var content = scroll.content!;
-        CreateLGuiToggleControl(content, T("允许货币赠礼", "Allow currency gifts"), module.AllowCurrencyGifts, 8f, value =>
-        {
-            module.AllowCurrencyGifts = value;
-            module.Log = value
-                ? T("允许货币赠礼已开启", "Currency gifts enabled")
-                : T("允许货币赠礼已关闭", "Currency gifts disabled");
-            SaveConfig(false);
-            NotifyLGuiDataDirty();
-        });
-        CreateLGuiToggleControl(content, T("修复自言自语Bug", "Fix self-talk bug"), module.FixSelfTalkBug, 64f, value =>
+        CreateLGuiToggleControl(content, T("修复自言自语Bug", "Fix self-talk bug"), module.FixSelfTalkBug, 8f, value =>
         {
             module.FixSelfTalkBug = value;
             module.Log = value
@@ -161,7 +152,7 @@ public sealed partial class ElinModifierPlugin
             SaveConfig(false);
             NotifyLGuiDataDirty();
         });
-        content.sizeDelta = new Vector2(0f, 136f);
+        content.sizeDelta = new Vector2(0f, 80f);
     }
     private float AddLGuiAiInput(RectTransform parent, string label, Func<string> read, Action<string> write, float y, float width, bool password = false, Action<InputField>? capture = null)
     {

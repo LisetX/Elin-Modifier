@@ -201,8 +201,8 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* \"NPC图鉴\"数据补充",
-                        "* Supplemented data in \"NPC Compendium\""),
+                        "* \"允许货币赠礼\"从\"Nightly\"模块移动至\"独立功能\"模块，因Stable版本已实装内容",
+                        "* Moved \"Allow currency gifts\" from the \"Nightly\" module to the \"Independent Features\" module because the feature is now implemented in Stable"),
                 }
             };
 

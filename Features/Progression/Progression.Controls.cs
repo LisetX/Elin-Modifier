@@ -72,6 +72,14 @@ public sealed partial class ElinModifierPlugin
             ? T("允许PC植入基因已开启", "PC gene implantation enabled")
             : T("允许PC植入基因已关闭", "PC gene implantation disabled");
     }
+    private void SetAllowCurrencyGifts(bool enabled)
+    {
+        if (!_modules.AllowCurrencyGifts.SetEnabled(enabled))
+            return;
+        _log = enabled
+            ? T("允许货币赠礼已开启", "Currency gifts enabled")
+            : T("允许货币赠礼已关闭", "Currency gifts disabled");
+    }
     private bool TryApplyPlantHarvestMultiplierSettings(out string status)
     {
         if (!_modules.PlantHarvestMultiplier.TryApplyMultiplierTextFields())

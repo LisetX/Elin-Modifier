@@ -33,7 +33,6 @@ public sealed partial class ElinModifierPlugin
     private string _playerInfoLog = "";
     private string _homeLog = "";
     private string _configLog = "";
-    private string _nightlyConfigPassthroughJson = "";
     private string _nightlyFixSelfTalkBugConfigPassthroughJson = "";
     private string _aiLog = "";
     private string _aiApiBase = "https://api.openai.com/v1";

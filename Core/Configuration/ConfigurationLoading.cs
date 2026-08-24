@@ -124,6 +124,7 @@ public sealed partial class ElinModifierPlugin
                                       !HasJsonValue(json, "ignoreCropGrowthConditions") ||
                                       !HasJsonValue(json, "allFeatsLearnable") ||
                                       !HasJsonValue(json, "characterPanelGenes") ||
+                                      !HasJsonValue(json, "allowCurrencyGifts") ||
                                       !HasJsonValue(json, "foodRestoresSpEnabled") ||
                                       !HasJsonValue(json, "foodRestoresSpPercent") ||
                                       !HasJsonValue(json, "optimizeMeleeHitChance") ||
@@ -238,8 +239,7 @@ public sealed partial class ElinModifierPlugin
                                        HasJsonValue(json, "moongateCloudHistoryIndexApi") ||
                                        HasJsonValue(json, "moongateCloudRevisionHistoryApi") ||
                                        (_modules.Nightly != null &&
-                                        (!HasJsonValue(json, "nightlyAllowCurrencyGifts") ||
-                                         !HasJsonValue(json, "nightlyFixSelfTalkBug"))) ||
+                                        !HasJsonValue(json, "nightlyFixSelfTalkBug")) ||
                                        !HasJsonValue(json, "aiApiBase") ||
                                       !HasJsonValue(json, "aiApiKey") ||
                                       !HasJsonValue(json, "aiModelName") ||
@@ -353,6 +353,11 @@ public sealed partial class ElinModifierPlugin
                 ExtractBool(json, "characterPanelGenes", false));
             _modules.AllowPcGeneImplant.Load(
                 ExtractBool(json, "allowPcGeneImplant", false));
+            _modules.AllowCurrencyGifts.Load(
+                ExtractBool(
+                    json,
+                    "allowCurrencyGifts",
+                    ExtractBool(json, "nightlyAllowCurrencyGifts", false)));
             _modules.Progression.FoodRestoresSpEnabled = ExtractBool(json, "foodRestoresSpEnabled", false);
             _modules.Progression.FoodRestoresSpPercent = Clamp(ExtractInt(json, "foodRestoresSpPercent", 10), 1, 100);
             _modules.GuaranteedGatheringRewards.Load(
@@ -508,16 +513,12 @@ public sealed partial class ElinModifierPlugin
                 ConfigurationValueDocument.For(json).GetRawJson("moongateUploadUpdateKeys"));
             if (_modules.Nightly != null)
             {
-                _modules.Nightly.AllowCurrencyGifts = ExtractBool(json, "nightlyAllowCurrencyGifts", false);
                 _modules.Nightly.FixSelfTalkBug = ExtractBool(json, "nightlyFixSelfTalkBug", false);
-                _nightlyConfigPassthroughJson = _modules.Nightly.AllowCurrencyGifts ? "true" : "false";
                 _nightlyFixSelfTalkBugConfigPassthroughJson =
                     _modules.Nightly.FixSelfTalkBug ? "true" : "false";
             }
             else
             {
-                _nightlyConfigPassthroughJson = ConfigurationValueDocument.For(json)
-                    .GetRawJson("nightlyAllowCurrencyGifts");
                 _nightlyFixSelfTalkBugConfigPassthroughJson = ConfigurationValueDocument.For(json)
                     .GetRawJson("nightlyFixSelfTalkBug");
             }
@@ -616,6 +617,7 @@ public sealed partial class ElinModifierPlugin
         _modules.AllFeatsLearnable.Reset();
         _modules.CharacterPanelGenes.Reset();
         _modules.AllowPcGeneImplant.Reset();
+        _modules.AllowCurrencyGifts.Reset();
         _modules.Progression.FoodRestoresSpEnabled = false;
         _modules.Progression.FoodRestoresSpPercent = 10;
         _modules.GuaranteedGatheringRewards.Reset();
@@ -644,14 +646,11 @@ public sealed partial class ElinModifierPlugin
         _modules.Probability.ResetStoredConfiguration();
         if (_modules.Nightly != null)
         {
-            _modules.Nightly.AllowCurrencyGifts = false;
             _modules.Nightly.FixSelfTalkBug = false;
-            _nightlyConfigPassthroughJson = "false";
             _nightlyFixSelfTalkBugConfigPassthroughJson = "false";
         }
         else
         {
-            _nightlyConfigPassthroughJson = "";
             _nightlyFixSelfTalkBugConfigPassthroughJson = "";
         }
         _modules.CharacterProtection.Reset();
