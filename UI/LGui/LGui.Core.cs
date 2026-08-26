@@ -75,6 +75,7 @@ public sealed partial class ElinModifierPlugin
         AllFeatsLearnable,
         CharacterPanelGenes,
         AllowPcGeneImplant,
+        PredationGeneSelection,
         AllowCurrencyGifts,
         FoodRestoresSp,
         DismantleAlwaysReturnsMaterials,

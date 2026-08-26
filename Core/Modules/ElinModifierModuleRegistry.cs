@@ -61,6 +61,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
                 _gameServices.Sources,
                 _gameServices.Characters,
                 binder);
+            PredationGeneSelection = new PredationGeneSelectionModule(host, binder);
             AllowCurrencyGifts = new AllowCurrencyGiftsModule();
             GuaranteedGatheringRewards = new GuaranteedGatheringRewardsModule();
             SpecialNpcHatch = new SpecialNpcHatchModule();
@@ -137,6 +138,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
     internal AllFeatsLearnableModule AllFeatsLearnable { get; }
     internal CharacterPanelGenesModule CharacterPanelGenes { get; }
     internal AllowPcGeneImplantModule AllowPcGeneImplant { get; }
+    internal PredationGeneSelectionModule PredationGeneSelection { get; }
     internal AllowCurrencyGiftsModule AllowCurrencyGifts { get; }
     internal GuaranteedGatheringRewardsModule GuaranteedGatheringRewards { get; }
     internal SpecialNpcHatchModule SpecialNpcHatch { get; }
@@ -265,7 +267,12 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         Register("feature.allow-pc-gene-implant", 1236, 0, AllowPcGeneImplant,
             tick: AllowPcGeneImplant.Tick,
             shutdown: AllowPcGeneImplant.Reset);
-        Register("feature.allow-currency-gifts", 1237, 0, AllowCurrencyGifts,
+        Register("feature.predation-gene-selection", 1237, 0, PredationGeneSelection,
+            initialize: () => PredationGeneSelection.Initialize(Harmony, logger),
+            tick: PredationGeneSelection.Tick,
+            shutdown: PredationGeneSelection.Shutdown,
+            dependencies: new[] { "core.harmony" });
+        Register("feature.allow-currency-gifts", 1238, 0, AllowCurrencyGifts,
             initialize: () => AllowCurrencyGifts.Initialize(Harmony, logger),
             shutdown: AllowCurrencyGifts.Shutdown,
             dependencies: new[] { "core.harmony" });

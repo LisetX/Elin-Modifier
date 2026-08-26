@@ -187,6 +187,7 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"allFeatsLearnable\": " + (_modules.AllFeatsLearnable.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"characterPanelGenes\": " + (_modules.CharacterPanelGenes.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"allowPcGeneImplant\": " + (_modules.AllowPcGeneImplant.Enabled ? "true" : "false") + ",");
+            sb.AppendLine("  \"predationGeneSelection\": " + (_modules.PredationGeneSelection.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"allowCurrencyGifts\": " + (_modules.AllowCurrencyGifts.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"foodRestoresSpEnabled\": " + (_modules.Progression.FoodRestoresSpEnabled ? "true" : "false") + ",");
             sb.AppendLine("  \"foodRestoresSpPercent\": " + Clamp(_modules.Progression.FoodRestoresSpPercent, 1, 100).ToString(CultureInfo.InvariantCulture) + ",");

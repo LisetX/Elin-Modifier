@@ -34,6 +34,7 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.AllFeatsLearnable: return _modules.AllFeatsLearnable.Enabled;
             case LGuiFeatureId.CharacterPanelGenes: return _modules.CharacterPanelGenes.Enabled;
             case LGuiFeatureId.AllowPcGeneImplant: return _modules.AllowPcGeneImplant.Enabled;
+            case LGuiFeatureId.PredationGeneSelection: return _modules.PredationGeneSelection.Enabled;
             case LGuiFeatureId.AllowCurrencyGifts: return _modules.AllowCurrencyGifts.Enabled;
             case LGuiFeatureId.FoodRestoresSp: return _modules.Progression.FoodRestoresSpEnabled;
             case LGuiFeatureId.DismantleAlwaysReturnsMaterials: return _modules.GuaranteedGatheringRewards.DismantleAlwaysReturnsMaterials;
@@ -642,6 +643,7 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.AllFeatsLearnable: SetAllFeatsLearnable(value); break;
             case LGuiFeatureId.CharacterPanelGenes: SetCharacterPanelGenes(value); break;
             case LGuiFeatureId.AllowPcGeneImplant: SetAllowPcGeneImplant(value); break;
+            case LGuiFeatureId.PredationGeneSelection: SetPredationGeneSelection(value); break;
             case LGuiFeatureId.AllowCurrencyGifts: SetAllowCurrencyGifts(value); break;
             case LGuiFeatureId.FoodRestoresSp: SetFoodRestoresSpEnabled(value); break;
             case LGuiFeatureId.DismantleAlwaysReturnsMaterials: SetDismantleAlwaysReturnsMaterials(value); break;

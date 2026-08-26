@@ -201,8 +201,8 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* \"允许货币赠礼\"从\"Nightly\"模块移动至\"独立功能\"模块，因Stable版本已实装内容",
-                        "* Moved \"Allow currency gifts\" from the \"Nightly\" module to the \"Independent Features\" module because the feature is now implemented in Stable"),
+                        "* 新增\"捕食技能自选基因\"，按游戏逻辑生成最多10个候选项",
+                        "* Added \"Select gene for Devour\", generating up to 10 candidates according to the game's logic"),
                 }
             };
 

@@ -64,6 +64,7 @@ public sealed partial class ElinModifierPlugin
         AddLGuiFeature(LGuiFeatureId.AllFeatsLearnable, T("全部专长可学习", "All feats learnable"));
         AddLGuiFeature(LGuiFeatureId.CharacterPanelGenes, T("人物面板显示基因", "Show genes in character panel"));
         AddLGuiFeature(LGuiFeatureId.AllowPcGeneImplant, T("允许PC植入基因", "Allow PC gene implantation"));
+        AddLGuiFeature(LGuiFeatureId.PredationGeneSelection, T("捕食技能自选基因", "Select gene for Devour"));
         AddLGuiFeature(LGuiFeatureId.AllowCurrencyGifts, T("允许货币赠礼", "Allow currency gifts"));
         AddLGuiFeature(LGuiFeatureId.FoodRestoresSp, T("食用食物恢复SP", "Restore SP by eating food"));
         AddLGuiFeature(LGuiFeatureId.DismantleAlwaysReturnsMaterials, T("分解必返还材料", "Dismantling always returns materials"));

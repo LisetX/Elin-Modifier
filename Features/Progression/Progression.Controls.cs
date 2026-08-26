@@ -72,6 +72,14 @@ public sealed partial class ElinModifierPlugin
             ? T("允许PC植入基因已开启", "PC gene implantation enabled")
             : T("允许PC植入基因已关闭", "PC gene implantation disabled");
     }
+    private void SetPredationGeneSelection(bool enabled)
+    {
+        if (!_modules.PredationGeneSelection.SetEnabled(enabled))
+            return;
+        _log = enabled
+            ? T("捕食技能自选基因已开启", "Devour gene selection enabled")
+            : T("捕食技能自选基因已关闭", "Devour gene selection disabled");
+    }
     private void SetAllowCurrencyGifts(bool enabled)
     {
         if (!_modules.AllowCurrencyGifts.SetEnabled(enabled))

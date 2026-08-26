@@ -124,6 +124,7 @@ public sealed partial class ElinModifierPlugin
                                       !HasJsonValue(json, "ignoreCropGrowthConditions") ||
                                       !HasJsonValue(json, "allFeatsLearnable") ||
                                       !HasJsonValue(json, "characterPanelGenes") ||
+                                      !HasJsonValue(json, "predationGeneSelection") ||
                                       !HasJsonValue(json, "allowCurrencyGifts") ||
                                       !HasJsonValue(json, "foodRestoresSpEnabled") ||
                                       !HasJsonValue(json, "foodRestoresSpPercent") ||
@@ -353,6 +354,8 @@ public sealed partial class ElinModifierPlugin
                 ExtractBool(json, "characterPanelGenes", false));
             _modules.AllowPcGeneImplant.Load(
                 ExtractBool(json, "allowPcGeneImplant", false));
+            _modules.PredationGeneSelection.Load(
+                ExtractBool(json, "predationGeneSelection", false));
             _modules.AllowCurrencyGifts.Load(
                 ExtractBool(
                     json,
@@ -617,6 +620,7 @@ public sealed partial class ElinModifierPlugin
         _modules.AllFeatsLearnable.Reset();
         _modules.CharacterPanelGenes.Reset();
         _modules.AllowPcGeneImplant.Reset();
+        _modules.PredationGeneSelection.Reset();
         _modules.AllowCurrencyGifts.Reset();
         _modules.Progression.FoodRestoresSpEnabled = false;
         _modules.Progression.FoodRestoresSpPercent = 10;
