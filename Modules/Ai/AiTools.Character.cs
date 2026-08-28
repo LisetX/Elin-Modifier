@@ -119,6 +119,10 @@ public sealed partial class ElinModifierPlugin
             case "ignore_crop_growth_conditions":
             case "ignorecropgrowthconditions":
             case "无视作物生长条件": SetIgnoreCropGrowthConditions(enabled); break;
+            case "ignore_encumbrance":
+            case "ignoreencumbrance":
+            case "ignore_weight":
+            case "无视负重": SetIgnoreEncumbrance(enabled); break;
             case "all_feats_learnable":
             case "allfeatslearnable":
             case "全部专长可学习": SetAllFeatsLearnable(enabled); break;

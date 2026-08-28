@@ -201,8 +201,14 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 新增\"捕食技能自选基因\"，按游戏逻辑生成最多10个候选项",
-                        "* Added \"Select gene for Devour\", generating up to 10 candidates according to the game's logic"),
+                        "* 新增\"无视负重\"，独立功能，兼容自动化执行期间无视负重",
+                        "* Added \"Ignore Encumbrance\" as an independent feature, compatible with ignoring encumbrance during automation"),
+                    host.TranslateModuleText(
+                        "* 修复\"供奉提升虔诚度无上限\"在最新Nightly版本不兼容",
+                        "* Fixed \"Unlimited Piety Gain from Offerings\" incompatibility with the latest Nightly version"),
+                    host.TranslateModuleText(
+                        "* 优化部分UI表现",
+                        "* Optimized some UI presentation"),
                 }
             };
 

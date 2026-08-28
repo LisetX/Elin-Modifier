@@ -43,22 +43,23 @@ public sealed partial class ElinModifierPlugin
         }
         return y;
     }
-    private void OpenLGuiEffectReference(string title, Func<List<GeneEffectDef>> getRows, Func<string> readFilter, Action<string> writeFilter, int page, Action<int> setPage, Action<GeneEffectDef> select, Action returnEditor)
+    private void OpenLGuiEffectReference(string title, Func<List<GeneEffectDef>> getRows, Func<string> readFilter, Action<string> writeFilter, int page, Action<int> setPage, Action<GeneEffectDef> select, Action returnEditor, float? restoredScrollPosition = null)
     {
         var modal = CreateLGuiCompleteModal("RuntimeEffectReference", title, out var content, 1480f, 930f);
         if (modal == null) return;
+        var referenceScroll = content.GetComponentInParent<ScrollRect>();
         var y = 4f;
         var filter = CreateLGuiInput(content, "Filter", T("过滤", "Filter"), 0f, y, 420f, 44f);
         filter.text = readFilter();
         filter.onValueChanged.AddListener(value => writeFilter(value ?? ""));
-        CreateLGuiButton(content, "Search", T("搜索", "Search"), 434f, y, 100f, 44f, () => { setPage(0); OpenLGuiEffectReference(title, getRows, readFilter, writeFilter, 0, setPage, select, returnEditor); });
+        CreateLGuiButton(content, "Search", T("搜索", "Search"), 434f, y, 100f, 44f, () => { setPage(0); OpenLGuiEffectReference(title, getRows, readFilter, writeFilter, 0, setPage, select, returnEditor, CaptureLGuiModalScrollPosition(referenceScroll)); });
         CreateLGuiButton(content, "Back", T("返回", "Back"), 548f, y, 100f, 44f, returnEditor);
         y += 54f;
         var rows = getRows();
         var pages = Math.Max(1, (rows.Count + GameRowsPerPage - 1) / GameRowsPerPage);
         page = Clamp(page, 0, pages - 1);
         var current = page;
-        y = BuildLGuiReferencePager(content, rows.Count, page, y, next => { setPage(next); OpenLGuiEffectReference(title, getRows, readFilter, writeFilter, next, setPage, select, returnEditor); });
+        y = BuildLGuiReferencePager(content, rows.Count, page, y, next => { setPage(next); OpenLGuiEffectReference(title, getRows, readFilter, writeFilter, next, setPage, select, returnEditor, CaptureLGuiModalScrollPosition(referenceScroll)); });
         var start = current * GameRowsPerPage;
         var end = Math.Min(rows.Count, start + GameRowsPerPage);
         for (var i = start; i < end; i++)
@@ -69,6 +70,7 @@ public sealed partial class ElinModifierPlugin
             y += 48f;
         }
         content.sizeDelta = new Vector2(0f, Math.Max(760f, y + 20f));
+        RestoreLGuiModalScrollPosition(referenceScroll, restoredScrollPosition);
     }
     private float AddLGuiBlessedState(RectTransform content, float y, string controlPrefix, Func<int> readValue, Action<int> writeValue, Action refreshEditor)
     {

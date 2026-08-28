@@ -122,6 +122,7 @@ public sealed partial class ElinModifierPlugin
                                       !HasJsonValue(json, "cropHarvestMultiplier") ||
                                       !HasJsonValue(json, "seedReapingMultiplier") ||
                                       !HasJsonValue(json, "ignoreCropGrowthConditions") ||
+                                      !HasJsonValue(json, "ignoreEncumbrance") ||
                                       !HasJsonValue(json, "allFeatsLearnable") ||
                                       !HasJsonValue(json, "characterPanelGenes") ||
                                       !HasJsonValue(json, "predationGeneSelection") ||
@@ -348,6 +349,8 @@ public sealed partial class ElinModifierPlugin
                 ExtractFloat(json, "seedReapingMultiplier", 1f));
             _modules.IgnoreCropGrowthConditions.Load(
                 ExtractBool(json, "ignoreCropGrowthConditions", false));
+            _modules.IgnoreEncumbrance.Load(
+                ExtractBool(json, "ignoreEncumbrance", false));
             _modules.AllFeatsLearnable.Load(
                 ExtractBool(json, "allFeatsLearnable", false));
             _modules.CharacterPanelGenes.Load(
@@ -617,6 +620,7 @@ public sealed partial class ElinModifierPlugin
         SyncExperienceMultiplierTextFields();
         _modules.PlantHarvestMultiplier.Reset();
         _modules.IgnoreCropGrowthConditions.Reset();
+        _modules.IgnoreEncumbrance.Reset();
         _modules.AllFeatsLearnable.Reset();
         _modules.CharacterPanelGenes.Reset();
         _modules.AllowPcGeneImplant.Reset();

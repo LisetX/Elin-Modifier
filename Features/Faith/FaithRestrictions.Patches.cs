@@ -92,7 +92,7 @@ public sealed partial class ElinModifierPlugin
                 if (piety.Value > faithSkill * 8 / 10)
                     c.elements.ModExp(306, offeringValue / 5);
                 c.RefreshFaithElement();
-                if (c.faith.GetGiftRank() != -1)
+                if (GameAccess.Characters.GetFaithGiftRank(c) != -1)
                     c.faith.Talk("like");
                 if (affectsKarma)
                     GameAccess.Runtime.Player.ModKarma(-1);

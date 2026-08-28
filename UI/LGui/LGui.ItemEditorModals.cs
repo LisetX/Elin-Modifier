@@ -9,10 +9,12 @@ using UnityEngine.UI;
 
 public sealed partial class ElinModifierPlugin
 {
-    private void OpenLGuiItemDataEditor()
+    private void OpenLGuiItemDataEditor(float? restoredScrollPosition = null)
     {
         var modal = CreateLGuiCompleteModal("RuntimeItemDataEditor", T("修改物品数据", "Modify item data") + " | " + _itemDataEditorName, out var content, 1540f, 1010f);
         if (modal == null) return;
+        var editorScroll = content.GetComponentInParent<ScrollRect>();
+        Action rebuild = () => OpenLGuiItemDataEditor(CaptureLGuiModalScrollPosition(editorScroll));
         var y = 4f;
         y = AddLGuiSectionTitle(content, T("基础数据", "Base data"), y);
         AddLGuiInlineInput(content, T("等级", "Level"), () => _itemDataEditorLv, value => _itemDataEditorLv = value, 0f, y);
@@ -25,20 +27,26 @@ public sealed partial class ElinModifierPlugin
         AddLGuiInlineInput(content, T("价值", "Value"), () => _itemDataEditorValue, value => _itemDataEditorValue = value, 680f, y);
         AddLGuiInlineInput(content, T("价值修正", "Value bonus"), () => _itemDataEditorValueBonus, value => _itemDataEditorValueBonus = value, 1020f, y);
         y += 60f;
-        y = AddLGuiBlessedState(content, y, "ItemBless", () => _itemDataEditorBlessedStateValue, value => _itemDataEditorBlessedStateValue = value, OpenLGuiItemDataEditor);
+        y = AddLGuiBlessedState(content, y, "ItemBless", () => _itemDataEditorBlessedStateValue, value => _itemDataEditorBlessedStateValue = value, rebuild);
         y = AddLGuiItemDataFlags(content, y);
-        y = AddLGuiRarityButtons(content, _itemDataEditorRarityValue, value => _itemDataEditorRarityValue = value, OpenLGuiItemDataEditor, y);
-        y = AddLGuiEffectEditor(content, T("物品附魔", "Item enchantments"), _itemDataEditorEnchantments, GetItemEnchantName, _itemDataEditorTarget, y, OpenLGuiItemDataEditor, () =>
-            OpenLGuiEffectReference(T("附魔效果对应表", "Enchant effect table"), GetFilteredItemEnchantIds, () => _itemEnchantFilter, value => _itemEnchantFilter = value, _itemEnchantPage, value => _itemEnchantPage = value, row => _itemDataEditorEnchantments.Add(new GeneValueInput(row.Id.ToString(CultureInfo.InvariantCulture), "0")), OpenLGuiItemDataEditor));
+        y = AddLGuiRarityButtons(content, _itemDataEditorRarityValue, value => _itemDataEditorRarityValue = value, rebuild, y);
+        y = AddLGuiEffectEditor(content, T("物品附魔", "Item enchantments"), _itemDataEditorEnchantments, GetItemEnchantName, _itemDataEditorTarget, y, rebuild, () =>
+        {
+            var scrollPosition = CaptureLGuiModalScrollPosition(editorScroll);
+            OpenLGuiEffectReference(T("附魔效果对应表", "Enchant effect table"), GetFilteredItemEnchantIds, () => _itemEnchantFilter, value => _itemEnchantFilter = value, _itemEnchantPage, value => _itemEnchantPage = value, row => _itemDataEditorEnchantments.Add(new GeneValueInput(row.Id.ToString(CultureInfo.InvariantCulture), "0")), () => OpenLGuiItemDataEditor(scrollPosition));
+        });
         y += 10f;
-        CreateLGuiButton(content, "Apply", T("确认", "Confirm"), 0f, y, 120f, 44f, ApplyLGuiItemDataChange);
+        CreateLGuiButton(content, "Apply", T("确认", "Confirm"), 0f, y, 120f, 44f, () => ApplyLGuiItemDataChange(CaptureLGuiModalScrollPosition(editorScroll)));
         CreateLGuiButton(content, "Cancel", T("取消", "Cancel"), 134f, y, 120f, 44f, CloseLGuiEditorModal);
         content.sizeDelta = new Vector2(0f, Math.Max(820f, y + 70f));
+        RestoreLGuiModalScrollPosition(editorScroll, restoredScrollPosition);
     }
-    private void OpenLGuiFoodEditor()
+    private void OpenLGuiFoodEditor(float? restoredScrollPosition = null)
     {
         var modal = CreateLGuiCompleteModal("RuntimeFoodEditor", T("修改食品数据", "Modify food data") + " | " + _foodEditorName, out var content, 1540f, 1010f);
         if (modal == null) return;
+        var editorScroll = content.GetComponentInParent<ScrollRect>();
+        Action rebuild = () => OpenLGuiFoodEditor(CaptureLGuiModalScrollPosition(editorScroll));
         var y = 4f;
         y = AddLGuiSectionTitle(content, T("基础数据", "Base data"), y);
         AddLGuiInlineInput(content, T("等级", "Level"), () => _foodEditorLv, value => _foodEditorLv = value, 0f, y);
@@ -48,19 +56,23 @@ public sealed partial class ElinModifierPlugin
         y += 52f;
         AddLGuiInlineInput(content, T("腐烂度", "Rot"), () => _foodEditorDecay, value => _foodEditorDecay = value, 0f, y);
         y += 60f;
-        y = AddLGuiBlessedState(content, y, "FoodBless", () => _foodEditorBlessedStateValue, value => _foodEditorBlessedStateValue = value, OpenLGuiFoodEditor);
+        y = AddLGuiBlessedState(content, y, "FoodBless", () => _foodEditorBlessedStateValue, value => _foodEditorBlessedStateValue = value, rebuild);
         y = AddLGuiFoodFlags(content, y);
-        y = AddLGuiRarityButtons(content, _foodEditorRarityValue, value => _foodEditorRarityValue = value, OpenLGuiFoodEditor, y);
-        y = AddLGuiEffectEditor(content, T("加成效果", "Bonus effects"), _foodEditorEffects, GetFoodEffectName, _foodEditorTarget, y, OpenLGuiFoodEditor, () =>
-            OpenLGuiEffectReference(T("食物效果对应表", "Food effect table"), GetFilteredFoodEffectIds, () => _foodEffectFilter, value => _foodEffectFilter = value, _foodEffectPage, value => _foodEffectPage = value, row => _foodEditorEffects.Add(new GeneValueInput(row.Id.ToString(CultureInfo.InvariantCulture), "0")), OpenLGuiFoodEditor));
+        y = AddLGuiRarityButtons(content, _foodEditorRarityValue, value => _foodEditorRarityValue = value, rebuild, y);
+        y = AddLGuiEffectEditor(content, T("加成效果", "Bonus effects"), _foodEditorEffects, GetFoodEffectName, _foodEditorTarget, y, rebuild, () =>
+        {
+            var scrollPosition = CaptureLGuiModalScrollPosition(editorScroll);
+            OpenLGuiEffectReference(T("食物效果对应表", "Food effect table"), GetFilteredFoodEffectIds, () => _foodEffectFilter, value => _foodEffectFilter = value, _foodEffectPage, value => _foodEffectPage = value, row => _foodEditorEffects.Add(new GeneValueInput(row.Id.ToString(CultureInfo.InvariantCulture), "0")), () => OpenLGuiFoodEditor(scrollPosition));
+        });
         y += 10f;
-        CreateLGuiButton(content, "Apply", T("确认", "Confirm"), 0f, y, 120f, 44f, ApplyLGuiFoodDataChange);
+        CreateLGuiButton(content, "Apply", T("确认", "Confirm"), 0f, y, 120f, 44f, () => ApplyLGuiFoodDataChange(CaptureLGuiModalScrollPosition(editorScroll)));
         CreateLGuiButton(content, "Cancel", T("取消", "Cancel"), 134f, y, 120f, 44f, CloseLGuiEditorModal);
         content.sizeDelta = new Vector2(0f, Math.Max(820f, y + 70f));
+        RestoreLGuiModalScrollPosition(editorScroll, restoredScrollPosition);
     }
-    private float AddLGuiWeaponFlags(RectTransform content, float y)
+    private float AddLGuiWeaponFlags(RectTransform content, float y, Action rebuild)
     {
-        y = AddLGuiBlessedState(content, y, "WeaponBless", () => _weaponEditorBlessedStateValue, value => _weaponEditorBlessedStateValue = value, OpenLGuiWeaponEditor);
+        y = AddLGuiBlessedState(content, y, "WeaponBless", () => _weaponEditorBlessedStateValue, value => _weaponEditorBlessedStateValue = value, rebuild);
         var flags = new List<Tuple<string, Func<bool>, Action<bool>>>
         {
             Tuple.Create(T("偷窃", "Stolen"), (Func<bool>)(() => _weaponEditorFlagStolen), (Action<bool>)(value => _weaponEditorFlagStolen = value)),
@@ -86,10 +98,12 @@ public sealed partial class ElinModifierPlugin
         }
         return y + 106f;
     }
-    private void OpenLGuiWeaponEditor()
+    private void OpenLGuiWeaponEditor(float? restoredScrollPosition = null)
     {
         var modal = CreateLGuiCompleteModal("RuntimeWeaponEditor", T("修改武器数据", "Modify weapon data") + " | " + _weaponEditorName, out var content, 1600f, 1030f);
         if (modal == null) return;
+        var editorScroll = content.GetComponentInParent<ScrollRect>();
+        Action rebuild = () => OpenLGuiWeaponEditor(CaptureLGuiModalScrollPosition(editorScroll));
         var y = 4f;
         y = AddLGuiSectionTitle(content, T("基础数据", "Base data"), y);
         var fields = new List<Tuple<string, Func<string>, Action<string>>>
@@ -117,13 +131,17 @@ public sealed partial class ElinModifierPlugin
             AddLGuiInlineInput(content, field.Item1, field.Item2, field.Item3, column * 450f, y + line * 50f, 150f, 180f);
         }
         y += ((fields.Count + 2) / 3) * 50f;
-        y = AddLGuiWeaponFlags(content, y);
-        y = AddLGuiRarityButtons(content, _weaponEditorRarityValue, value => _weaponEditorRarityValue = value, OpenLGuiWeaponEditor, y);
-        y = AddLGuiEffectEditor(content, T("武器附魔", "Weapon enchantments"), _weaponEditorEnchantments, GetWeaponEnchantName, _weaponEditorTarget, y, OpenLGuiWeaponEditor, () =>
-            OpenLGuiEffectReference(T("武器附魔对应表", "Weapon enchant table"), GetFilteredWeaponEnchantIds, () => _weaponEnchantFilter, value => _weaponEnchantFilter = value, _weaponEnchantPage, value => _weaponEnchantPage = value, row => _weaponEditorEnchantments.Add(new GeneValueInput(row.Id.ToString(CultureInfo.InvariantCulture), "0")), OpenLGuiWeaponEditor));
+        y = AddLGuiWeaponFlags(content, y, rebuild);
+        y = AddLGuiRarityButtons(content, _weaponEditorRarityValue, value => _weaponEditorRarityValue = value, rebuild, y);
+        y = AddLGuiEffectEditor(content, T("武器附魔", "Weapon enchantments"), _weaponEditorEnchantments, GetWeaponEnchantName, _weaponEditorTarget, y, rebuild, () =>
+        {
+            var scrollPosition = CaptureLGuiModalScrollPosition(editorScroll);
+            OpenLGuiEffectReference(T("武器附魔对应表", "Weapon enchant table"), GetFilteredWeaponEnchantIds, () => _weaponEnchantFilter, value => _weaponEnchantFilter = value, _weaponEnchantPage, value => _weaponEnchantPage = value, row => _weaponEditorEnchantments.Add(new GeneValueInput(row.Id.ToString(CultureInfo.InvariantCulture), "0")), () => OpenLGuiWeaponEditor(scrollPosition));
+        });
         y += 10f;
-        CreateLGuiButton(content, "Apply", T("确认", "Confirm"), 0f, y, 120f, 44f, ApplyLGuiWeaponDataChange);
+        CreateLGuiButton(content, "Apply", T("确认", "Confirm"), 0f, y, 120f, 44f, () => ApplyLGuiWeaponDataChange(CaptureLGuiModalScrollPosition(editorScroll)));
         CreateLGuiButton(content, "Cancel", T("取消", "Cancel"), 134f, y, 120f, 44f, CloseLGuiEditorModal);
         content.sizeDelta = new Vector2(0f, Math.Max(850f, y + 70f));
+        RestoreLGuiModalScrollPosition(editorScroll, restoredScrollPosition);
     }
 }

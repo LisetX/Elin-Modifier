@@ -72,6 +72,7 @@ public sealed partial class ElinModifierPlugin
         ExperienceMultiplier,
         PlantHarvestMultiplier,
         IgnoreCropGrowthConditions,
+        IgnoreEncumbrance,
         AllFeatsLearnable,
         CharacterPanelGenes,
         AllowPcGeneImplant,

@@ -48,6 +48,14 @@ public sealed partial class ElinModifierPlugin
             ? T("无视作物生长条件已开启", "Ignore crop growth conditions enabled")
             : T("无视作物生长条件已关闭", "Ignore crop growth conditions disabled");
     }
+    private void SetIgnoreEncumbrance(bool enabled)
+    {
+        if (!_modules.IgnoreEncumbrance.SetEnabled(enabled))
+            return;
+        _log = enabled
+            ? T("无视负重已开启", "Ignore encumbrance enabled")
+            : T("无视负重已关闭", "Ignore encumbrance disabled");
+    }
     private void SetAllFeatsLearnable(bool enabled)
     {
         if (!_modules.AllFeatsLearnable.SetEnabled(enabled))

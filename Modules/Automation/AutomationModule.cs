@@ -21,6 +21,7 @@ internal sealed partial class AutomationModule
     internal void Shutdown()
     {
         StopAutomation(true, false);
+        SetAutomationIgnoreWeightOverride(false);
         _automationStatusText = null;
         _automationActionsScroll = null;
     }

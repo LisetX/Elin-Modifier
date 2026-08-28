@@ -61,6 +61,7 @@ public sealed partial class ElinModifierPlugin
         AddLGuiFeature(LGuiFeatureId.ExperienceMultiplier, T("经验倍率修改", "Experience multiplier modifier"));
         AddLGuiFeature(LGuiFeatureId.PlantHarvestMultiplier, T("种植收获倍率", "Plant harvest multiplier"));
         AddLGuiFeature(LGuiFeatureId.IgnoreCropGrowthConditions, T("无视作物生长条件", "Ignore crop growth conditions"));
+        AddLGuiFeature(LGuiFeatureId.IgnoreEncumbrance, T("无视负重", "Ignore encumbrance"));
         AddLGuiFeature(LGuiFeatureId.AllFeatsLearnable, T("全部专长可学习", "All feats learnable"));
         AddLGuiFeature(LGuiFeatureId.CharacterPanelGenes, T("人物面板显示基因", "Show genes in character panel"));
         AddLGuiFeature(LGuiFeatureId.AllowPcGeneImplant, T("允许PC植入基因", "Allow PC gene implantation"));

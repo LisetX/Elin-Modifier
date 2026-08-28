@@ -31,6 +31,7 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.ExperienceMultiplier: return _modules.Progression.ExperienceMultiplierEnabled;
             case LGuiFeatureId.PlantHarvestMultiplier: return _modules.PlantHarvestMultiplier.Enabled;
             case LGuiFeatureId.IgnoreCropGrowthConditions: return _modules.IgnoreCropGrowthConditions.Enabled;
+            case LGuiFeatureId.IgnoreEncumbrance: return _modules.IgnoreEncumbrance.Enabled;
             case LGuiFeatureId.AllFeatsLearnable: return _modules.AllFeatsLearnable.Enabled;
             case LGuiFeatureId.CharacterPanelGenes: return _modules.CharacterPanelGenes.Enabled;
             case LGuiFeatureId.AllowPcGeneImplant: return _modules.AllowPcGeneImplant.Enabled;
@@ -640,6 +641,7 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.ExperienceMultiplier: SetExperienceMultiplierEnabled(value); break;
             case LGuiFeatureId.PlantHarvestMultiplier: SetPlantHarvestMultiplierEnabled(value); break;
             case LGuiFeatureId.IgnoreCropGrowthConditions: SetIgnoreCropGrowthConditions(value); break;
+            case LGuiFeatureId.IgnoreEncumbrance: SetIgnoreEncumbrance(value); break;
             case LGuiFeatureId.AllFeatsLearnable: SetAllFeatsLearnable(value); break;
             case LGuiFeatureId.CharacterPanelGenes: SetCharacterPanelGenes(value); break;
             case LGuiFeatureId.AllowPcGeneImplant: SetAllowPcGeneImplant(value); break;

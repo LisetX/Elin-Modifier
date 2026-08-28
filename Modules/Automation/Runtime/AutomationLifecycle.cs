@@ -159,7 +159,6 @@ internal sealed partial class AutomationModule
 
         _automationOriginalInfinitePlayerSight = _infinitePlayerSight;
         _automationOriginalHostileThreatMarker = _hostileThreatMarker;
-        _automationIgnoreWeightOverrideApplied = false;
         _automationFeatureOverrideActive = true;
         ApplyAutomationFeatureOverrideStates(true, true);
         MaintainAutomationIgnoreWeightOverride();
@@ -179,48 +178,16 @@ internal sealed partial class AutomationModule
         var hostileThreatMarker = _automationOriginalHostileThreatMarker;
         _automationFeatureOverrideActive = false;
         ApplyAutomationFeatureOverrideStates(infinitePlayerSight, hostileThreatMarker);
-        if (_automationIgnoreWeightOverrideApplied)
-            SetAutomationIgnoreWeight(_automationOriginalIgnoreWeight);
-        _automationIgnoreWeightOverrideApplied = false;
+        SetAutomationIgnoreWeightOverride(false);
     }
     private void MaintainAutomationIgnoreWeightOverride()
     {
-        if (!_automationFeatureOverrideActive)
-            return;
-
-        if (_automationIgnoreWeightDuringExecution)
-        {
-            if (!_automationIgnoreWeightOverrideApplied)
-            {
-                _automationOriginalIgnoreWeight = GetAutomationIgnoreWeight();
-                _automationIgnoreWeightOverrideApplied = true;
-            }
-            if (!GetAutomationIgnoreWeight())
-                SetAutomationIgnoreWeight(true);
-            return;
-        }
-
-        if (_automationIgnoreWeightOverrideApplied)
-        {
-            SetAutomationIgnoreWeight(_automationOriginalIgnoreWeight);
-            _automationIgnoreWeightOverrideApplied = false;
-        }
+        SetAutomationIgnoreWeightOverride(
+            _automationFeatureOverrideActive && _automationIgnoreWeightDuringExecution);
     }
-    private static bool GetAutomationIgnoreWeight()
+    private static void SetAutomationIgnoreWeightOverride(bool enabled)
     {
-        try { return GameAccess.Runtime.Debug != null && GameAccess.Runtime.Debug.ignoreWeight; }
-        catch { return false; }
-    }
-    private static void SetAutomationIgnoreWeight(bool value)
-    {
-        try
-        {
-            if (GameAccess.Runtime.Debug != null)
-                GameAccess.Runtime.Debug.ignoreWeight = value;
-        }
-        catch { }
-
-        try { GameAccess.Characters.PlayerCharacter?.CalcBurden(); }
+        try { ElinModifierPlugin.ActiveModules?.IgnoreEncumbrance.SetAutomationOverride(enabled); }
         catch { }
     }
     private void ApplyAutomationFeatureOverrideStates(bool infinitePlayerSight, bool hostileThreatMarker)

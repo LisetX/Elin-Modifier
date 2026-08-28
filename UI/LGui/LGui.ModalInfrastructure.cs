@@ -94,6 +94,18 @@ public sealed partial class ElinModifierPlugin
         ApplyLGuiVisualSettings();
         return modal;
     }
+    private static float? CaptureLGuiModalScrollPosition(ScrollRect? scroll)
+    {
+        return scroll == null ? null : Mathf.Clamp01(scroll.verticalNormalizedPosition);
+    }
+    private static void RestoreLGuiModalScrollPosition(ScrollRect? scroll, float? restoredScrollPosition)
+    {
+        if (!restoredScrollPosition.HasValue || scroll == null)
+            return;
+        Canvas.ForceUpdateCanvases();
+        scroll.StopMovement();
+        scroll.verticalNormalizedPosition = Mathf.Clamp01(restoredScrollPosition.Value);
+    }
     private Button CreateLGuiModalButton(RectTransform modal, string name, string label, float x, float width, Action action)
     {
         return CreateLGuiButton(modal, name, label, x, modal.rect.height - 58f, width, 44f, action);

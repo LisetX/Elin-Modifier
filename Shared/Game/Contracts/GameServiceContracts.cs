@@ -74,6 +74,7 @@ internal interface ICharacterGameAccess
     string? GetName(Card card, NameStyle style, int article);
     int GetElementValue(Card card, int elementId);
     int GetPlayerElementValue(int elementId);
+    int GetFaithGiftRank(Chara character);
     void Refresh(Chara character, bool fullRefresh);
 }
 

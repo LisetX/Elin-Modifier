@@ -50,6 +50,9 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
             Progression = new ProgressionModule();
             PlantHarvestMultiplier = new PlantHarvestMultiplierModule();
             IgnoreCropGrowthConditions = new IgnoreCropGrowthConditionsModule();
+            IgnoreEncumbrance = new IgnoreEncumbranceModule(
+                _gameServices.Runtime,
+                _gameServices.Characters);
             AllFeatsLearnable = new AllFeatsLearnableModule(
                 host,
                 _gameServices.Sources,
@@ -135,6 +138,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
     internal ProgressionModule Progression { get; }
     internal PlantHarvestMultiplierModule PlantHarvestMultiplier { get; }
     internal IgnoreCropGrowthConditionsModule IgnoreCropGrowthConditions { get; }
+    internal IgnoreEncumbranceModule IgnoreEncumbrance { get; }
     internal AllFeatsLearnableModule AllFeatsLearnable { get; }
     internal CharacterPanelGenesModule CharacterPanelGenes { get; }
     internal AllowPcGeneImplantModule AllowPcGeneImplant { get; }
@@ -262,6 +266,9 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         Register("feature.progression", 1210, 0, Progression);
         Register("feature.plant-harvest-multiplier", 1220, 0, PlantHarvestMultiplier);
         Register("feature.ignore-crop-growth-conditions", 1230, 0, IgnoreCropGrowthConditions);
+        Register("feature.ignore-encumbrance", 1231, 21, IgnoreEncumbrance,
+            tick: IgnoreEncumbrance.Tick,
+            shutdown: IgnoreEncumbrance.Reset);
         Register("feature.all-feats-learnable", 1233, 0, AllFeatsLearnable);
         Register("feature.character-panel-genes", 1235, 0, CharacterPanelGenes);
         Register("feature.allow-pc-gene-implant", 1236, 0, AllowPcGeneImplant,

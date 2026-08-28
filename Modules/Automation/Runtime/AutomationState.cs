@@ -22,8 +22,6 @@ internal sealed partial class AutomationModule
     private bool _automationFeatureOverrideActive;
     private bool _automationOriginalInfinitePlayerSight;
     private bool _automationOriginalHostileThreatMarker;
-    private bool _automationOriginalIgnoreWeight;
-    private bool _automationIgnoreWeightOverrideApplied;
     private int _automationActionIndex = -1;
     private AutomationActionConfig? _automationCurrentAction;
     private AIAct? _automationActionAi;

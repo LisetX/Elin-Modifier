@@ -5,8 +5,11 @@ internal sealed class CharacterGameAccess : ICharacterGameAccess
     private readonly IBoundGameValue<Chara> _playerCharacter;
     private readonly IBoundGameValue<string> _id;
     private readonly IBoundGameValue<ElementContainerCard> _elements;
+    private readonly IBoundGameValue<Religion> _faith;
     private readonly IBoundGameMethod _getName;
     private readonly IBoundGameMethod _getElementValue;
+    private readonly IBoundGameMethod _getGiftRankWithCharacter;
+    private readonly IBoundGameMethod _getGiftRankLegacy;
     private readonly IBoundGameMethod _refresh;
 
     internal CharacterGameAccess(IGameMemberBinder binder)
@@ -17,6 +20,7 @@ internal sealed class CharacterGameAccess : ICharacterGameAccess
         _playerCharacter = binder.BindStaticValue<Chara>(typeof(EClass), GameValueAccess.Read, "pc");
         _id = binder.BindInstanceValue<string>(typeof(Card), GameValueAccess.Read, "id");
         _elements = binder.BindInstanceValue<ElementContainerCard>(typeof(Card), GameValueAccess.Read, "elements");
+        _faith = binder.BindInstanceValue<Religion>(typeof(Chara), GameValueAccess.Read, "faith");
         _getName = binder.BindInstanceMethod(
             typeof(Card),
             typeof(string),
@@ -27,6 +31,16 @@ internal sealed class CharacterGameAccess : ICharacterGameAccess
             typeof(int),
             new[] { typeof(int) },
             "Evalue");
+        _getGiftRankWithCharacter = binder.BindInstanceMethod(
+            typeof(Religion),
+            typeof(int),
+            new[] { typeof(Chara) },
+            "GetGiftRank");
+        _getGiftRankLegacy = binder.BindInstanceMethod(
+            typeof(Religion),
+            typeof(int),
+            Type.EmptyTypes,
+            "GetGiftRank");
         _refresh = binder.BindInstanceMethod(
             typeof(Chara),
             typeof(void),
@@ -68,6 +82,29 @@ internal sealed class CharacterGameAccess : ICharacterGameAccess
     {
         var playerCharacter = PlayerCharacter;
         return playerCharacter == null ? 0 : GetElementValue(playerCharacter, elementId);
+    }
+
+    public int GetFaithGiftRank(Chara character)
+    {
+        var faith = GameAccessServiceHelpers.GetReference(_faith, character);
+        if (faith == null)
+            return -1;
+
+        if (_getGiftRankWithCharacter.TryInvoke(
+                faith,
+                new object?[] { character },
+                out var currentResult) &&
+            currentResult is int currentRank)
+            return currentRank;
+
+        if (_getGiftRankLegacy.TryInvoke(
+                faith,
+                Array.Empty<object?>(),
+                out var legacyResult) &&
+            legacyResult is int legacyRank)
+            return legacyRank;
+
+        return -1;
     }
 
     public void Refresh(Chara character, bool fullRefresh)
