@@ -11,6 +11,7 @@ public sealed partial class ElinModifierPlugin
 
     private const int NpcInfoRowsPerPage = 13;
     private ScrollRect? _lGuiNpcInfoScroll;
+    private Button? _lGuiNpcInfoExportButton;
 
     private void BuildLGuiNpcInfoPage()
     {
@@ -56,6 +57,29 @@ public sealed partial class ElinModifierPlugin
             module.LoadQuickLookup(value);
             SaveConfig(false);
         });
+        _lGuiNpcInfoExportButton = CreateLGuiButton(
+            content,
+            "ExportNpcInformation",
+            T("导出数据", "Export data"),
+            986f,
+            y,
+            180f,
+            46f,
+            BeginLGuiNpcInfoExport);
+        _lGuiNpcInfoExportButton.interactable = !module.IsExporting;
+        var exportTooltip = _lGuiNpcInfoExportButton.gameObject.AddComponent<EmTooltipTarget>();
+        exportTooltip.Initialize(
+            new EmTooltipContent(
+                T(
+                    "严禁未经授权的二次修改、传播",
+                    "Unauthorized secondary modification or distribution is strictly prohibited."),
+                null,
+                "")
+            {
+                UsePlainTextColors = true
+            },
+            _lGuiNpcInfoExportButton.GetComponentInChildren<Text>(true)?.font,
+            ResolveModuleEmTooltipVisualStyle);
         CreateLGuiButton(
             content,
             "RefreshNpcInformation",
@@ -77,6 +101,20 @@ public sealed partial class ElinModifierPlugin
             y = BuildLGuiNpcInformationCatalog(content, y);
 
         content.sizeDelta = new Vector2(0f, Math.Max(900f, y + 30f));
+    }
+
+    private void BeginLGuiNpcInfoExport()
+    {
+        var module = _modules.NpcInfo;
+        if (module.IsExporting)
+            return;
+        if (_lGuiNpcInfoExportButton != null)
+            _lGuiNpcInfoExportButton.interactable = false;
+        StartCoroutine(module.ExportData(GetPluginDirectory(), () =>
+        {
+            if (_lGuiNpcInfoExportButton != null)
+                _lGuiNpcInfoExportButton.interactable = true;
+        }));
     }
 
     private float BuildLGuiNpcInformationCatalog(RectTransform content, float y)

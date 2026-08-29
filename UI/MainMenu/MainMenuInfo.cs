@@ -201,14 +201,8 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 新增\"无视负重\"，独立功能，兼容自动化执行期间无视负重",
-                        "* Added \"Ignore Encumbrance\" as an independent feature, compatible with ignoring encumbrance during automation"),
-                    host.TranslateModuleText(
-                        "* 修复\"供奉提升虔诚度无上限\"在最新Nightly版本不兼容",
-                        "* Fixed \"Unlimited Piety Gain from Offerings\" incompatibility with the latest Nightly version"),
-                    host.TranslateModuleText(
-                        "* 优化部分UI表现",
-                        "* Optimized some UI presentation"),
+                        "* \"NPC图鉴\"支持数据导出，导出数据未经授权严禁进行二次修改、传播",
+                        "* \"NPC Compendium\" now supports data export. Unauthorized secondary modification or distribution of exported data is strictly prohibited"),
                 }
             };
 

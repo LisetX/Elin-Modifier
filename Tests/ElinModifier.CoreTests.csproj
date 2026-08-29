@@ -26,6 +26,7 @@
     <Compile Include="..\Modules\NpcCompendium\NpcInfoProbabilityMath.cs" Link="NpcInfoProbabilityMath.cs" />
     <Compile Include="..\Modules\NpcCompendium\NpcStoryAbilityCatalog.cs" Link="NpcStoryAbilityCatalog.cs" />
     <Compile Include="..\Modules\NpcCompendium\NpcTemplateValueMath.cs" Link="NpcTemplateValueMath.cs" />
+    <Compile Include="..\Modules\NpcCompendium\NpcCompendiumWorkbookWriter.cs" Link="NpcCompendiumWorkbookWriter.cs" />
     <Reference Include="Newtonsoft.Json">
       <HintPath>D:\SteamLibrary\steamapps\common\Elin\Elin_Data\Managed\Newtonsoft.Json.dll</HintPath>
       <Private>true</Private>

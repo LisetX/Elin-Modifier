@@ -81,6 +81,17 @@ internal sealed partial class NpcInfoModule
         return result;
     }
 
+    internal IReadOnlyList<NpcRecord> GetAllNpcs()
+    {
+        EnsureData();
+        return _npcs.ToArray();
+    }
+
+    internal void SetLog(string value)
+    {
+        Log = value ?? "";
+    }
+
     internal void Refresh()
     {
         _sourceIdentity = null;
@@ -102,6 +113,22 @@ internal sealed partial class NpcInfoModule
         int additionalLevel = 0,
         int startingDangerLevel = 1,
         NpcTemplateInfo? templateOverride = null)
+    {
+        return AnalyzeNpcCore(id, additionalLevel, startingDangerLevel, templateOverride, null, true);
+    }
+
+    internal NpcAnalysis? AnalyzeNpcForExport(string id, double currentZoneProbability)
+    {
+        return AnalyzeNpcCore(id, 0, 1, null, currentZoneProbability, false);
+    }
+
+    private NpcAnalysis? AnalyzeNpcCore(
+        string id,
+        int additionalLevel,
+        int startingDangerLevel,
+        NpcTemplateInfo? templateOverride,
+        double? currentZoneProbability,
+        bool updateLog)
     {
         EnsureData();
         if (!_npcById.TryGetValue(id ?? "", out var npc))
@@ -172,11 +199,19 @@ internal sealed partial class NpcInfoModule
         analysis.SpawnLists.AddRange(FindSpawnListsForNpc(npc.Id));
         analysis.Loot.AddRange(BuildLootEntries(npc));
         analysis.Template = templateOverride ?? BuildTemplateInfo(npc, additionalLevel);
-        var zone = AnalyzeCurrentZone();
-        var current = zone?.Npcs.FirstOrDefault(item =>
-            string.Equals(item.Npc.Id, npc.Id, StringComparison.OrdinalIgnoreCase));
-        analysis.CurrentZoneProbability = current?.Probability ?? 0d;
-        Log = T("已分析 NPC：", "Analyzed NPC: ") + npc.Name;
+        if (currentZoneProbability.HasValue)
+        {
+            analysis.CurrentZoneProbability = currentZoneProbability.Value;
+        }
+        else
+        {
+            var zone = AnalyzeCurrentZone();
+            var current = zone?.Npcs.FirstOrDefault(item =>
+                string.Equals(item.Npc.Id, npc.Id, StringComparison.OrdinalIgnoreCase));
+            analysis.CurrentZoneProbability = current?.Probability ?? 0d;
+        }
+        if (updateLog)
+            Log = T("已分析 NPC：", "Analyzed NPC: ") + npc.Name;
         return analysis;
     }
 }
