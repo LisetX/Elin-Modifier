@@ -8,6 +8,7 @@ public sealed partial class ElinModifierPlugin
     private bool ShouldInstallHighReliabilityStartupPatch(Type patchType)
     {
         return IsUiSettingsPatchType(patchType) ||
+               IsNpcCompendiumPatchType(patchType) ||
                IsMoongatePrivilegePatchType(patchType) ||
                IsEnabledIndependentPatchType(patchType);
     }
@@ -106,6 +107,11 @@ public sealed partial class ElinModifierPlugin
                name.StartsWith("MoongateCanEnterBuildMode", StringComparison.Ordinal);
     }
 
+    private static bool IsNpcCompendiumPatchType(Type patchType)
+    {
+        return patchType.Name.IndexOf("NpcCompendiumQuickLookup", StringComparison.Ordinal) >= 0;
+    }
+
     private static bool PatchTypeMatchesPage(Type patchType, LGuiPage page)
     {
         var name = patchType.Name;
@@ -127,7 +133,7 @@ public sealed partial class ElinModifierPlugin
             case LGuiPage.Moongate:
                 return name.StartsWith("Moongate", StringComparison.Ordinal);
             case LGuiPage.NpcInfo:
-                return name.IndexOf("NpcCompendiumQuickLookup", StringComparison.Ordinal) >= 0;
+                return IsNpcCompendiumPatchType(patchType);
             case LGuiPage.Settings:
                 return IsUiSettingsPatchType(patchType);
             default:
