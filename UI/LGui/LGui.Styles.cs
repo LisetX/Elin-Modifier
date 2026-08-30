@@ -105,6 +105,8 @@ public sealed partial class ElinModifierPlugin
                         ? modalInputColor
                         : inputColor;
 
+        ApplyLGuiDropdownStyles(buttonColor, inputColor, modalBaseColor, accent, lightTheme);
+
         var scrolls = _lGuiRoot.GetComponentsInChildren<ScrollRect>(true);
         for (var i = 0; i < scrolls.Length; i++)
         {
@@ -136,6 +138,57 @@ public sealed partial class ElinModifierPlugin
         _lGuiDebugList?.RefreshBoundRows();
         _lGuiEmpList?.RefreshBoundRows();
         ApplyWatermarkVisualSettings();
+    }
+    private void ApplyLGuiDropdownStyles(Color buttonColor, Color inputColor, Color popupColor, Color accent, bool lightTheme)
+    {
+        if (_lGuiRoot == null)
+            return;
+        var dropdowns = _lGuiRoot.GetComponentsInChildren<Dropdown>(true);
+        for (var i = 0; i < dropdowns.Length; i++)
+        {
+            var dropdown = dropdowns[i];
+            if (dropdown.targetGraphic is Image background)
+                background.color = buttonColor;
+            var template = dropdown.template;
+            if (template == null)
+                continue;
+            var templateImage = template.GetComponent<Image>();
+            if (templateImage != null)
+                templateImage.color = popupColor;
+            var viewport = template.Find("Viewport");
+            var content = viewport == null ? null : viewport.Find("Content");
+            var item = content == null ? null : content.Find("Item");
+            var itemImage = item == null ? null : item.GetComponent<Image>();
+            var itemColor = lightTheme
+                ? Color.Lerp(inputColor, accent, 0.035f)
+                : Color.Lerp(inputColor, popupColor, 0.32f);
+            if (itemImage != null)
+                itemImage.color = itemColor;
+            var itemToggle = item == null ? null : item.GetComponent<Toggle>();
+            if (itemToggle != null)
+            {
+                var colors = itemToggle.colors;
+                colors.normalColor = itemColor;
+                colors.highlightedColor = Color.Lerp(itemColor, accent, lightTheme ? 0.16f : 0.24f);
+                colors.pressedColor = Color.Lerp(itemColor, accent, lightTheme ? 0.25f : 0.34f);
+                colors.selectedColor = colors.highlightedColor;
+                colors.disabledColor = new Color(itemColor.r, itemColor.g, itemColor.b, 0.45f);
+                itemToggle.colors = colors;
+            }
+            var checkmark = item == null ? null : item.Find("Item Checkmark")?.GetComponent<Image>();
+            if (checkmark != null)
+                checkmark.color = lightTheme ? Color.Lerp(accent, new Color(0.12f, 0.72f, 0.36f, 1f), 0.34f) : Color.Lerp(accent, Color.white, 0.08f);
+            var indicator = item == null ? null : item.Find("Item Indicator")?.GetComponent<Image>();
+            if (indicator != null)
+                indicator.color = lightTheme ? Color.Lerp(buttonColor, Color.black, 0.12f) : Color.Lerp(buttonColor, Color.white, 0.12f);
+            var scrollbar = template.Find("Scrollbar");
+            var scrollbarImage = scrollbar == null ? null : scrollbar.GetComponent<Image>();
+            if (scrollbarImage != null)
+                scrollbarImage.color = Color.Lerp(popupColor, inputColor, 0.42f);
+            var handle = scrollbar == null ? null : scrollbar.Find("Sliding Area/Handle")?.GetComponent<Image>();
+            if (handle != null)
+                handle.color = Color.Lerp(buttonColor, accent, lightTheme ? 0.20f : 0.34f);
+        }
     }
     private void ApplyLGuiModalChrome(Color headerColor, Color accent)
     {

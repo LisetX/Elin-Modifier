@@ -210,7 +210,14 @@ public sealed partial class ElinModifierPlugin : BaseUnityPlugin, ILGuiRowHandle
     {
         try
         {
-            _modules.Harmony.Install(typeof(ElinModifierPlugin).Assembly, Logger);
+            _highReliabilityStartupModeActive = string.Equals(
+                NormalizeStartupMode(_startupMode),
+                StartupModeHighReliability,
+                StringComparison.Ordinal);
+            if (IsHighReliabilityStartupMode)
+                _modules.Harmony.Install(typeof(ElinModifierPlugin).Assembly, Logger, ShouldInstallHighReliabilityStartupPatch);
+            else
+                _modules.Harmony.Install(typeof(ElinModifierPlugin).Assembly, Logger);
             EnsureCwlErrorNotificationPatch(true);
             if (_modules.Harmony.Failures.Count > 0)
                 _log = "Harmony patch partial: " +

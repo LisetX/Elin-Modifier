@@ -73,6 +73,18 @@ public sealed partial class ElinModifierPlugin
         view.Separator = separatorRect.gameObject.AddComponent<Image>();
         view.Separator.raycastTarget = false;
 
+        view.Favorite = CreateLGuiButton(rect, "Favorite", "☆", 8f, 8f, 42f, 42f, null);
+        view.FavoriteText = view.Favorite.GetComponentInChildren<Text>();
+        var favoriteBackground = view.Favorite.GetComponent<Image>();
+        if (favoriteBackground != null)
+            favoriteBackground.enabled = false;
+        view.Favorite.targetGraphic = view.FavoriteText;
+        view.FavoriteText.raycastTarget = true;
+        view.FavoriteText.fontSize = 24;
+        var favoriteTextProfile = view.FavoriteText.GetComponent<LGuiTextProfile>();
+        if (favoriteTextProfile != null)
+            favoriteTextProfile.BaseFontSize = 24;
+        view.Favorite.gameObject.SetActive(false);
         view.Icon = CreateLGuiImage(rect, "Icon", 8f, 8f, 42f, 42f);
         view.Label = CreateLGuiText(rect, "Label", "", 17, TextAnchor.MiddleLeft, FontStyle.Normal);
         PlaceLGuiRect(view.Label.rectTransform, 60f, 4f, 410f, 50f);

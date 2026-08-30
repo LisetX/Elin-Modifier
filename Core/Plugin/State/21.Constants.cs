@@ -37,6 +37,8 @@ public sealed partial class ElinModifierPlugin
     private const float AdaptiveUiBaseWidth = 2560f;
     private const float AdaptiveUiBaseHeight = 1440f;
     private const string ConfigFileName = "ElinModifier_Config.json";
+    private const string StartupModePreload = "preload";
+    private const string StartupModeHighReliability = "highReliability";
     private static readonly Color FoodRotFreshColor = new Color(0.48f, 1f, 0.52f, 0.28f);
     private static readonly Color FoodRotSpoiledColor = new Color(1f, 0.34f, 0.34f, 0.38f);
     private static readonly FieldInfo? CardIntsField = typeof(Card).GetField("_ints", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);

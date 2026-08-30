@@ -146,6 +146,8 @@ public sealed partial class ElinModifierPlugin
         CreateLGuiToggleControl(content, T("修复自言自语Bug", "Fix self-talk bug"), module.FixSelfTalkBug, 8f, value =>
         {
             module.FixSelfTalkBug = value;
+            if (value)
+                EnsureNightlyFeatureHarmonyPatches();
             module.Log = value
                 ? T("修复自言自语Bug已开启", "Self-talk bug fix enabled")
                 : T("修复自言自语Bug已关闭", "Self-talk bug fix disabled");

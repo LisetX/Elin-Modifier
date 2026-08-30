@@ -13,6 +13,7 @@ internal interface ILGuiRowHandler
     void OnLGuiRowDropdown(LGuiRowView row, int optionIndex);
     void OnLGuiRowInput(LGuiRowView row, string value);
     void OnLGuiRowInputCommit(LGuiRowView row, string value);
+    void OnLGuiRowFavorite(LGuiRowView row);
 }
 
 internal sealed class LGuiSafeInputField : InputField
@@ -566,6 +567,8 @@ internal sealed class LGuiRowView : MonoBehaviour
     public Image Accent = null!;
     public Image Separator = null!;
     public Image Icon = null!;
+    public Button Favorite = null!;
+    public Text FavoriteText = null!;
     public Text Label = null!;
     public Text Secondary = null!;
     public InputField Input = null!;
@@ -589,6 +592,7 @@ internal sealed class LGuiRowView : MonoBehaviour
         _handler = handler;
         Primary.onClick.AddListener(HandlePrimary);
         Auxiliary.onClick.AddListener(HandleAuxiliary);
+        Favorite.onClick.AddListener(HandleFavorite);
         Toggle.onValueChanged.AddListener(HandleToggle);
         Input.onValueChanged.AddListener(HandleInput);
         Input.onEndEdit.AddListener(HandleInputCommit);
@@ -602,6 +606,7 @@ internal sealed class LGuiRowView : MonoBehaviour
     public void BeginBind()
     {
         _binding = true;
+        Favorite.gameObject.SetActive(false);
     }
 
     public void EndBind()
@@ -668,6 +673,12 @@ internal sealed class LGuiRowView : MonoBehaviour
     {
         if (!_binding)
             _handler?.OnLGuiRowAuxiliary(this);
+    }
+
+    private void HandleFavorite()
+    {
+        if (!_binding)
+            _handler?.OnLGuiRowFavorite(this);
     }
 
     private void HandleChoice(int choiceIndex)

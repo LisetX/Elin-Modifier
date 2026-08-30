@@ -199,7 +199,7 @@ internal sealed partial class AutomationModule
         input.onValueChanged.AddListener(next => setter(next ?? ""));
     }
     internal Dropdown CreateAutomationDropdown(Transform parent, string name, IReadOnlyList<string> options, int selectedIndex,
-        float x, float y, float width, float height, Action<int> changed)
+        float x, float y, float width, float height, Action<int> changed, bool showInactiveIndicator = false)
     {
         var rect = CreateLGuiRect(parent, name);
         PlaceLGuiRect(rect, x, y, width, height);
@@ -212,7 +212,8 @@ internal sealed partial class AutomationModule
 
         var caption = CreateLGuiText(rect, "Label", "", 17, TextAnchor.MiddleCenter, FontStyle.Normal);
         StretchLGuiRect(caption.rectTransform, 8f, 2f, 34f, 2f);
-        caption.horizontalOverflow = HorizontalWrapMode.Wrap;
+        caption.horizontalOverflow = HorizontalWrapMode.Overflow;
+        caption.verticalOverflow = VerticalWrapMode.Truncate;
         dropdown.captionText = caption;
 
         var arrow = CreateLGuiText(rect, "Arrow", "▼", 15, TextAnchor.MiddleCenter, FontStyle.Normal);
@@ -225,24 +226,26 @@ internal sealed partial class AutomationModule
         const float dropdownItemHeight = 42f;
         const int maximumVisibleItems = 5;
         var visibleItemCount = Math.Min(maximumVisibleItems, Math.Max(1, options.Count));
+        var needsScrollbar = options.Count > maximumVisibleItems;
         var template = CreateLGuiRect(rect, "Template");
         template.anchorMin = new Vector2(0f, 0f);
         template.anchorMax = new Vector2(1f, 0f);
         template.pivot = new Vector2(0.5f, 1f);
         template.anchoredPosition = new Vector2(0f, -2f);
-        template.sizeDelta = new Vector2(20f, visibleItemCount * dropdownItemHeight + 4f);
+        template.sizeDelta = new Vector2(0f, visibleItemCount * dropdownItemHeight + 4f);
         var templateBackground = template.gameObject.AddComponent<Image>();
         templateBackground.color = new Color(0.055f, 0.062f, 0.073f, 1f);
         RegisterLGuiRoundedImage(templateBackground);
 
         var scroll = template.gameObject.AddComponent<ScrollRect>();
         scroll.horizontal = false;
-        scroll.vertical = true;
+        scroll.vertical = needsScrollbar;
         scroll.movementType = ScrollRect.MovementType.Clamped;
         scroll.scrollSensitivity = dropdownItemHeight;
 
         var viewport = CreateLGuiRect(template, "Viewport");
-        StretchLGuiRect(viewport, 2f, 2f, 22f, 2f);
+        var viewportVerticalInset = showInactiveIndicator && !needsScrollbar ? 0f : 2f;
+        StretchLGuiRect(viewport, 2f, viewportVerticalInset, needsScrollbar ? 22f : 2f, viewportVerticalInset);
         var viewportImage = viewport.gameObject.AddComponent<Image>();
         viewportImage.color = new Color(1f, 1f, 1f, 0.001f);
         viewport.gameObject.AddComponent<RectMask2D>();
@@ -266,6 +269,12 @@ internal sealed partial class AutomationModule
         var itemToggle = item.gameObject.AddComponent<Toggle>();
         itemToggle.targetGraphic = itemBackground;
 
+        if (showInactiveIndicator)
+        {
+            var inactiveIndicator = CreateLGuiImage(item, "Item Indicator", 6f, 8f, 24f, 24f);
+            inactiveIndicator.color = new Color(0.24f, 0.27f, 0.31f, 1f);
+            RegisterLGuiRoundedImage(inactiveIndicator);
+        }
         var checkmark = CreateLGuiImage(item, "Item Checkmark", 6f, 8f, 24f, 24f);
         checkmark.color = new Color(0.25f, 0.84f, 0.48f, 1f);
         RegisterLGuiRoundedImage(checkmark);
@@ -273,6 +282,8 @@ internal sealed partial class AutomationModule
 
         var itemLabel = CreateLGuiText(item, "Item Label", "", 16, TextAnchor.MiddleLeft, FontStyle.Normal);
         StretchLGuiRect(itemLabel.rectTransform, 38f, 2f, 8f, 2f);
+        itemLabel.horizontalOverflow = HorizontalWrapMode.Overflow;
+        itemLabel.verticalOverflow = VerticalWrapMode.Truncate;
 
         var scrollbarRect = CreateLGuiRect(template, "Scrollbar");
         scrollbarRect.anchorMin = new Vector2(1f, 0f);
@@ -294,11 +305,12 @@ internal sealed partial class AutomationModule
         RegisterLGuiRoundedImage(handleImage, true);
         scrollbar.handleRect = handle;
         scrollbar.targetGraphic = handleImage;
+        scrollbarRect.gameObject.SetActive(needsScrollbar);
 
         scroll.viewport = viewport;
         scroll.content = content;
-        scroll.verticalScrollbar = scrollbar;
-        scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.Permanent;
+        scroll.verticalScrollbar = needsScrollbar ? scrollbar : null;
+        scroll.verticalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport;
 
         dropdown.template = template;
         dropdown.itemText = itemLabel;

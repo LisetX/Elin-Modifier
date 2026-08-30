@@ -619,6 +619,8 @@ public sealed partial class ElinModifierPlugin
     }
     private void SetLGuiFeatureValue(LGuiFeatureId id, bool value)
     {
+        if (value)
+            EnsureIndependentFeatureHarmonyPatches(id);
         switch (id)
         {
             case LGuiFeatureId.AiInstruction: SetAiInstruction(value); break;

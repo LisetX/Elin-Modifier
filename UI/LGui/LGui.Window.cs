@@ -60,6 +60,19 @@ public sealed partial class ElinModifierPlugin
             PlaceLGuiRect(_lGuiTitle.rectTransform, 22f, 0f, 900f, 64f);
             _lGuiCredit = CreateLGuiText(header, "Credit", GetLGuiHeaderCreditText(), 12, TextAnchor.MiddleLeft, FontStyle.Normal);
             PlaceLGuiRect(_lGuiCredit.rectTransform, 220f, 0f, 928f, 64f);
+            _lGuiStartupModeLabel = CreateLGuiText(header, "StartupModeLabel", T("启动模式:", "Startup mode:"), 14, TextAnchor.MiddleRight, FontStyle.Normal);
+            PlaceLGuiRect(_lGuiStartupModeLabel.rectTransform, 880f, 0f, 100f, 64f);
+            _lGuiStartupModeDropdown = CreateAutomationDropdown(
+                header,
+                "StartupMode",
+                GetLGuiStartupModeOptions(),
+                GetLGuiStartupModeIndex(),
+                988f,
+                10f,
+                170f,
+                44f,
+                SetLGuiStartupModeIndex,
+                true);
             var globalConfigSaveButton = CreateLGuiButton(header, "GlobalConfigSave", T("保存配置", "Save config"), 1172f, 10f, 126f, 44f, SaveLGuiGlobalConfig);
             _lGuiGlobalConfigSaveRect = globalConfigSaveButton.transform as RectTransform;
             _lGuiGlobalConfigSaveLabel = globalConfigSaveButton.GetComponentInChildren<Text>(true);
@@ -158,6 +171,8 @@ public sealed partial class ElinModifierPlugin
         _lGuiTitle = null;
         _lGuiCredit = null;
         _lGuiVersion = null;
+        _lGuiStartupModeLabel = null;
+        _lGuiStartupModeDropdown = null;
         _lGuiGlobalConfigSaveRect = null;
         _lGuiGlobalConfigLoadRect = null;
         _lGuiGlobalConfigSaveLabel = null;
@@ -293,6 +308,7 @@ public sealed partial class ElinModifierPlugin
             _lGuiGlobalConfigSaveLabel.text = T("保存配置", "Save config");
         if (_lGuiGlobalConfigLoadLabel != null)
             _lGuiGlobalConfigLoadLabel.text = T("读取配置", "Load config");
+        RefreshLGuiStartupModeControl();
         LayoutLGuiHeaderTexts();
         if (_lGuiStatus != null)
             _lGuiStatus.text = GetLGuiPageStatus();
@@ -366,6 +382,7 @@ public sealed partial class ElinModifierPlugin
             UpdateLGuiNavButtons();
             return;
         }
+        EnsureLGuiPageHarmonyPatches(page);
         CloseLGuiEditorModal(true);
         _lGuiPage = page;
         DisposeLGuiVirtualLists();
@@ -485,6 +502,8 @@ public sealed partial class ElinModifierPlugin
         if (_lGuiTitle == null ||
             _lGuiCredit == null ||
             _lGuiVersion == null ||
+            _lGuiStartupModeLabel == null ||
+            _lGuiStartupModeDropdown == null ||
             _lGuiGlobalConfigSaveRect == null ||
             _lGuiGlobalConfigLoadRect == null)
             return;
@@ -495,16 +514,60 @@ public sealed partial class ElinModifierPlugin
         const float versionGap = 12f;
         const float buttonGap = 10f;
         const float creditGap = 18f;
+        const float startupDropdownWidth = 170f;
+        const float startupControlGap = 10f;
+        const float startupLabelGap = 6f;
 
         var versionWidth = Math.Max(minimumVersionWidth, Mathf.Ceil(_lGuiVersion.preferredWidth) + 4f);
         var versionX = versionRight - versionWidth;
         var loadButtonX = versionX - versionGap - buttonWidth;
         var saveButtonX = loadButtonX - buttonGap - buttonWidth;
+        var startupDropdownX = saveButtonX - startupControlGap - startupDropdownWidth;
+        var startupLabelWidth = Math.Max(76f, Mathf.Ceil(_lGuiStartupModeLabel.preferredWidth) + 4f);
+        var startupLabelX = startupDropdownX - startupLabelGap - startupLabelWidth;
         PlaceLGuiRect(_lGuiVersion.rectTransform, versionX, 0f, versionWidth, 64f);
         PlaceLGuiRect(_lGuiGlobalConfigLoadRect, loadButtonX, 10f, buttonWidth, 44f);
         PlaceLGuiRect(_lGuiGlobalConfigSaveRect, saveButtonX, 10f, buttonWidth, 44f);
+        PlaceLGuiRect((RectTransform)_lGuiStartupModeDropdown.transform, startupDropdownX, 10f, startupDropdownWidth, 44f);
+        PlaceLGuiRect(_lGuiStartupModeLabel.rectTransform, startupLabelX, 0f, startupLabelWidth, 64f);
 
         var creditX = 22f + Mathf.Ceil(_lGuiTitle.preferredWidth);
-        PlaceLGuiRect(_lGuiCredit.rectTransform, creditX, 0f, Math.Max(0f, saveButtonX - creditGap - creditX), 64f);
+        PlaceLGuiRect(_lGuiCredit.rectTransform, creditX, 0f, Math.Max(0f, startupLabelX - creditGap - creditX), 64f);
+    }
+    private static string NormalizeStartupMode(string value)
+    {
+        return string.Equals(value, StartupModePreload, StringComparison.OrdinalIgnoreCase)
+            ? StartupModePreload
+            : StartupModeHighReliability;
+    }
+    private List<string> GetLGuiStartupModeOptions()
+    {
+        return new List<string>
+        {
+            T("预加载", "Preload"),
+            T("高可靠", "High reliability")
+        };
+    }
+    private int GetLGuiStartupModeIndex()
+    {
+        return string.Equals(NormalizeStartupMode(_startupMode), StartupModeHighReliability, StringComparison.Ordinal) ? 1 : 0;
+    }
+    private void SetLGuiStartupModeIndex(int index)
+    {
+        _startupMode = index == 1 ? StartupModeHighReliability : StartupModePreload;
+        SaveConfig(false);
+    }
+    private void RefreshLGuiStartupModeControl()
+    {
+        if (_lGuiStartupModeLabel != null)
+            _lGuiStartupModeLabel.text = T("启动模式:", "Startup mode:");
+        if (_lGuiStartupModeDropdown == null)
+            return;
+        var options = GetLGuiStartupModeOptions();
+        _lGuiStartupModeDropdown.options.Clear();
+        for (var i = 0; i < options.Count; i++)
+            _lGuiStartupModeDropdown.options.Add(new Dropdown.OptionData(options[i]));
+        _lGuiStartupModeDropdown.SetValueWithoutNotify(GetLGuiStartupModeIndex());
+        _lGuiStartupModeDropdown.RefreshShownValue();
     }
 }

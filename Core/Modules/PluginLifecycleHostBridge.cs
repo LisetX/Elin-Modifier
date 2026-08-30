@@ -51,6 +51,7 @@ public sealed partial class ElinModifierPlugin
         ApplyDebugLocksScheduled();
         ExecutePendingTeleportRequest();
         ApplyInfinitePlayerSightScheduled();
+        MaintainHighReliabilityHarmonyPatches();
     }
 
     internal void TickModuleKillGrowthSaveContext() => TickKillGrowthSaveContext();

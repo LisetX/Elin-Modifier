@@ -110,9 +110,61 @@ public sealed partial class ElinModifierPlugin
         AddLGuiFeature(LGuiFeatureId.OptimizeVoid, T("优化地牢Void缩放逻辑", "Optimize dungeon Void scaling"));
         AddLGuiFeature(LGuiFeatureId.NoTalkInterestLoss, T("对话不减兴趣", "No talk interest loss"));
         AddLGuiFeature(LGuiFeatureId.KillGrowth, T("击杀成长", "Kill growth"));
+        PlaceIndependentFeatureFavoritesFirst();
     }
     private void AddLGuiFeature(LGuiFeatureId id, string label)
     {
         _lGuiFeatureRows.Add(new LGuiFeatureRow(id, label));
+    }
+    private bool IsIndependentFeatureFavorite(LGuiFeatureId id)
+    {
+        return _independentFeatureFavorites.Contains(id.ToString());
+    }
+    private void ToggleIndependentFeatureFavorite(LGuiFeatureId id)
+    {
+        var key = id.ToString();
+        if (!_independentFeatureFavorites.Add(key))
+            _independentFeatureFavorites.Remove(key);
+        SaveConfig(false);
+        BuildLGuiFeatureRows();
+        _lGuiFeatureList?.SetItems(_lGuiFeatureRows);
+    }
+    private void PlaceIndependentFeatureFavoritesFirst()
+    {
+        if (_independentFeatureFavorites.Count == 0)
+            return;
+        var ordered = new List<LGuiFeatureRow>(_lGuiFeatureRows.Count);
+        for (var i = 0; i < _lGuiFeatureRows.Count; i++)
+        {
+            if (IsIndependentFeatureFavorite(_lGuiFeatureRows[i].Id))
+                ordered.Add(_lGuiFeatureRows[i]);
+        }
+        for (var i = 0; i < _lGuiFeatureRows.Count; i++)
+        {
+            if (!IsIndependentFeatureFavorite(_lGuiFeatureRows[i].Id))
+                ordered.Add(_lGuiFeatureRows[i]);
+        }
+        _lGuiFeatureRows.Clear();
+        _lGuiFeatureRows.AddRange(ordered);
+    }
+    private void LoadIndependentFeatureFavorites(string value)
+    {
+        _independentFeatureFavorites.Clear();
+        var values = (value ?? "").Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+        for (var i = 0; i < values.Length; i++)
+        {
+            if (Enum.TryParse(values[i].Trim(), false, out LGuiFeatureId id) && Enum.IsDefined(typeof(LGuiFeatureId), id))
+                _independentFeatureFavorites.Add(id.ToString());
+        }
+    }
+    private string GetIndependentFeatureFavoritesConfig()
+    {
+        var values = new List<string>();
+        foreach (LGuiFeatureId id in Enum.GetValues(typeof(LGuiFeatureId)))
+        {
+            if (IsIndependentFeatureFavorite(id))
+                values.Add(id.ToString());
+        }
+        return string.Join(",", values);
     }
 }

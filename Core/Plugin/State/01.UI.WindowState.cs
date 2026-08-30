@@ -47,6 +47,10 @@ public sealed partial class ElinModifierPlugin
     private bool _uiRoundedCorners = true;
     private bool _adaptiveUiScale = true;
     private float _customUiScale;
+    private string _startupMode = StartupModeHighReliability;
+    private bool _highReliabilityStartupModeActive;
+    private float _nextHighReliabilityPatchCheckAt;
+    private readonly HashSet<string> _independentFeatureFavorites = new HashSet<string>(StringComparer.Ordinal);
     private string _simulateAdvanceMinutesText = "60";
     private string _generateDungeonDangerText = DungeonGenerationPolicy.DefaultRequestedDanger.ToString(CultureInfo.InvariantCulture);
     internal bool _simulatedAdvanceRunning;

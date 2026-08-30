@@ -77,6 +77,8 @@ public sealed partial class ElinModifierPlugin
                                       !HasJsonValue(json, "customUiScale") ||
                                       !HasJsonValue(json, "uiFontSize") ||
                                       !HasJsonValue(json, "openKey") ||
+                                      !HasJsonValue(json, "startupMode") ||
+                                      !HasJsonValue(json, "independentFeatureFavorites") ||
                                       !HasJsonValue(json, "lowPerformanceMode") ||
                                       !HasJsonValue(json, "unlockFrameRate") ||
                                       !HasJsonValue(json, "invincibleMode") ||
@@ -270,6 +272,8 @@ public sealed partial class ElinModifierPlugin
             {
                 _openKey = key;
             }
+            _startupMode = NormalizeStartupMode(ExtractString(json, "startupMode", StartupModeHighReliability));
+            LoadIndependentFeatureFavorites(ExtractString(json, "independentFeatureFavorites", ""));
             _forceGameUnfocus = ExtractBool(json, "forceGameUnfocus", _forceGameUnfocus);
             _uiRoundedCorners = ExtractBool(json, "uiRoundedCorners", true);
             _modules.MainMenuInfo.SetEnabled(HasJsonValue(json, "mainMenuInfoDefaultOnMigrated")
@@ -571,6 +575,8 @@ public sealed partial class ElinModifierPlugin
         _uiFontSizeText = UiFontSizeDefault.ToString(CultureInfo.InvariantCulture);
         UseStyleUiTextColor();
         _openKey = DefaultOpenKey;
+        _startupMode = StartupModeHighReliability;
+        _independentFeatureFavorites.Clear();
         _forceGameUnfocus = true;
         _uiRoundedCorners = true;
         _modules.MainMenuInfo.SetEnabled(true);

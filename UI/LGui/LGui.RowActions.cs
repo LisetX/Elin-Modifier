@@ -7,6 +7,12 @@ using UnityEngine.UI;
 
 public sealed partial class ElinModifierPlugin
 {
+    void ILGuiRowHandler.OnLGuiRowFavorite(LGuiRowView row)
+    {
+        if (row.BoundData is LGuiFeatureRow feature)
+            ToggleIndependentFeatureFavorite(feature.Id);
+    }
+
     void ILGuiRowHandler.OnLGuiRowPrimary(LGuiRowView row)
     {
         switch (row.BoundData)

@@ -96,7 +96,8 @@ public sealed partial class ElinModifierPlugin
         float y,
         float width,
         float height,
-        Action<int> onValueChanged) =>
+        Action<int> onValueChanged,
+        bool showInactiveIndicator = false) =>
         _modules.Automation.CreateAutomationDropdown(
             parent,
             name,
@@ -106,5 +107,6 @@ public sealed partial class ElinModifierPlugin
             y,
             width,
             height,
-            onValueChanged);
+            onValueChanged,
+            showInactiveIndicator);
 }

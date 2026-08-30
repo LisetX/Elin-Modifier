@@ -2,10 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>2.7.10</Version>
-    <AssemblyVersion>2.7.10.0</AssemblyVersion>
-    <FileVersion>2.7.10.0</FileVersion>
-    <InformationalVersion>2.7.10</InformationalVersion>
+    <Version>2.8.0</Version>
+    <AssemblyVersion>2.8.0.0</AssemblyVersion>
+    <FileVersion>2.8.0.0</FileVersion>
+    <InformationalVersion>2.8.0</InformationalVersion>
     <Authors>Liset</Authors>
     <Company>Liset</Company>
     <Product>Elin Modifier</Product>

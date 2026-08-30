@@ -11,6 +11,9 @@ internal sealed class HarmonyPatchModule
     private readonly Dictionary<string, Harmony> _groups =
         new Dictionary<string, Harmony>(StringComparer.Ordinal);
     private readonly List<string> _failures = new List<string>();
+    private readonly List<Type> _patchTypes = new List<Type>();
+    private readonly HashSet<Type> _attemptedPatchTypes = new HashSet<Type>();
+    private readonly HashSet<Type> _installedPatchTypes = new HashSet<Type>();
 
     private bool _installAttempted;
     private int _discoveredPatchCount;
@@ -35,24 +38,32 @@ internal sealed class HarmonyPatchModule
 
     internal void Install(Assembly assembly, ManualLogSource logger)
     {
-        if (_installAttempted)
-            return;
+        Install(assembly, logger, null);
+    }
 
-        _installAttempted = true;
-        _failures.Clear();
-        _discoveredPatchCount = 0;
-        _installedPatchCount = 0;
-
-        var patchTypes = FindPatchTypes(assembly);
-        _discoveredPatchCount = patchTypes.Count;
-        for (var i = 0; i < patchTypes.Count; i++)
+    internal void Install(Assembly assembly, ManualLogSource logger, Predicate<Type>? predicate)
+    {
+        if (!_installAttempted)
         {
-            var patchType = patchTypes[i];
+            _installAttempted = true;
+            _failures.Clear();
+            _patchTypes.Clear();
+            _patchTypes.AddRange(FindPatchTypes(assembly));
+            _discoveredPatchCount = _patchTypes.Count;
+            _installedPatchCount = 0;
+        }
+
+        for (var i = 0; i < _patchTypes.Count; i++)
+        {
+            var patchType = _patchTypes[i];
+            if ((predicate != null && !predicate(patchType)) || !_attemptedPatchTypes.Add(patchType))
+                continue;
             var group = ResolvePatchGroup(patchType);
             try
             {
                 GetGroupHarmony(group).CreateClassProcessor(patchType).Patch();
-                _installedPatchCount++;
+                _installedPatchTypes.Add(patchType);
+                _installedPatchCount = _installedPatchTypes.Count;
             }
             catch (Exception ex)
             {
@@ -80,6 +91,9 @@ internal sealed class HarmonyPatchModule
 
         _groups.Clear();
         _failures.Clear();
+        _patchTypes.Clear();
+        _attemptedPatchTypes.Clear();
+        _installedPatchTypes.Clear();
         _installAttempted = false;
         _discoveredPatchCount = 0;
         _installedPatchCount = 0;

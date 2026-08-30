@@ -42,6 +42,7 @@ public sealed partial class ElinModifierPlugin
             _uiTextColor.g = Clamp(_uiTextColor.g, 0f, 1f);
             _uiTextColor.b = Clamp(_uiTextColor.b, 0f, 1f);
             _uiTextColor.a = 1f;
+            _startupMode = NormalizeStartupMode(_startupMode);
             ApplyAiHttpTimeoutSecondsText(false);
             ApplyKillGrowthConfigTexts();
             if (saveAutomationScripts)
@@ -72,6 +73,8 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"uiFontColorMode\": \"" + (_uiTextColorFollowsStyle ? "style" : "custom") + "\",");
             sb.AppendLine("  \"uiFontColorHex\": \"" + ColorToHex(fontColor) + "\",");
             sb.AppendLine("  \"openKey\": \"" + EscapeJson(GetKeyLabel(_openKey)) + "\",");
+            sb.AppendLine("  \"startupMode\": \"" + EscapeJson(_startupMode) + "\",");
+            sb.AppendLine("  \"independentFeatureFavorites\": \"" + EscapeJson(GetIndependentFeatureFavoritesConfig()) + "\",");
             sb.AppendLine();
 
             sb.AppendLine("  \"lowPerformanceMode\": " + (_lowPerformanceMode ? "true" : "false") + ",");

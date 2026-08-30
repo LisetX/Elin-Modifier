@@ -372,6 +372,8 @@ public sealed partial class ElinModifierPlugin
     private Text? _lGuiTitle;
     private Text? _lGuiCredit;
     private Text? _lGuiVersion;
+    private Text? _lGuiStartupModeLabel;
+    private Dropdown? _lGuiStartupModeDropdown;
     private RectTransform? _lGuiGlobalConfigSaveRect;
     private RectTransform? _lGuiGlobalConfigLoadRect;
     private Text? _lGuiGlobalConfigSaveLabel;

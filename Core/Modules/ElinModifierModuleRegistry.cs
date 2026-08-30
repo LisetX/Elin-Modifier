@@ -254,7 +254,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         if (Nightly != null)
         {
             Register("compatibility.nightly", 700, 140, Nightly,
-                initialize: () => Nightly.Initialize(Harmony, logger),
+                initialize: host.InitializeModuleNightlyPatches,
                 shutdown: Nightly.Shutdown,
                 dependencies: new[] { "core.harmony" });
         }
@@ -275,12 +275,12 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
             tick: AllowPcGeneImplant.Tick,
             shutdown: AllowPcGeneImplant.Reset);
         Register("feature.predation-gene-selection", 1237, 0, PredationGeneSelection,
-            initialize: () => PredationGeneSelection.Initialize(Harmony, logger),
+            initialize: host.InitializePredationGeneSelectionPatches,
             tick: PredationGeneSelection.Tick,
             shutdown: PredationGeneSelection.Shutdown,
             dependencies: new[] { "core.harmony" });
         Register("feature.allow-currency-gifts", 1238, 0, AllowCurrencyGifts,
-            initialize: () => AllowCurrencyGifts.Initialize(Harmony, logger),
+            initialize: host.InitializeAllowCurrencyGiftsPatches,
             shutdown: AllowCurrencyGifts.Shutdown,
             dependencies: new[] { "core.harmony" });
         Register("feature.guaranteed-gathering-rewards", 1240, 0, GuaranteedGatheringRewards);
