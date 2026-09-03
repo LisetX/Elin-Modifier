@@ -60,8 +60,6 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
                 binder);
             CharacterPanelGenes = new CharacterPanelGenesModule(binder);
             AllowPcGeneImplant = new AllowPcGeneImplantModule(
-                _gameServices.Runtime,
-                _gameServices.Sources,
                 _gameServices.Characters,
                 binder);
             PredationGeneSelection = new PredationGeneSelectionModule(host, binder);
@@ -272,7 +270,6 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         Register("feature.all-feats-learnable", 1233, 0, AllFeatsLearnable);
         Register("feature.character-panel-genes", 1235, 0, CharacterPanelGenes);
         Register("feature.allow-pc-gene-implant", 1236, 0, AllowPcGeneImplant,
-            tick: AllowPcGeneImplant.Tick,
             shutdown: AllowPcGeneImplant.Reset);
         Register("feature.predation-gene-selection", 1237, 0, PredationGeneSelection,
             initialize: host.InitializePredationGeneSelectionPatches,

@@ -196,7 +196,8 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.CharacterPanelGenes:
                 return name.IndexOf("CharacterPanelGenes", StringComparison.Ordinal) >= 0;
             case LGuiFeatureId.AllowPcGeneImplant:
-                return name.IndexOf("PcGene", StringComparison.Ordinal) >= 0;
+                return name.IndexOf("PcGene", StringComparison.Ordinal) >= 0 ||
+                       name.IndexOf("PcSlime", StringComparison.Ordinal) >= 0;
             case LGuiFeatureId.FoodRestoresSp:
                 return name == "FoodEffectRestorePlayerSpPatch";
             case LGuiFeatureId.DismantleAlwaysReturnsMaterials:

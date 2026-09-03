@@ -201,14 +201,11 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 新增\"启动模式\"，\"预加载\"模式可以提高游戏内EM使用时的流畅度，缺点是小幅牺牲部分兼容性，\"高可靠\"模式可以提高游戏启动速度、对其他Mod的兼容性（仅限未启用的功能）、游戏跨版本兼容性（不开启故障功能后不会影响Mod其他功能和游戏整体稳定性），缺点是小幅牺牲EM使用过程的流畅度，更改模式后需保存配置后重启游戏生效。",
-                        "* Added \"Startup Mode\". \"Preload\" mode improves smoothness while using EM in-game at the cost of slightly reduced compatibility. \"High Reliability\" mode improves game startup speed, compatibility with other mods (for disabled features only), and cross-version compatibility (faulty features do not affect other Mod features or overall game stability when left disabled), at the cost of slightly reduced smoothness while using EM. Save the configuration and restart the game after changing modes."),
+                        "* 优化\"允许PC植入基因\"，适配捕食及食用基因，移除投影机制",
+                        "* Improved \"Allow PC gene implantation\", added support for Devour and consuming genes, removed the projection mechanism"),
                     host.TranslateModuleText(
-                        "* 新增\"★\"，仅限独立功能，标记为\"★\"的功能将靠前显示。",
-                        "* Added \"★\" for Independent Features. Features marked with \"★\" are displayed first."),
-                    host.TranslateModuleText(
-                        "* 优化部分UI表现。",
-                        "* Improved parts of the UI."),
+                        "* \"允许PC植入基因\"适配最新Nightly版本，提高功能可靠性",
+                        "* \"Allow PC gene implantation\" now supports the latest Nightly build, improving feature reliability"),
                 }
             };
 

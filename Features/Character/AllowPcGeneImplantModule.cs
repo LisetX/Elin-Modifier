@@ -30,15 +30,13 @@ internal sealed partial class AllowPcGeneImplantModule
     private readonly IBoundGameMethod _applyDna;
     private readonly IBoundGameMethod _destroyCard;
     private readonly ConstructorInfo? _geneInventoryConstructor;
-    private readonly PcGeneAbilityProjection _abilityProjection;
-    private readonly PcGeneAbilityMutationIsolation _abilityMutationIsolation;
+    private readonly PcGeneAbilityElementSupplement _abilitySupplement;
+    private readonly PcSlimeMechanicsUnlock _slimeUnlock;
     private readonly ConditionalWeakTable<InvOwnerGene, PendingImmediateImplant>
         _pendingImmediateImplants =
             new ConditionalWeakTable<InvOwnerGene, PendingImmediateImplant>();
 
     internal AllowPcGeneImplantModule(
-        IGameRuntimeContext runtime,
-        IGameSourceRepository sources,
         ICharacterGameAccess characters,
         IGameMemberBinder binder)
     {
@@ -87,12 +85,10 @@ internal sealed partial class AllowPcGeneImplantModule
         _geneInventoryConstructor = AccessTools.Constructor(
             typeof(InvOwnerGene),
             new[] { typeof(Card), typeof(Chara) });
-        _abilityProjection = new PcGeneAbilityProjection(
-            runtime,
-            sources,
+        _slimeUnlock = new PcSlimeMechanicsUnlock(
             characters,
             binder);
-        _abilityMutationIsolation = new PcGeneAbilityMutationIsolation(
+        _abilitySupplement = new PcGeneAbilityElementSupplement(
             characters,
             binder);
     }
@@ -102,13 +98,13 @@ internal sealed partial class AllowPcGeneImplantModule
     internal void Load(bool enabled)
     {
         Enabled = enabled;
-        _abilityProjection.Synchronize(Enabled, true);
+        SyncPcDevourAbility();
     }
 
     internal void Reset()
     {
         Enabled = false;
-        _abilityProjection.Reset(true);
+        SyncPcDevourAbility();
     }
 
     internal bool SetEnabled(bool enabled)
@@ -116,13 +112,8 @@ internal sealed partial class AllowPcGeneImplantModule
         if (Enabled == enabled)
             return false;
         Enabled = enabled;
-        _abilityProjection.Synchronize(Enabled, true);
+        SyncPcDevourAbility();
         return true;
-    }
-
-    internal void Tick()
-    {
-        _abilityProjection.Synchronize(Enabled, true);
     }
 
     internal void AppendPlayerCharacter(BaseList list)
@@ -206,7 +197,6 @@ internal sealed partial class AllowPcGeneImplantModule
                 pending.Gene,
                 Array.Empty<object?>(),
                 out _);
-            _abilityProjection.Synchronize(Enabled, true);
         }
     }
 
