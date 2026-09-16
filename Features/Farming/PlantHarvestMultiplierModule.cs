@@ -8,6 +8,8 @@ internal sealed class PlantHarvestMultiplierModule
     [ThreadStatic] private static int _seedReapingDepth;
 
     internal bool Enabled { get; private set; }
+    internal static bool IsCropHarvestScopeActive => _cropHarvestDepth > 0;
+    internal static bool IsSeedReapingScopeActive => _seedReapingDepth > 0;
     internal float CropHarvestMultiplier { get; private set; } = 1f;
     internal float SeedReapingMultiplier { get; private set; } = 1f;
     internal string CropHarvestMultiplierText { get; set; } = "1";

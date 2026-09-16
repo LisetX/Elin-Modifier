@@ -49,6 +49,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
             NpcInfo = new NpcInfoModule(host);
             Progression = new ProgressionModule();
             PlantHarvestMultiplier = new PlantHarvestMultiplierModule();
+            YieldMultiplier = new YieldMultiplierModule();
             IgnoreCropGrowthConditions = new IgnoreCropGrowthConditionsModule();
             IgnoreEncumbrance = new IgnoreEncumbranceModule(
                 _gameServices.Runtime,
@@ -135,6 +136,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
     internal NpcInfoModule NpcInfo { get; }
     internal ProgressionModule Progression { get; }
     internal PlantHarvestMultiplierModule PlantHarvestMultiplier { get; }
+    internal YieldMultiplierModule YieldMultiplier { get; }
     internal IgnoreCropGrowthConditionsModule IgnoreCropGrowthConditions { get; }
     internal IgnoreEncumbranceModule IgnoreEncumbrance { get; }
     internal AllFeatsLearnableModule AllFeatsLearnable { get; }
@@ -263,6 +265,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         Register("feature.character-protection", 1200, 0, CharacterProtection);
         Register("feature.progression", 1210, 0, Progression);
         Register("feature.plant-harvest-multiplier", 1220, 0, PlantHarvestMultiplier);
+        Register("feature.yield-multiplier", 1221, 0, YieldMultiplier);
         Register("feature.ignore-crop-growth-conditions", 1230, 0, IgnoreCropGrowthConditions);
         Register("feature.ignore-encumbrance", 1231, 21, IgnoreEncumbrance,
             tick: IgnoreEncumbrance.Tick,

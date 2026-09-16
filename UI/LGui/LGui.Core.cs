@@ -71,6 +71,7 @@ public sealed partial class ElinModifierPlugin
         WorkbenchIngredientReadingOptimization,
         ExperienceMultiplier,
         PlantHarvestMultiplier,
+        YieldMultiplier,
         IgnoreCropGrowthConditions,
         IgnoreEncumbrance,
         AllFeatsLearnable,

@@ -186,6 +186,13 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"plantHarvestMultiplierEnabled\": " + (_modules.PlantHarvestMultiplier.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"cropHarvestMultiplier\": " + _modules.PlantHarvestMultiplier.CropHarvestMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
             sb.AppendLine("  \"seedReapingMultiplier\": " + _modules.PlantHarvestMultiplier.SeedReapingMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
+            sb.AppendLine("  \"yieldMultiplierEnabled\": " + (_modules.YieldMultiplier.Enabled ? "true" : "false") + ",");
+            sb.AppendLine("  \"gatheringYieldMultiplier\": " + _modules.YieldMultiplier.GatheringMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
+            sb.AppendLine("  \"containerYieldMultiplier\": " + _modules.YieldMultiplier.ContainerMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
+            sb.AppendLine("  \"fishingYieldMultiplier\": " + _modules.YieldMultiplier.FishingMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
+            sb.AppendLine("  \"furYieldMultiplier\": " + _modules.YieldMultiplier.FurMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
+            sb.AppendLine("  \"homeYieldMultiplier\": " + _modules.YieldMultiplier.HomeYieldMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
+            sb.AppendLine("  \"performanceRewardYieldMultiplier\": " + _modules.YieldMultiplier.PerformanceRewardMultiplier.ToString("0.###", CultureInfo.InvariantCulture) + ",");
             sb.AppendLine("  \"ignoreCropGrowthConditions\": " + (_modules.IgnoreCropGrowthConditions.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"ignoreEncumbrance\": " + (_modules.IgnoreEncumbrance.Enabled ? "true" : "false") + ",");
             sb.AppendLine("  \"allFeatsLearnable\": " + (_modules.AllFeatsLearnable.Enabled ? "true" : "false") + ",");

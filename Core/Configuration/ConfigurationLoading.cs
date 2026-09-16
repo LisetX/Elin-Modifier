@@ -351,6 +351,14 @@ public sealed partial class ElinModifierPlugin
                 ExtractBool(json, "plantHarvestMultiplierEnabled", false),
                 ExtractFloat(json, "cropHarvestMultiplier", 1f),
                 ExtractFloat(json, "seedReapingMultiplier", 1f));
+            _modules.YieldMultiplier.Load(
+                ExtractBool(json, "yieldMultiplierEnabled", false),
+                ExtractFloat(json, "gatheringYieldMultiplier", 1f),
+                ExtractFloat(json, "containerYieldMultiplier", 1f),
+                ExtractFloat(json, "fishingYieldMultiplier", 1f),
+                ExtractFloat(json, "furYieldMultiplier", 1f),
+                ExtractFloat(json, "homeYieldMultiplier", 1f),
+                ExtractFloat(json, "performanceRewardYieldMultiplier", 1f));
             _modules.IgnoreCropGrowthConditions.Load(
                 ExtractBool(json, "ignoreCropGrowthConditions", false));
             _modules.IgnoreEncumbrance.Load(
@@ -625,6 +633,7 @@ public sealed partial class ElinModifierPlugin
         _modules.Progression.TrainingPotentialGainMultiplier = 1f;
         SyncExperienceMultiplierTextFields();
         _modules.PlantHarvestMultiplier.Reset();
+        _modules.YieldMultiplier.Reset();
         _modules.IgnoreCropGrowthConditions.Reset();
         _modules.IgnoreEncumbrance.Reset();
         _modules.AllFeatsLearnable.Reset();

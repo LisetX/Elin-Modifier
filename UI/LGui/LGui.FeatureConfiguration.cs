@@ -30,6 +30,7 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.WorkbenchIngredientReadingOptimization: return _workbenchIngredientReadingOptimization;
             case LGuiFeatureId.ExperienceMultiplier: return _modules.Progression.ExperienceMultiplierEnabled;
             case LGuiFeatureId.PlantHarvestMultiplier: return _modules.PlantHarvestMultiplier.Enabled;
+            case LGuiFeatureId.YieldMultiplier: return _modules.YieldMultiplier.Enabled;
             case LGuiFeatureId.IgnoreCropGrowthConditions: return _modules.IgnoreCropGrowthConditions.Enabled;
             case LGuiFeatureId.IgnoreEncumbrance: return _modules.IgnoreEncumbrance.Enabled;
             case LGuiFeatureId.AllFeatsLearnable: return _modules.AllFeatsLearnable.Enabled;
@@ -91,6 +92,7 @@ public sealed partial class ElinModifierPlugin
                id == LGuiFeatureId.ShowBuffSpecificValues || id == LGuiFeatureId.ShowMainAbilityExperience ||
                id == LGuiFeatureId.ExperienceMultiplier ||
                id == LGuiFeatureId.PlantHarvestMultiplier ||
+               id == LGuiFeatureId.YieldMultiplier ||
                id == LGuiFeatureId.FoodRestoresSp ||
                id == LGuiFeatureId.DismantleAlwaysReturnsMaterials ||
                id == LGuiFeatureId.OptimizeMeleeHitChance ||
@@ -118,6 +120,8 @@ public sealed partial class ElinModifierPlugin
             titleText = T("经验倍率修改", "Experience multiplier modifier");
         if (id == LGuiFeatureId.PlantHarvestMultiplier)
             titleText = T("种植收获倍率", "Plant harvest multiplier");
+        if (id == LGuiFeatureId.YieldMultiplier)
+            titleText = T("产出倍率调整", "Drop multiplier adjustment");
         if (id == LGuiFeatureId.FoodRestoresSp)
             titleText = T("食用食物恢复SP", "Restore SP by eating food");
         if (id == LGuiFeatureId.DismantleAlwaysReturnsMaterials)
@@ -138,6 +142,7 @@ public sealed partial class ElinModifierPlugin
             id == LGuiFeatureId.AttackCannotBeInterrupted ? 300f :
             id == LGuiFeatureId.AllPurposeWorkbench ? 300f :
             id == LGuiFeatureId.PlantHarvestMultiplier ? 360f :
+            id == LGuiFeatureId.YieldMultiplier ? 600f :
             id == LGuiFeatureId.ExperienceMultiplier ? 648f :
             id == LGuiFeatureId.IgnoreBuffEffects ? 430f :
             id == LGuiFeatureId.KillGrowth ? 900f : id == LGuiFeatureId.ShowItemMoreInfo ? 760f : 900f;
@@ -274,6 +279,65 @@ public sealed partial class ElinModifierPlugin
                 statusText.text = status;
             });
             content.sizeDelta = new Vector2(0f, 496f);
+            ApplyLGuiVisualSettings();
+            return;
+        }
+
+        if (id == LGuiFeatureId.YieldMultiplier)
+        {
+            AddLGuiBoundInput(content, T("采集挖掘倍率", "Gathering & mining multiplier"),
+                () => _modules.YieldMultiplier.GatheringMultiplierText,
+                value => _modules.YieldMultiplier.GatheringMultiplierText = value ?? "1",
+                10f,
+                360f);
+            AddLGuiBoundInput(content, T("宝箱容器倍率", "Chest & container multiplier"),
+                () => _modules.YieldMultiplier.ContainerMultiplierText,
+                value => _modules.YieldMultiplier.ContainerMultiplierText = value ?? "1",
+                68f,
+                360f);
+            AddLGuiBoundInput(content, T("钓鱼倍率", "Fishing multiplier"),
+                () => _modules.YieldMultiplier.FishingMultiplierText,
+                value => _modules.YieldMultiplier.FishingMultiplierText = value ?? "1",
+                126f,
+                360f);
+            AddLGuiBoundInput(content, T("毛皮倍率", "Fur multiplier"),
+                () => _modules.YieldMultiplier.FurMultiplierText,
+                value => _modules.YieldMultiplier.FurMultiplierText = value ?? "1",
+                184f,
+                360f);
+            AddLGuiBoundInput(content, T("家园产出倍率", "Home output multiplier"),
+                () => _modules.YieldMultiplier.HomeYieldMultiplierText,
+                value => _modules.YieldMultiplier.HomeYieldMultiplierText = value ?? "1",
+                242f,
+                360f);
+            AddLGuiBoundInput(content, T("演奏打赏倍率", "Performance tip multiplier"),
+                () => _modules.YieldMultiplier.PerformanceRewardMultiplierText,
+                value => _modules.YieldMultiplier.PerformanceRewardMultiplierText = value ?? "1",
+                300f,
+                360f);
+            var outputStatusText = CreateLGuiText(
+                content,
+                "YieldMultiplierStatus",
+                "",
+                16,
+                TextAnchor.MiddleLeft,
+                FontStyle.Normal);
+            PlaceLGuiRect(outputStatusText.rectTransform, 180f, 368f, 760f, 48f);
+            CreateLGuiButton(
+                content,
+                "ApplyYieldMultipliers",
+                T("应用", "Apply"),
+                0f,
+                368f,
+                150f,
+                48f,
+                () =>
+                {
+                    string status;
+                    TryApplyYieldMultiplierSettings(out status);
+                    outputStatusText.text = status;
+                });
+            content.sizeDelta = new Vector2(0f, 438f);
             ApplyLGuiVisualSettings();
             return;
         }
@@ -642,6 +706,7 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.WorkbenchIngredientReadingOptimization: SetWorkbenchIngredientReadingOptimization(value); break;
             case LGuiFeatureId.ExperienceMultiplier: SetExperienceMultiplierEnabled(value); break;
             case LGuiFeatureId.PlantHarvestMultiplier: SetPlantHarvestMultiplierEnabled(value); break;
+            case LGuiFeatureId.YieldMultiplier: SetYieldMultiplierEnabled(value); break;
             case LGuiFeatureId.IgnoreCropGrowthConditions: SetIgnoreCropGrowthConditions(value); break;
             case LGuiFeatureId.IgnoreEncumbrance: SetIgnoreEncumbrance(value); break;
             case LGuiFeatureId.AllFeatsLearnable: SetAllFeatsLearnable(value); break;

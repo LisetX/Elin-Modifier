@@ -201,11 +201,11 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 优化\"允许PC植入基因\"，适配捕食及食用基因，移除投影机制",
-                        "* Improved \"Allow PC gene implantation\", added support for Devour and consuming genes, removed the projection mechanism"),
+                        "* 新增\"产出倍率调整\"，支持采集挖掘倍率、宝箱容器倍率、钓鱼倍率、毛皮获取倍率、家园产出倍率、演奏打赏倍率",
+                        "* Added \"Drop multiplier adjustment\", supporting gathering & mining, chest & container, fishing, fur, home output and performance tip multipliers"),
                     host.TranslateModuleText(
-                        "* \"允许PC植入基因\"适配最新Nightly版本，提高功能可靠性",
-                        "* \"Allow PC gene implantation\" now supports the latest Nightly build, improving feature reliability"),
+                        "* 优化\"产出倍率调整\"与\"种植收获倍率\"的兼容，\"种植收获倍率\"的优先级比\"产出倍率调整\"的采集挖掘倍率优先级高",
+                        "* Improved compatibility between \"Drop multiplier adjustment\" and \"Plant harvest multiplier\"; \"Plant harvest multiplier\" takes priority over the gathering & mining multiplier of \"Drop multiplier adjustment\""),
                 }
             };
 

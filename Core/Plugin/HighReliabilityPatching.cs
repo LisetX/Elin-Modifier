@@ -187,6 +187,8 @@ public sealed partial class ElinModifierPlugin
             case LGuiFeatureId.PlantHarvestMultiplier:
                 return name.IndexOf("HarvestMultiplier", StringComparison.Ordinal) >= 0 ||
                        name.IndexOf("ReapingMultiplier", StringComparison.Ordinal) >= 0;
+            case LGuiFeatureId.YieldMultiplier:
+                return name.IndexOf("YieldMultiplier", StringComparison.Ordinal) >= 0;
             case LGuiFeatureId.IgnoreCropGrowthConditions:
                 return name.IndexOf("IgnoreCropConditions", StringComparison.Ordinal) >= 0 ||
                        name.IndexOf("IgnoreFertilizer", StringComparison.Ordinal) >= 0 ||
