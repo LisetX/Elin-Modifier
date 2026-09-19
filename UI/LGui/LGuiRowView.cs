@@ -138,6 +138,10 @@ internal sealed class LGuiTransparentInputBackground : MonoBehaviour
 {
 }
 
+internal sealed class LGuiOrderHandleImage : MonoBehaviour
+{
+}
+
 internal sealed class LGuiSteppedSlider : Slider
 {
     public float StepSize;

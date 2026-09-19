@@ -112,6 +112,8 @@ internal sealed partial class MoreInfoModule
         if (instance._showItemMoreInfoPlantStats) mask |= 1 << 3;
         if (instance._showItemMoreInfoPlantStatsExtended) mask |= 1 << 4;
         if (instance._showItemMoreInfoGatheringThreshold) mask |= 1 << 5;
+        if (instance._showItemMoreInfoGatheringThresholdTerrain) mask |= 1 << 6;
+        if (instance._showItemMoreInfoGatheringThresholdDisassemble) mask |= 1 << 7;
         mask |= (Clamp(instance._showItemMoreInfoFontSizeOffset, -8, 8) + 8) << 8;
         return mask;
     }

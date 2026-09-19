@@ -400,6 +400,7 @@ public sealed partial class ElinModifierPlugin
         PlaceLGuiRect(handle, 0f, 0f, 48f, rowHeight);
         var handleImage = handle.gameObject.AddComponent<Image>();
         handleImage.color = new Color(0.20f, 0.23f, 0.27f, 1f);
+        handle.gameObject.AddComponent<LGuiOrderHandleImage>();
         RegisterLGuiRoundedImage(handleImage);
         var handleText = CreateLGuiText(handle, "HandleText", "≡", 24, TextAnchor.MiddleCenter, FontStyle.Normal);
         StretchLGuiRect(handleText.rectTransform, 0f, 0f, 0f, 0f);

@@ -96,6 +96,16 @@ public sealed partial class ElinModifierPlugin
                     ? GetLGuiModalButtonColor(buttons[i], buttonColor, accent, lightTheme)
                     : buttonColor;
 
+        var orderHandles = _lGuiRoot.GetComponentsInChildren<LGuiOrderHandleImage>(true);
+        for (var i = 0; i < orderHandles.Length; i++)
+        {
+            var image = orderHandles[i].GetComponent<Image>();
+            if (image != null)
+                image.color = _lGuiEditorModal != null && orderHandles[i].transform.IsChildOf(_lGuiEditorModal.transform)
+                    ? Color.Lerp(buttonColor, accent, 0.07f)
+                    : buttonColor;
+        }
+
         var inputs = _lGuiRoot.GetComponentsInChildren<InputField>(true);
         for (var i = 0; i < inputs.Length; i++)
             if (inputs[i].targetGraphic is Image image)

@@ -453,7 +453,18 @@ public sealed partial class ElinModifierPlugin
         {
             SyncItemMoreInfoColorInputs();
             CreateLGuiToggleControl(content, T("基础信息", "Basic info"), _showItemMoreInfoBasicInfo, 10f, value => _showItemMoreInfoBasicInfo = value);
-            CreateLGuiToggleControl(content, T("采集物采集门槛", "Gathering requirements"), _showItemMoreInfoGatheringThreshold, 68f, value => _showItemMoreInfoGatheringThreshold = value);
+            var gatheringToggle = CreateLGuiToggle(content, "GatheringThresholdToggle", 0f, 68f, 290f, 48f, out var gatheringLabel);
+            gatheringLabel.text = T("采集物采集门槛", "Gathering requirements");
+            gatheringToggle.isOn = _showItemMoreInfoGatheringThreshold;
+            gatheringToggle.onValueChanged.AddListener(value => _showItemMoreInfoGatheringThreshold = value);
+            var gatheringTerrainToggle = CreateLGuiToggle(content, "GatheringThresholdTerrainToggle", 300f, 68f, 420f, 48f, out var gatheringTerrainLabel);
+            gatheringTerrainLabel.text = T("是否显示地板\\墙壁\\桥", "Show floors / walls / bridges");
+            gatheringTerrainToggle.isOn = _showItemMoreInfoGatheringThresholdTerrain;
+            gatheringTerrainToggle.onValueChanged.AddListener(value => _showItemMoreInfoGatheringThresholdTerrain = value);
+            var gatheringDisassembleToggle = CreateLGuiToggle(content, "GatheringThresholdDisassembleToggle", 730f, 68f, 330f, 48f, out var gatheringDisassembleLabel);
+            gatheringDisassembleLabel.text = T("是否显示拆解", "Show disassembly");
+            gatheringDisassembleToggle.isOn = _showItemMoreInfoGatheringThresholdDisassemble;
+            gatheringDisassembleToggle.onValueChanged.AddListener(value => _showItemMoreInfoGatheringThresholdDisassemble = value);
             CreateLGuiToggleControl(content, T("武器属性", "Weapon stats"), _showItemMoreInfoWeaponStats, 126f, value => _showItemMoreInfoWeaponStats = value);
             CreateLGuiToggleControl(content, T("附魔内容", "Enchantments"), _showItemMoreInfoEnchantments, 184f, value => _showItemMoreInfoEnchantments = value);
             CreateLGuiToggleControl(content, T("种植作物属性", "Planted crop stats"), _showItemMoreInfoPlantStats, 242f, value => _showItemMoreInfoPlantStats = value);

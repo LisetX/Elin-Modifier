@@ -27,6 +27,8 @@ public sealed partial class ElinModifierPlugin
 {
     internal bool _showItemMoreInfoBasicInfo = true;
     internal bool _showItemMoreInfoGatheringThreshold = true;
+    internal bool _showItemMoreInfoGatheringThresholdTerrain;
+    internal bool _showItemMoreInfoGatheringThresholdDisassemble;
     internal bool _showItemMoreInfoWeaponStats = true;
     internal bool _showItemMoreInfoEnchantments = true;
     internal bool _showItemMoreInfoPlantStats = true;

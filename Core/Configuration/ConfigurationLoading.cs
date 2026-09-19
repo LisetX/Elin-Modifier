@@ -161,6 +161,8 @@ public sealed partial class ElinModifierPlugin
                                       !HasJsonValue(json, "probabilityModule") ||
                                       !HasJsonValue(json, "showItemMoreInfoBasicInfo") ||
                                       !HasJsonValue(json, "showItemMoreInfoGatheringThreshold") ||
+                                      !HasJsonValue(json, "showItemMoreInfoGatheringThresholdTerrain") ||
+                                      !HasJsonValue(json, "showItemMoreInfoGatheringThresholdDisassemble") ||
                                       !HasJsonValue(json, "showItemMoreInfoWeaponStats") ||
                                       !HasJsonValue(json, "showItemMoreInfoEnchantments") ||
                                       !HasJsonValue(json, "showItemMoreInfoPlantStats") ||
@@ -426,6 +428,8 @@ public sealed partial class ElinModifierPlugin
             _showItemMoreInfoBasicInfo = ExtractBool(json, "showItemMoreInfoBasicInfo",
                 ExtractBool(json, "showItemMoreInfoValue", _showItemMoreInfoBasicInfo));
             _showItemMoreInfoGatheringThreshold = ExtractBool(json, "showItemMoreInfoGatheringThreshold", true);
+            _showItemMoreInfoGatheringThresholdTerrain = ExtractBool(json, "showItemMoreInfoGatheringThresholdTerrain", false);
+            _showItemMoreInfoGatheringThresholdDisassemble = ExtractBool(json, "showItemMoreInfoGatheringThresholdDisassemble", false);
             _showItemMoreInfoWeaponStats = ExtractBool(json, "showItemMoreInfoWeaponStats", _showItemMoreInfoWeaponStats);
             _showItemMoreInfoEnchantments = ExtractBool(json, "showItemMoreInfoEnchantments", _showItemMoreInfoEnchantments);
             _showItemMoreInfoPlantStats = ExtractBool(json, "showItemMoreInfoPlantStats", _showItemMoreInfoPlantStats);
@@ -685,6 +689,8 @@ public sealed partial class ElinModifierPlugin
         _rodStackingCandidatePage = 0;
         _showItemMoreInfoBasicInfo = true;
         _showItemMoreInfoGatheringThreshold = true;
+        _showItemMoreInfoGatheringThresholdTerrain = false;
+        _showItemMoreInfoGatheringThresholdDisassemble = false;
         _showItemMoreInfoWeaponStats = true;
         _showItemMoreInfoEnchantments = true;
         _showItemMoreInfoPlantStats = true;

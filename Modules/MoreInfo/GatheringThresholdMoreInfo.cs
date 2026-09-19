@@ -99,7 +99,7 @@ internal sealed partial class MoreInfoModule
     }
     private static string BuildBlockGatheringThresholdLine(Point point, bool canHarvest)
     {
-        if (!point.HasBlock)
+        if (!IsGatheringThresholdTerrainEnabled() || !point.HasBlock)
             return "";
         var source = point.sourceBlock;
         if (source == null)
@@ -114,7 +114,7 @@ internal sealed partial class MoreInfoModule
     }
     private static string BuildFloorGatheringThresholdLine(Point point, Cell cell, bool canHarvest)
     {
-        if (point.HasBlock)
+        if (!IsGatheringThresholdTerrainEnabled() || point.HasBlock)
             return "";
         var hasBridge = cell.HasBridge;
         var source = hasBridge ? point.sourceBridge : point.sourceFloor;
@@ -147,7 +147,7 @@ internal sealed partial class MoreInfoModule
                     false,
                     canHarvest);
 
-            if (!CanDisassembleGatheringThresholdTarget(thing))
+            if (!IsGatheringThresholdDisassembleEnabled() || !CanDisassembleGatheringThresholdTarget(thing))
                 return "";
             return BuildGatheringThresholdTargetLine(
                 Tr("拆解", "Disassemble"),
@@ -161,6 +161,14 @@ internal sealed partial class MoreInfoModule
         {
             return "";
         }
+    }
+    private static bool IsGatheringThresholdTerrainEnabled()
+    {
+        return ElinModifierPlugin.ActiveInstance?._showItemMoreInfoGatheringThresholdTerrain == true;
+    }
+    private static bool IsGatheringThresholdDisassembleEnabled()
+    {
+        return ElinModifierPlugin.ActiveInstance?._showItemMoreInfoGatheringThresholdDisassemble == true;
     }
     private static bool CanDisassembleGatheringThresholdTarget(Thing thing)
     {

@@ -146,6 +146,8 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"showItemMoreInfo\": " + (_showItemMoreInfo ? "true" : "false") + ",");
             sb.AppendLine("  \"showItemMoreInfoBasicInfo\": " + (_showItemMoreInfoBasicInfo ? "true" : "false") + ",");
             sb.AppendLine("  \"showItemMoreInfoGatheringThreshold\": " + (_showItemMoreInfoGatheringThreshold ? "true" : "false") + ",");
+            sb.AppendLine("  \"showItemMoreInfoGatheringThresholdTerrain\": " + (_showItemMoreInfoGatheringThresholdTerrain ? "true" : "false") + ",");
+            sb.AppendLine("  \"showItemMoreInfoGatheringThresholdDisassemble\": " + (_showItemMoreInfoGatheringThresholdDisassemble ? "true" : "false") + ",");
             sb.AppendLine("  \"showItemMoreInfoWeaponStats\": " + (_showItemMoreInfoWeaponStats ? "true" : "false") + ",");
             sb.AppendLine("  \"showItemMoreInfoEnchantments\": " + (_showItemMoreInfoEnchantments ? "true" : "false") + ",");
             sb.AppendLine("  \"showItemMoreInfoPlantStats\": " + (_showItemMoreInfoPlantStats ? "true" : "false") + ",");
