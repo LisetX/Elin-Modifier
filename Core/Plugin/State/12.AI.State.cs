@@ -52,6 +52,9 @@ public sealed partial class ElinModifierPlugin
     private bool _aiCompressionInProgress;
     private string _aiContextCompressThresholdText = AiContextCompressionDefaultThreshold.ToString(CultureInfo.InvariantCulture);
     private int _aiContextCompressThreshold = AiContextCompressionDefaultThreshold;
+    private int _aiContextCompressedWeight;
+    private string _aiMaxToolRoundsText = AiToolLoopDefaultMaxRounds.ToString(CultureInfo.InvariantCulture);
+    private int _aiMaxToolRounds = AiToolLoopDefaultMaxRounds;
     private int _aiReasoningEffortIndex = 3;
     private bool _aiFetchModelsInProgress;
     private bool _aiSendInProgress;

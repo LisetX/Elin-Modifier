@@ -9,6 +9,11 @@ public sealed partial class ElinModifierPlugin
 {
     private void BuildLGuiAiPage()
     {
+        _lGuiAiSendLabel = null;
+        _lGuiAiCompactLabel = null;
+        _lGuiAiFetchModelsLabel = null;
+        _lGuiAiContextUsageText = null;
+        _lGuiAiStructureSignature = GetLGuiAiStructureSignature();
         var scroll = CreateLGuiScroll(_lGuiPageHost!, "AiScroll", 0f);
         var content = scroll.content!;
         var y = 8f;
@@ -29,11 +34,11 @@ public sealed partial class ElinModifierPlugin
                 SwitchLGuiPage(LGuiPage.Ai);
             });
             y = AddLGuiAiInput(content, IndentLGuiText(T("模型名", "Model"), 1), () => _aiModelName, value => _aiModelName = value, y, 720f, false, input => _lGuiAiModelInput = input);
-            CreateLGuiButton(content, "FetchModels", _aiFetchModelsInProgress ? T("获取中", "Loading") : T("获取模型名", "Fetch models"), 950f, y - 50f, 140f, 44f, () =>
+            _lGuiAiFetchModelsLabel = GetLGuiButtonLabel(CreateLGuiButton(content, "FetchModels", _aiFetchModelsInProgress ? T("获取中", "Loading") : T("获取模型名", "Fetch models"), 950f, y - 50f, 140f, 44f, () =>
             {
                 if (!_aiFetchModelsInProgress)
                     FetchAiModels();
-            });
+            }));
             y = BuildLGuiAiModelSelector(content, y);
 
             var reasoningLabel = CreateLGuiText(content, "ReasoningLabel", IndentLGuiText(T("思考强度", "Reasoning"), 1), 17, TextAnchor.MiddleLeft, FontStyle.Normal);
@@ -56,8 +61,10 @@ public sealed partial class ElinModifierPlugin
             compactLimit.text = _aiContextCompressThresholdText;
             compactLimit.onValueChanged.AddListener(value => _aiContextCompressThresholdText = value ?? "");
             CreateLGuiButton(content, "ApplyCompactLimit", T("应用", "Apply"), 784f, y, 90f, 44f, ApplyAiContextCompressionThresholdText);
-            var usage = CreateLGuiText(content, "ContextUsage", GetAiContextUsageLabel(), 16, TextAnchor.MiddleLeft, FontStyle.Normal);
-            PlaceLGuiRect(usage.rectTransform, 890f, y, 420f, 44f);
+            _lGuiAiContextUsageCache = GetAiContextUsageLabel();
+            _lGuiAiContextUsageNextAt = Time.unscaledTime + LGuiAiContextUsageRefreshInterval;
+            _lGuiAiContextUsageText = CreateLGuiText(content, "ContextUsage", _lGuiAiContextUsageCache, 16, TextAnchor.MiddleLeft, FontStyle.Normal);
+            PlaceLGuiRect(_lGuiAiContextUsageText.rectTransform, 890f, y, 420f, 44f);
             y += 54f;
             CreateLGuiToggleControl(content, IndentLGuiText(T("流式传输", "Streaming"), 1), _aiUseStreaming, y, value => _aiUseStreaming = value);
             CreateLGuiToggleControl(content, IndentLGuiText(T("EMG流式传输", "EMG streaming"), 1), _aiUseToolStreaming, y + 54f, value => _aiUseToolStreaming = value);
@@ -68,6 +75,12 @@ public sealed partial class ElinModifierPlugin
             timeout.text = _aiHttpTimeoutSecondsText;
             timeout.onValueChanged.AddListener(value => _aiHttpTimeoutSecondsText = value ?? "");
             CreateLGuiButton(content, "ApplyTimeout", T("应用", "Apply"), 364f, y, 90f, 44f, () => ApplyAiHttpTimeoutSecondsText());
+            var roundsLabel = CreateLGuiText(content, "RoundsLabel", IndentLGuiText(T("EMG轮次", "EMG rounds"), 1), 17, TextAnchor.MiddleLeft, FontStyle.Normal);
+            PlaceLGuiRect(roundsLabel.rectTransform, 490f, y, 160f, 44f);
+            var rounds = CreateLGuiInput(content, "Rounds", T("轮", "rounds"), 660f, y, 180f, 44f);
+            rounds.text = _aiMaxToolRoundsText;
+            rounds.onValueChanged.AddListener(value => _aiMaxToolRoundsText = value ?? "");
+            CreateLGuiButton(content, "ApplyRounds", T("应用", "Apply"), 854f, y, 90f, 44f, () => ApplyAiMaxToolRoundsText());
             y += 56f;
 
             y = AddLGuiSectionTitle(content, IndentLGuiText(T("最后发送HTTP报文主体", "Last sent HTTP body"), 1), y);
@@ -93,7 +106,7 @@ public sealed partial class ElinModifierPlugin
         _lGuiAiPromptInput.text = _aiPrompt;
         _lGuiAiPromptInput.onValueChanged.AddListener(value => _aiPrompt = value ?? "");
         y += 162f;
-        CreateLGuiButton(content, "Send", (_aiSendInProgress || _aiCompressionInProgress) ? T("处理中", "Working") : T("发送", "Send"), 0f, y, 100f, 46f, () =>
+        _lGuiAiSendLabel = GetLGuiButtonLabel(CreateLGuiButton(content, "Send", (_aiSendInProgress || _aiCompressionInProgress) ? T("处理中", "Working") : T("发送", "Send"), 0f, y, 100f, 46f, () =>
         {
             if (_lGuiAiPromptInput != null)
                 _aiPrompt = _lGuiAiPromptInput.text;
@@ -102,7 +115,7 @@ public sealed partial class ElinModifierPlugin
             if (_lGuiAiPromptInput != null)
                 _lGuiAiPromptInput.text = _aiPrompt;
             RefreshLGuiAiControls();
-        });
+        }));
         CreateLGuiButton(content, "Abort", T("中止", "Abort"), 112f, y, 90f, 46f, () =>
         {
             if (_aiSendInProgress || _aiCompressionInProgress)
@@ -112,16 +125,21 @@ public sealed partial class ElinModifierPlugin
         CreateLGuiButton(content, "ClearHistory", T("清空历史", "Clear history"), 214f, y, 120f, 46f, () =>
         {
             _aiMessages.Clear();
+            _aiPendingDangerousActions.Clear();
             _aiResponse = "";
+            _aiCurrentPrompt = "";
+            _aiCurrentToolResults = "";
+            _aiCurrentPartialResponse = "";
+            _aiContextCompressedWeight = 0;
             _aiLog = T("对话历史和上下文已清空", "Chat history and context cleared");
-            RefreshLGuiAiControls();
+            SwitchLGuiPage(LGuiPage.Ai);
         });
-        CreateLGuiButton(content, "Compact", _aiCompressionInProgress ? T("压缩中", "Compacting") : T("压缩上下文", "Compact context"), 346f, y, 140f, 46f, () =>
+        _lGuiAiCompactLabel = GetLGuiButtonLabel(CreateLGuiButton(content, "Compact", _aiCompressionInProgress ? T("压缩中", "Compacting") : T("压缩上下文", "Compact context"), 346f, y, 140f, 46f, () =>
         {
             if (!_aiSendInProgress && !_aiCompressionInProgress)
                 StartManualAiContextCompression();
             RefreshLGuiAiControls();
-        });
+        }));
         _lGuiAiStatusText = CreateLGuiText(content, "AiStatus", _aiLog, 16, TextAnchor.MiddleLeft, FontStyle.Normal);
         PlaceLGuiRect(_lGuiAiStatusText.rectTransform, 506f, y, 800f, 46f);
         y += 58f;
@@ -197,6 +215,32 @@ public sealed partial class ElinModifierPlugin
         });
         return y + 52f;
     }
+    private static Text? GetLGuiButtonLabel(Button button)
+    {
+        return button == null ? null : button.GetComponentInChildren<Text>();
+    }
+    private int GetLGuiAiStructureSignature()
+    {
+        return _aiPendingDangerousActions.Count * 397 + _aiRuntimePatches.Count;
+    }
+    private bool ShouldRebuildLGuiAiPage()
+    {
+        if (GetLGuiAiStructureSignature() == _lGuiAiStructureSignature)
+            return false;
+        return _lGuiEditorModal == null && !IsLGuiAiInputFocused();
+    }
+    private bool IsLGuiAiInputFocused()
+    {
+        if (_lGuiPageHost == null)
+            return false;
+        if (EventSystem.current != null)
+        {
+            var selected = EventSystem.current.currentSelectedGameObject;
+            if (selected != null && selected.GetComponent<InputField>() != null && selected.transform.IsChildOf(_lGuiPageHost))
+                return true;
+        }
+        return _modules.LGuiFocus.HasFocusedInputWithin(_lGuiPageHost);
+    }
     private void RefreshLGuiAiControls()
     {
         if (_lGuiPage != LGuiPage.Ai)
@@ -209,5 +253,26 @@ public sealed partial class ElinModifierPlugin
             _lGuiAiLastResponseInput.SetText(_aiLastResponseBody);
         if (_lGuiAiStatusText != null)
             _lGuiAiStatusText.text = _aiLog ?? "";
+        if (_lGuiAiSendLabel != null)
+            _lGuiAiSendLabel.text = (_aiSendInProgress || _aiCompressionInProgress)
+                ? T("处理中", "Working")
+                : T("发送", "Send");
+        if (_lGuiAiCompactLabel != null)
+            _lGuiAiCompactLabel.text = _aiCompressionInProgress
+                ? T("压缩中", "Compacting")
+                : T("压缩上下文", "Compact context");
+        if (_lGuiAiFetchModelsLabel != null)
+            _lGuiAiFetchModelsLabel.text = _aiFetchModelsInProgress
+                ? T("获取中", "Loading")
+                : T("获取模型名", "Fetch models");
+        if (_lGuiAiContextUsageText == null)
+            return;
+        var now = Time.unscaledTime;
+        if (now >= _lGuiAiContextUsageNextAt)
+        {
+            _lGuiAiContextUsageNextAt = now + LGuiAiContextUsageRefreshInterval;
+            _lGuiAiContextUsageCache = GetAiContextUsageLabel();
+        }
+        _lGuiAiContextUsageText.text = _lGuiAiContextUsageCache;
     }
 }

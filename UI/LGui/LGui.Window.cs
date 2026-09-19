@@ -265,6 +265,11 @@ public sealed partial class ElinModifierPlugin
         UpdateLGuiImeMode();
         var dynamicDue = ShouldRefreshLGuiDynamicValues();
         var slowDue = ShouldRefreshLGuiSlowValues();
+        if (_lGuiPage == LGuiPage.Ai && ShouldRebuildLGuiAiPage())
+        {
+            SwitchLGuiPage(LGuiPage.Ai);
+            return;
+        }
         if (_lGuiDataDirty && (_lGuiPage == LGuiPage.Moongate || _lGuiPage == LGuiPage.NpcInfo))
         {
             SwitchLGuiPage(_lGuiPage);

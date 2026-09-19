@@ -36,17 +36,19 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("Stage: " + stage);
         if (!string.IsNullOrWhiteSpace(errorText))
             sb.AppendLine("Interruption reason: " + errorText);
-        if (!string.IsNullOrWhiteSpace(toolResults))
+        var compactedToolResults = CompactAiTextForHistory(toolResults, AiHistoryToolResultMaxChars);
+        if (compactedToolResults.Length > 0)
         {
             sb.AppendLine();
             sb.AppendLine("Tool results before interruption:");
-            sb.AppendLine(toolResults.Trim());
+            sb.AppendLine(compactedToolResults);
         }
-        if (!string.IsNullOrWhiteSpace(partialResponse))
+        var compactedPartialResponse = CompactAiTextForHistory(partialResponse, AiHistoryPartialResponseMaxChars);
+        if (compactedPartialResponse.Length > 0)
         {
             sb.AppendLine();
             sb.AppendLine("Partial assistant response before interruption:");
-            sb.AppendLine(partialResponse.Trim());
+            sb.AppendLine(compactedPartialResponse);
         }
 
         _aiMessages.Add(new AiChatMessage("user", originalPrompt));
@@ -288,16 +290,27 @@ public sealed partial class ElinModifierPlugin
         if (includeTools && toolStream)
             sb.Append("\"tool_stream\":true,");
         sb.Append("\"messages\":[");
-        AppendAiMessageJson(sb, "system", BuildAiSystemPrompt(includeTools));
+        var systemPrompt = BuildAiSystemPrompt(includeTools);
+        var turns = new List<AiChatMessage>();
         if (useContext && history != null)
         {
             foreach (var message in history)
             {
                 if (message == null || string.IsNullOrEmpty(message.Content))
                     continue;
-                sb.Append(",");
-                AppendAiMessageJson(sb, NormalizeAiChatRole(message.Role), message.Content);
+                if (string.Equals(NormalizeAiChatRole(message.Role), "system", StringComparison.Ordinal))
+                {
+                    systemPrompt += "\n\n" + message.Content;
+                    continue;
+                }
+                turns.Add(message);
             }
+        }
+        AppendAiMessageJson(sb, "system", systemPrompt);
+        for (var i = 0; i < turns.Count; i++)
+        {
+            sb.Append(",");
+            AppendAiMessageJson(sb, NormalizeAiChatRole(turns[i].Role), turns[i].Content);
         }
         sb.Append(",");
         AppendAiMessageJson(sb, "user", prompt);
@@ -497,6 +510,42 @@ public sealed partial class ElinModifierPlugin
             string.Equals(effort, "maximum", StringComparison.OrdinalIgnoreCase))
             return "max";
         return "medium";
+    }
+    private static int EstimateAiTextWeight(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return 0;
+        var weight = 0;
+        for (var i = 0; i < text.Length; i++)
+            weight += IsAiWideCharacter(text[i]) ? AiWideCharacterWeight : 1;
+        return weight;
+    }
+    private static bool IsAiWideCharacter(char value)
+    {
+        return (value >= '\u2e80' && value <= '\u9fff') ||
+               (value >= '\uac00' && value <= '\ud7af') ||
+               (value >= '\uf900' && value <= '\ufaff') ||
+               (value >= '\uff00' && value <= '\uffef');
+    }
+    private static string CompactAiTextForHistory(string text, int maxChars)
+    {
+        text = (text ?? "").Trim();
+        if (text.Length <= maxChars || maxChars < 16)
+            return text;
+        var head = maxChars * 2 / 3;
+        var tail = maxChars - head;
+        var omitted = text.Length - head - tail;
+        return text.Substring(0, head) +
+               "\n...[" + omitted.ToString(CultureInfo.InvariantCulture) + " characters omitted]...\n" +
+               text.Substring(text.Length - tail);
+    }
+    private static string BuildAiHistoryAssistantContent(string toolResults, string responseText)
+    {
+        var results = CompactAiTextForHistory(toolResults, AiHistoryToolResultMaxChars);
+        responseText = responseText ?? "";
+        if (results.Length == 0)
+            return responseText;
+        return "EMG results:\n" + results + "\n\n" + responseText;
     }
     private static void AppendAiMessageJson(StringBuilder sb, string role, string content)
     {
@@ -708,12 +757,14 @@ public sealed partial class ElinModifierPlugin
     }
     private static string BuildAiToolFollowupPrompt(string originalPrompt, string toolResults)
     {
+        toolResults = CompactAiTextForHistory(toolResults, AiToolLoopResultMaxChars);
         return "The user asked:\n" + originalPrompt + "\n\n" +
                "EMG (Elin Modifier Gateway) has executed with these results:\n" + toolResults + "\n\n" +
                "Briefly summarize what was done, what failed, and any important limitation. Only state that data was read, verified, changed, spawned, patched, or completed when an EMG result explicitly says ok or pending_confirmation for that action. If EMG results are failed or found no results, explicitly say the read/change did not succeed and do not infer values from guesses. Check the summary against every explicit part of the user's request so no requested target, constraint, exclusion, or verification need is silently ignored. If the task failed or is incomplete, state the most concrete next EMG/search/target to try rather than saying it is impossible. Do not call EMG tools.";
     }
     private static string BuildAiToolContinuePrompt(string originalPrompt, string toolResults)
     {
+        toolResults = CompactAiTextForHistory(toolResults, AiToolLoopResultMaxChars);
         return "The user asked:\n" + originalPrompt + "\n\n" +
                "EMG (Elin Modifier Gateway) has executed these results so far:\n" + toolResults + "\n\n" +
                "Continue completing the user's request. First re-check the request as a set of explicit requirements, constraints, targets, exclusions, and verification needs, then continue until each related part is handled or clearly blocked. If these results only identified a target, call the next appropriate tool to actually perform the requested operation. " +

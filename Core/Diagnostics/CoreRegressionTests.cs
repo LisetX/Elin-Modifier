@@ -58,6 +58,12 @@ internal static class CoreRegressionTests
             GatheringThresholdPolicy.CalculateRequiredHardness(20, 50, true) == 30);
         Check(result, "gathering skill requirement cannot be negative",
             GatheringThresholdPolicy.NormalizeRequiredSkillLevel(-1) == 0);
+        Check(result, "missing material penalty scales floor and block hardness",
+            GatheringThresholdPolicy.ApplyMissingMaterialPenalty(7) == 700);
+        Check(result, "missing material penalty keeps zero hardness unreachable",
+            GatheringThresholdPolicy.ApplyMissingMaterialPenalty(0) == 0);
+        Check(result, "missing material penalty saturates instead of overflowing",
+            GatheringThresholdPolicy.ApplyMissingMaterialPenalty(int.MaxValue) == int.MaxValue);
         Check(result, "disabled guaranteed dismantle preserves original roll",
             Math.Abs(GuaranteedGatheringRewardsPolicy.ResolveDismantleRoll(0.75f, false) - 0.75f) < 0.0001f);
         Check(result, "enabled guaranteed dismantle rounds fractional result upward",

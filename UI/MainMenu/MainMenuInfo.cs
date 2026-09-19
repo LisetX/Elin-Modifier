@@ -201,11 +201,23 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* 新增\"产出倍率调整\"，支持采集挖掘倍率、宝箱容器倍率、钓鱼倍率、毛皮获取倍率、家园产出倍率、演奏打赏倍率",
-                        "* Added \"Drop multiplier adjustment\", supporting gathering & mining, chest & container, fishing, fur, home output and performance tip multipliers"),
+                        "* \"显示物品更多信息\"中\"采集物采集门槛\"扩充显示范围",
+                        "* Expanded the display scope of \"Gathering requirements\" in \"Show more item info\""),
                     host.TranslateModuleText(
-                        "* 优化\"产出倍率调整\"与\"种植收获倍率\"的兼容，\"种植收获倍率\"的优先级比\"产出倍率调整\"的采集挖掘倍率优先级高",
-                        "* Improved compatibility between \"Drop multiplier adjustment\" and \"Plant harvest multiplier\"; \"Plant harvest multiplier\" takes priority over the gathering & mining multiplier of \"Drop multiplier adjustment\""),
+                        "* 优化\"AI辅助\"的使用体验，缩短上下文长度",
+                        "* Improved the \"AI Assistant\" experience and shortened context length"),
+                    host.TranslateModuleText(
+                        "* [P0]修复\"AI辅助\"中EMG工具调用导致对话丢失的可能",
+                        "* [P0] Fixed possible conversation loss caused by EMG tool calls in \"AI Assistant\""),
+                    host.TranslateModuleText(
+                        "* [P2]修复\"AI辅助\"中高危操作确认因异常未将批准结果写入对话上下文",
+                        "* [P2] Fixed \"AI Assistant\" high-risk action confirmations not writing the approval result into the conversation context"),
+                    host.TranslateModuleText(
+                        "* [P1]修复\"AI辅助\"中因上下文压缩的异常表现导致的重复的EMG调用",
+                        "* [P1] Fixed repeated EMG calls caused by abnormal context compaction in \"AI Assistant\""),
+                    host.TranslateModuleText(
+                        "* [P3]修复\"AI辅助\"中因用户语种导致的上下文压缩时机异常",
+                        "* [P3] Fixed abnormal context compaction timing caused by the user language in \"AI Assistant\""),
                 }
             };
 

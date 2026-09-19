@@ -284,6 +284,7 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"aiUseToolStreaming\": " + (_aiUseToolStreaming ? "true" : "false") + ",");
             sb.AppendLine("  \"aiHttpTimeoutSeconds\": " + _aiHttpTimeoutSeconds.ToString(CultureInfo.InvariantCulture) + ",");
             sb.AppendLine("  \"aiContextCompressThreshold\": " + _aiContextCompressThreshold.ToString(CultureInfo.InvariantCulture) + ",");
+            sb.AppendLine("  \"aiMaxToolRounds\": " + _aiMaxToolRounds.ToString(CultureInfo.InvariantCulture) + ",");
             sb.AppendLine();
             AppendEmpPluginConfigJson(sb);
             sb.AppendLine("}");

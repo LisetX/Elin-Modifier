@@ -42,7 +42,7 @@ public sealed partial class ElinModifierPlugin
         }
     }
     [HarmonyPatch(typeof(WidgetMouseover), "Show")]
-    private static class WidgetMouseoverShowNpcMoreInfoDirectionPatch
+    private static class WidgetMouseoverShowNpcMoreInfoItemMoreInfoDirectionPatch
     {
         private static void Prefix(WidgetMouseover __instance, ref string s, out bool __state)
         {

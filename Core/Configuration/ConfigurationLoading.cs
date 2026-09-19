@@ -254,6 +254,7 @@ public sealed partial class ElinModifierPlugin
                                       !HasJsonValue(json, "aiUseToolStreaming") ||
                                       !HasJsonValue(json, "aiHttpTimeoutSeconds") ||
                                       !HasJsonValue(json, "aiContextCompressThreshold") ||
+                                      !HasJsonValue(json, "aiMaxToolRounds") ||
                                       !HasJsonValue(json, "empPlugins");
             _language = NormalizeLanguage(ExtractString(json, "language", _language));
             _uiStyleIndex = Clamp(ExtractInt(json, "uiStyleIndex", _uiStyleIndex), 0, UiStyleNamesZh.Length - 1);
@@ -555,6 +556,8 @@ public sealed partial class ElinModifierPlugin
             _aiHttpTimeoutSecondsText = _aiHttpTimeoutSeconds.ToString(CultureInfo.InvariantCulture);
             _aiContextCompressThreshold = Clamp(ExtractInt(json, "aiContextCompressThreshold", _aiContextCompressThreshold), AiContextCompressionMinThreshold, AiContextCompressionMaxThreshold);
             _aiContextCompressThresholdText = _aiContextCompressThreshold.ToString(CultureInfo.InvariantCulture);
+            _aiMaxToolRounds = Clamp(ExtractInt(json, "aiMaxToolRounds", AiToolLoopDefaultMaxRounds), AiToolLoopMinRounds, AiToolLoopMaxRounds);
+            _aiMaxToolRoundsText = _aiMaxToolRounds.ToString(CultureInfo.InvariantCulture);
             LoadEmpPluginStatesFromConfig(json);
 
             SyncConfigTextFields();
@@ -755,6 +758,9 @@ public sealed partial class ElinModifierPlugin
         _aiHttpTimeoutSecondsText = _aiHttpTimeoutSeconds.ToString(CultureInfo.InvariantCulture);
         _aiContextCompressThreshold = AiContextCompressionDefaultThreshold;
         _aiContextCompressThresholdText = _aiContextCompressThreshold.ToString(CultureInfo.InvariantCulture);
+        _aiMaxToolRounds = AiToolLoopDefaultMaxRounds;
+        _aiMaxToolRoundsText = _aiMaxToolRounds.ToString(CultureInfo.InvariantCulture);
+        _aiContextCompressedWeight = 0;
         SyncConfigTextFields();
     }
     private static string DetectWindowsLanguage()

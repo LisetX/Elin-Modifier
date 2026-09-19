@@ -48,6 +48,7 @@ public sealed partial class ElinModifierPlugin
                 "There is no pending high-risk action. Ask the AI to queue an action first, then reply \"confirm\".");
             _aiResponse += text;
             _aiLog = text;
+            RecordAiConfirmationContext(userText, "No pending high-risk action existed, so nothing was executed.");
             ScrollAiResponseToBottom();
             return true;
         }
@@ -59,6 +60,7 @@ public sealed partial class ElinModifierPlugin
             var text = T("已取消待执行的高危操作: ", "Cancelled pending high-risk actions: ") + count.ToString(CultureInfo.InvariantCulture);
             _aiResponse += text;
             _aiLog = text;
+            RecordAiConfirmationContext(userText, "Cancelled pending high-risk actions: " + count.ToString(CultureInfo.InvariantCulture));
             ScrollAiResponseToBottom();
             return true;
         }
@@ -84,8 +86,16 @@ public sealed partial class ElinModifierPlugin
         var resultText = T("已执行确认的高危操作:", "Confirmed high-risk actions executed:") + "\n" + sb.ToString().TrimEnd();
         _aiResponse += resultText;
         _aiLog = T("高危操作执行完成", "High-risk actions executed");
+        RecordAiConfirmationContext(userText, "Confirmed high-risk actions executed:\n" + sb.ToString().TrimEnd());
         ScrollAiResponseToBottom();
         return true;
+    }
+    private void RecordAiConfirmationContext(string userText, string resultText)
+    {
+        if (string.IsNullOrWhiteSpace(userText))
+            return;
+        _aiMessages.Add(new AiChatMessage("user", userText));
+        _aiMessages.Add(new AiChatMessage("assistant", CompactAiTextForHistory(resultText, AiHistoryToolResultMaxChars)));
     }
     private List<string> GetFilteredAiModels()
     {
@@ -137,6 +147,7 @@ public sealed partial class ElinModifierPlugin
     {
         var apiBase = NormalizeAiApiBase(_aiApiBase);
         ApplyAiHttpTimeoutSecondsText(false);
+        ApplyAiMaxToolRoundsText(false);
         if (string.IsNullOrWhiteSpace(apiBase))
         {
             _aiLog = T("API地址不能为空", "API base cannot be empty");
@@ -271,9 +282,16 @@ public sealed partial class ElinModifierPlugin
     {
         if (!_aiUseContext || !_aiAutoCompressContext || _aiMessages.Count == 0)
             return false;
-        if (EstimateAiCompressibleContextLength(_aiMessages) <= 0)
+        if (EstimateAiCompressibleContextLength(_aiMessages) < AiContextCompressionMinCompressibleWeight)
             return false;
-        return EstimateAiContextLength(_aiMessages) + (nextPrompt == null ? 0 : nextPrompt.Length) >= _aiContextCompressThreshold;
+        var total = EstimateAiContextLength(_aiMessages) + EstimateAiTextWeight(nextPrompt);
+        if (total < _aiContextCompressThreshold)
+            return false;
+        var requiredGrowth = Math.Max(
+            AiContextCompressionMinGrowthWeight,
+            _aiContextCompressThreshold / AiContextCompressionGrowthDivisor);
+        return _aiContextCompressedWeight <= 0 ||
+               total >= _aiContextCompressedWeight + requiredGrowth;
     }
     private void StartAiContextCompression(string apiBase, string apiKey, string reasoningEffort, bool manual, Action onSuccess, string interruptedPrompt = null)
     {
@@ -289,7 +307,8 @@ public sealed partial class ElinModifierPlugin
             return;
         }
 
-        var transcript = BuildAiContextCompressionTranscript(_aiMessages, false);
+        var preservedUserMessages = SelectPreservedAiUserMessages(_aiMessages);
+        var transcript = BuildAiContextCompressionTranscript(_aiMessages, preservedUserMessages);
         if (string.IsNullOrWhiteSpace(transcript))
         {
             if (manual)
@@ -314,7 +333,7 @@ public sealed partial class ElinModifierPlugin
                 var summary = ExtractAiChatContent(json);
                 if (string.IsNullOrWhiteSpace(summary))
                     summary = TruncateForLog(transcript, Math.Max(2000, _aiContextCompressThreshold / 2));
-                ApplyAiContextSummary(summary, _aiMessages);
+                ApplyAiContextSummary(summary, preservedUserMessages);
                 _aiLog = T("上下文已压缩", "Context compacted") + " " + GetAiContextUsageLabel();
                 if (manual)
                 {
@@ -346,39 +365,72 @@ public sealed partial class ElinModifierPlugin
             },
             () => { if (IsCurrentAiRun(runId)) _aiCompressionInProgress = false; });
     }
-    private void ApplyAiContextSummary(string summary, IEnumerable<AiChatMessage> originalMessages)
+    private List<AiChatMessage> SelectPreservedAiUserMessages(IEnumerable<AiChatMessage> messages)
+    {
+        var budget = Math.Max(
+            AiContextCompressionMinCompressibleWeight,
+            _aiContextCompressThreshold / AiContextPreservedUserWeightDivisor);
+        var userMessages = new List<AiChatMessage>();
+        if (messages != null)
+        {
+            foreach (var message in messages)
+            {
+                if (message == null || string.IsNullOrEmpty(message.Content))
+                    continue;
+                if (string.Equals(NormalizeAiChatRole(message.Role), "user", StringComparison.Ordinal))
+                    userMessages.Add(message);
+            }
+        }
+
+        var preserved = new List<AiChatMessage>();
+        var used = 0;
+        for (var i = userMessages.Count - 1; i >= 0; i--)
+        {
+            var weight = EstimateAiTextWeight(userMessages[i].Content);
+            if (preserved.Count > 0 && used + weight > budget)
+                break;
+            used += weight;
+            preserved.Add(userMessages[i]);
+        }
+        preserved.Reverse();
+        return preserved;
+    }
+    private void ApplyAiContextSummary(string summary, List<AiChatMessage> preservedUserMessages)
     {
         summary = (summary ?? "").Trim();
         if (summary.Length == 0)
             return;
-        var preservedUserMessages = new List<AiChatMessage>();
-        if (originalMessages != null)
+
+        var sb = new StringBuilder();
+        sb.Append("Compressed AI/EMG context from earlier turns:\n").Append(summary);
+        if (preservedUserMessages != null && preservedUserMessages.Count > 0)
         {
-            foreach (var message in originalMessages)
+            sb.Append("\n\nRecent user messages, preserved verbatim and still authoritative:");
+            for (var i = 0; i < preservedUserMessages.Count; i++)
             {
-                if (message == null || string.IsNullOrEmpty(message.Content))
-                    continue;
-                if (string.Equals(NormalizeAiChatRole(message.Role), "user", StringComparison.OrdinalIgnoreCase))
-                    preservedUserMessages.Add(new AiChatMessage("user", message.Content));
+                sb.Append("\n[")
+                    .Append((i + 1).ToString(CultureInfo.InvariantCulture))
+                    .Append("] ")
+                    .Append(preservedUserMessages[i].Content);
             }
         }
 
         _aiMessages.Clear();
-        _aiMessages.Add(new AiChatMessage("system", "Compressed AI/EMG context. User messages below are preserved verbatim and remain authoritative:\n" + summary));
-        for (var i = 0; i < preservedUserMessages.Count; i++)
-            _aiMessages.Add(preservedUserMessages[i]);
+        _aiMessages.Add(new AiChatMessage("system", sb.ToString()));
+        _aiContextCompressedWeight = EstimateAiContextLength(_aiMessages);
     }
     private static string BuildAiContextCompressionPrompt(string transcript)
     {
-        return "Compress only the following Elin Modifier assistant/tool context into a compact but complete memory for future turns. " +
-               "The user's original messages are intentionally excluded from this transcript and will be preserved verbatim outside the summary, so do not invent or rewrite user wording. " +
+        return "Compress the following Elin Modifier conversation context into a compact but complete memory for future turns. " +
+               "The most recent user messages are excluded from this transcript and will be preserved verbatim outside the summary, so do not invent or rewrite user wording. " +
+               "Older user messages are included here; keep their requirements and constraints as facts. " +
                "Preserve important decisions, current game/mod state, EMG results, pending risks, exact names/IDs/UIDs, patch IDs, configuration values, and unresolved tasks. " +
-               "Preserve multi-part requirements as checklist-like facts only when they are visible in assistant/tool context, including constraints, exclusions, verification requests, and parts that were not finished yet. " +
+               "Preserve multi-part requirements as checklist-like facts, including constraints, exclusions, verification requests, and parts that were not finished yet. " +
                "Preserve failed or incomplete tool attempts as diagnostic state, including what was tried, what error occurred, and what next target/search/action should be attempted. " +
                "Remove repetition and UI chatter. Do not invent facts. Return only the compressed context.\n\n" +
                transcript;
     }
-    private static string BuildAiContextCompressionTranscript(IEnumerable<AiChatMessage> messages, bool includeUserMessages)
+    private static string BuildAiContextCompressionTranscript(IEnumerable<AiChatMessage> messages, List<AiChatMessage> preservedUserMessages)
     {
         var sb = new StringBuilder();
         if (messages != null)
@@ -387,10 +439,9 @@ public sealed partial class ElinModifierPlugin
             {
                 if (message == null || string.IsNullOrEmpty(message.Content))
                     continue;
-                var role = NormalizeAiChatRole(message.Role);
-                if (!includeUserMessages && string.Equals(role, "user", StringComparison.OrdinalIgnoreCase))
+                if (preservedUserMessages != null && preservedUserMessages.Contains(message))
                     continue;
-                sb.Append(role).Append(": ").AppendLine(message.Content);
+                sb.Append(NormalizeAiChatRole(message.Role)).Append(": ").AppendLine(message.Content);
                 sb.AppendLine();
             }
         }
@@ -405,8 +456,8 @@ public sealed partial class ElinModifierPlugin
             {
                 if (message == null)
                     continue;
-                length += (message.Role == null ? 0 : message.Role.Length) + 2;
-                length += message.Content == null ? 0 : message.Content.Length;
+                length += EstimateAiTextWeight(message.Role) + 2;
+                length += EstimateAiTextWeight(message.Content);
             }
         }
         return length;
@@ -420,10 +471,10 @@ public sealed partial class ElinModifierPlugin
             {
                 if (message == null || string.IsNullOrEmpty(message.Content))
                     continue;
-                if (string.Equals(NormalizeAiChatRole(message.Role), "user", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(NormalizeAiChatRole(message.Role), "user", StringComparison.Ordinal))
                     continue;
-                length += (message.Role == null ? 0 : message.Role.Length) + 2;
-                length += message.Content.Length;
+                length += EstimateAiTextWeight(message.Role) + 2;
+                length += EstimateAiTextWeight(message.Content);
             }
         }
         return length;
@@ -438,6 +489,13 @@ public sealed partial class ElinModifierPlugin
         _aiContextCompressThreshold = Clamp(ParseInt(_aiContextCompressThresholdText, AiContextCompressionDefaultThreshold), AiContextCompressionMinThreshold, AiContextCompressionMaxThreshold);
         _aiContextCompressThresholdText = _aiContextCompressThreshold.ToString(CultureInfo.InvariantCulture);
         _aiLog = T("上下文压缩阈值已更新", "Context compaction threshold updated");
+    }
+    private void ApplyAiMaxToolRoundsText(bool updateLog = true)
+    {
+        _aiMaxToolRounds = Clamp(ParseInt(_aiMaxToolRoundsText, AiToolLoopDefaultMaxRounds), AiToolLoopMinRounds, AiToolLoopMaxRounds);
+        _aiMaxToolRoundsText = _aiMaxToolRounds.ToString(CultureInfo.InvariantCulture);
+        if (updateLog)
+            _aiLog = T("EMG轮次上限已更新", "EMG round limit updated");
     }
     private void ApplyAiHttpTimeoutSecondsText(bool updateLog = true)
     {
@@ -463,7 +521,7 @@ public sealed partial class ElinModifierPlugin
                     _aiResponse += responseText;
                     ScrollAiResponseToBottom();
                     _aiMessages.Add(new AiChatMessage("user", originalPrompt));
-                    _aiMessages.Add(new AiChatMessage("assistant", (string.IsNullOrEmpty(accumulatedToolResults) ? "" : accumulatedToolResults + "\n\n") + responseText));
+                    _aiMessages.Add(new AiChatMessage("assistant", BuildAiHistoryAssistantContent(accumulatedToolResults, responseText)));
                     _aiLog = T("请求完成", "Request completed");
                     _aiSendInProgress = false;
                     return;
@@ -528,14 +586,14 @@ public sealed partial class ElinModifierPlugin
             return;
         }
 
-        if (round >= 8)
+        if (round >= _aiMaxToolRounds)
         {
             StartAiFinalResponse(apiBase, apiKey, originalPrompt, combinedToolResults, reasoningEffort);
             return;
         }
 
         var continuePrompt = BuildAiToolContinuePrompt(originalPrompt, combinedToolResults);
-        var continueBody = BuildAiChatJson(_aiModelName, continuePrompt, _aiMessages, false, IsAiReasoningEnabled(), reasoningEffort, true, false, _aiUseToolStreaming);
+        var continueBody = BuildAiChatJson(_aiModelName, continuePrompt, _aiMessages, _aiUseContext, IsAiReasoningEnabled(), reasoningEffort, true, false, _aiUseToolStreaming);
         _aiLastRequestBody = continueBody;
         _aiLog = T("继续执行EMG...", "Continuing EMG actions...");
         RunAiToolLoop(apiBase, apiKey, originalPrompt, continueBody, reasoningEffort, combinedToolResults, round + 1);
@@ -602,19 +660,15 @@ public sealed partial class ElinModifierPlugin
             return false;
         if (!IsAiRuntimeWorkspacePendingToolResult(text))
             return false;
-        return text.IndexOf("ok: runtime search results", StringComparison.OrdinalIgnoreCase) < 0 &&
-               text.IndexOf("ok: runtime type", StringComparison.OrdinalIgnoreCase) < 0 &&
+        return text.IndexOf("ok: ", StringComparison.OrdinalIgnoreCase) < 0 &&
                text.IndexOf("failed:", StringComparison.OrdinalIgnoreCase) < 0 &&
-               text.IndexOf("pending_confirmation:", StringComparison.OrdinalIgnoreCase) < 0 &&
-               text.IndexOf("ok: invoked", StringComparison.OrdinalIgnoreCase) < 0 &&
-               text.IndexOf("ok: runtime Harmony patch", StringComparison.OrdinalIgnoreCase) < 0 &&
-               text.IndexOf("ok: ", StringComparison.OrdinalIgnoreCase) < 0;
+               text.IndexOf("pending_confirmation:", StringComparison.OrdinalIgnoreCase) < 0;
     }
     private void StartAiFinalResponse(string apiBase, string apiKey, string originalPrompt, string toolResults, string reasoningEffort)
     {
         var runId = _aiRunId;
         var followupPrompt = BuildAiToolFollowupPrompt(originalPrompt, toolResults);
-        var followupBody = BuildAiChatJson(_aiModelName, followupPrompt, _aiMessages, false, IsAiReasoningEnabled(), reasoningEffort, false, _aiUseStreaming, false);
+        var followupBody = BuildAiChatJson(_aiModelName, followupPrompt, _aiMessages, _aiUseContext, IsAiReasoningEnabled(), reasoningEffort, false, _aiUseStreaming, false);
         _aiLastRequestBody = followupBody;
         if (!_aiUseStreaming)
         {
@@ -630,7 +684,7 @@ public sealed partial class ElinModifierPlugin
                     _aiResponse += responseText;
                     ScrollAiResponseToBottom();
                     _aiMessages.Add(new AiChatMessage("user", originalPrompt));
-                    _aiMessages.Add(new AiChatMessage("assistant", (string.IsNullOrEmpty(toolResults) ? "" : toolResults + "\n\n") + responseText));
+                    _aiMessages.Add(new AiChatMessage("assistant", BuildAiHistoryAssistantContent(toolResults, responseText)));
                     _aiLog = T("请求完成", "Request completed");
                 },
                 ex =>
@@ -673,7 +727,7 @@ public sealed partial class ElinModifierPlugin
                     ScrollAiResponseToBottom();
                 }
                 _aiMessages.Add(new AiChatMessage("user", originalPrompt));
-                _aiMessages.Add(new AiChatMessage("assistant", (string.IsNullOrEmpty(toolResults) ? "" : toolResults + "\n\n") + responseText));
+                _aiMessages.Add(new AiChatMessage("assistant", BuildAiHistoryAssistantContent(toolResults, responseText)));
                 _aiLog = T("请求完成", "Request completed");
             },
             ex =>

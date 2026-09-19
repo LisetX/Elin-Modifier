@@ -384,6 +384,13 @@ public sealed partial class ElinModifierPlugin
     private Text? _lGuiCharacterTargetText;
     private Text? _lGuiPlayerInfoStatusText;
     private Text? _lGuiAiStatusText;
+    private Text? _lGuiAiSendLabel;
+    private Text? _lGuiAiCompactLabel;
+    private Text? _lGuiAiFetchModelsLabel;
+    private Text? _lGuiAiContextUsageText;
+    private string _lGuiAiContextUsageCache = "";
+    private float _lGuiAiContextUsageNextAt;
+    private int _lGuiAiStructureSignature;
     private Text? _lGuiEmpStatusText;
     private LGuiScrollableTextBox? _lGuiAiResponseInput;
     private InputField? _lGuiAiPromptInput;

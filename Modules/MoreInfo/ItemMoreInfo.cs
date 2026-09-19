@@ -98,164 +98,28 @@ internal sealed partial class MoreInfoModule
         if (lines.Count == 0)
             return "";
 
+        return WrapItemMoreInfoLines(lines);
+    }
+    private static string WrapItemMoreInfoLines(List<string> lines)
+    {
+        if (lines == null || lines.Count == 0)
+            return "";
         var sb = new StringBuilder();
         sb.Append(Environment.NewLine);
         sb.Append("<size=").Append(GetItemMoreInfoFontSize().ToString(CultureInfo.InvariantCulture)).Append('>');
-        sb.Append(string.Join(Environment.NewLine, lines.ToArray()));
+        for (var i = 0; i < lines.Count; i++)
+        {
+            if (i > 0)
+                sb.Append(Environment.NewLine);
+            sb.Append(StripItemMoreInfoSizeTags(lines[i]));
+        }
         sb.Append("</size>");
         return sb.ToString();
     }
-    internal static string BuildMapGatheringThresholdHoverDetails(Point point)
+    private static string StripItemMoreInfoSizeTags(string line)
     {
-        var instance = ElinModifierPlugin.ActiveInstance;
-        if (instance == null || !instance._showItemMoreInfoGatheringThreshold || point == null)
-            return "";
-
-        try
-        {
-            if (!point.IsValid || !point.HasObj)
-                return "";
-
-            var source = point.sourceObj;
-            var cell = point.cell;
-            var requirements = source?.reqHarvest;
-            var material = cell != null && cell.isObjDyed ? source?.DefaultMaterial : cell?.matObj;
-            if (source == null || material == null || requirements == null || requirements.Length < 2)
-                return "";
-
-            var hpPercent = point.growth != null ? point.growth.GetHp() : source.hp;
-            var requiredHardness = GatheringThresholdPolicy.CalculateRequiredHardness(
-                material.hardness,
-                hpPercent,
-                HasGatheringHardMaterialTag(material));
-            var line = BuildGatheringThresholdLine(requirements, point.cell.CanHarvest(), requiredHardness);
-            return WrapItemMoreInfoLine(line);
-        }
-        catch
-        {
-            return "";
-        }
-    }
-    private static string BuildThingGatheringThresholdLine(Thing thing)
-    {
-        try
-        {
-            var requirementText = thing?.trait?.ReqHarvest;
-            var material = thing?.material;
-            if (string.IsNullOrWhiteSpace(requirementText) || material == null)
-                return "";
-
-            var requirements = requirementText.Split(',', StringSplitOptions.None);
-            if (requirements.Length < 2)
-                return "";
-
-            var isHarvest = thing.pos != null && thing.pos.IsValid && thing.pos.cell.CanHarvest();
-            var requiredHardness = GatheringThresholdPolicy.CalculateRequiredHardness(
-                material.hardness,
-                100,
-                HasGatheringHardMaterialTag(material));
-            return BuildGatheringThresholdLine(requirements, isHarvest, requiredHardness);
-        }
-        catch
-        {
-            return "";
-        }
-    }
-    private static string BuildGatheringThresholdLine(string[] requirements, bool isHarvest, int requiredHardness)
-    {
-        if (requirements == null || requirements.Length < 2)
-            return "";
-
-        var skillAlias = isHarvest ? "gathering" : (requirements[0] ?? "").Trim();
-        if (string.IsNullOrEmpty(skillAlias) ||
-            GameAccess.Sources.Elements?.alias == null ||
-            !GameAccess.Sources.Elements.alias.TryGetValue(skillAlias, out var skillRow) ||
-            skillRow == null)
-        {
-            return "";
-        }
-
-        var requiredSkill = 0;
-        int.TryParse(requirements[1], NumberStyles.Integer, CultureInfo.InvariantCulture, out requiredSkill);
-        requiredSkill = GatheringThresholdPolicy.NormalizeRequiredSkillLevel(requiredSkill);
-        var currentSkill = Math.Max(0, SafeInt(() => GameAccess.Characters.GetPlayerElementValue(skillRow.id), 0));
-        var toolRequired = !isHarvest && skillRow.id != 250;
-        var tool = toolRequired ? GetCurrentGatheringTool(skillAlias) : null;
-        var currentHardness = tool == null ? 0 : Math.Max(0, SafeInt(() => tool.material.hardness, 0));
-        var skillName = SafeText(() => skillRow.GetName(), skillAlias);
-        var toolName = GetRequiredGatheringToolName(skillAlias, toolRequired);
-
-        var skillValue = currentSkill.ToString(CultureInfo.InvariantCulture) + "/" +
-                         requiredSkill.ToString(CultureInfo.InvariantCulture);
-        var hardnessValue = currentHardness.ToString(CultureInfo.InvariantCulture) + "/" +
-                            (toolRequired ? requiredHardness : 0).ToString(CultureInfo.InvariantCulture);
-        return BuildGatheringThresholdEntry(skillName, Tr("等级", "Level"), skillValue) + " " +
-               BuildGatheringThresholdEntry(toolName, Tr("硬度", "Hardness"), hardnessValue);
-    }
-    private static string BuildGatheringThresholdEntry(string name, string label, string value)
-    {
-        return ColorNpcMoreInfoText("[", ItemMoreInfoGatheringThresholdColor) +
-               ColorNpcMoreInfoText(name ?? "", ItemMoreInfoGatheringToolColor) +
-               ColorNpcMoreInfoText("]" + (label ?? "") + ":", ItemMoreInfoGatheringThresholdColor) +
-               ColorNpcMoreInfoText(value ?? "", ItemMoreInfoGatheringValueColor);
-    }
-    private static Thing? GetCurrentGatheringTool(string skillAlias)
-    {
-        Thing? tool;
-        try
-        {
-            tool = GameAccess.Characters.PlayerCharacter?.Tool;
-        }
-        catch
-        {
-            return null;
-        }
-
-        if (tool == null)
-            return null;
-
-        try
-        {
-            if (string.Equals(skillAlias, "digging", StringComparison.OrdinalIgnoreCase))
-                return tool.HasElement(230, false) ? tool : null;
-            return tool.HasElement(220, false) || tool.HasElement(225, false) ? tool : null;
-        }
-        catch
-        {
-            return null;
-        }
-    }
-    private static string GetRequiredGatheringToolName(string skillAlias, bool toolRequired)
-    {
-        if (!toolRequired)
-            return Tr("无需工具", "No tool");
-        if (string.Equals(skillAlias, "digging", StringComparison.OrdinalIgnoreCase))
-            return Tr("铲子", "Shovel");
-        if (string.Equals(skillAlias, "lumberjack", StringComparison.OrdinalIgnoreCase))
-            return Tr("伐木斧", "Lumberjack axe");
-        if (string.Equals(skillAlias, "mining", StringComparison.OrdinalIgnoreCase))
-            return Tr("镐子", "Pickaxe");
-        return Tr("采集工具", "Gathering tool");
-    }
-    private static bool HasGatheringHardMaterialTag(SourceMaterial.Row material)
-    {
-        var tags = material?.tag;
-        if (tags == null)
-            return false;
-        for (var i = 0; i < tags.Length; i++)
-        {
-            if (string.Equals(tags[i], "hard", StringComparison.Ordinal))
-                return true;
-        }
-        return false;
-    }
-    private static string WrapItemMoreInfoLine(string line)
-    {
-        if (string.IsNullOrEmpty(line))
-            return "";
-        return Environment.NewLine +
-               "<size=" + GetItemMoreInfoFontSize().ToString(CultureInfo.InvariantCulture) + ">" +
-               line +
-               "</size>";
+        if (string.IsNullOrEmpty(line) || line.IndexOf("<size", StringComparison.OrdinalIgnoreCase) < 0)
+            return line ?? "";
+        return Regex.Replace(line, "</?size[^>]*>", "", RegexOptions.IgnoreCase);
     }
 }
