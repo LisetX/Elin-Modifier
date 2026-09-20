@@ -39,6 +39,9 @@ public sealed partial class ElinModifierPlugin
     private int _etherDiseaseLastTargetUid = -1;
     private int _npcGeneTypeIndex = 1;
     private bool _npcGeneIsManiGene;
+    private static readonly MethodInfo? NpcGeneManiGeneGetter = AccessTools.PropertyGetter(typeof(DNA), "isManiGene");
+    private static readonly MethodInfo? NpcGeneManiGeneSetter = AccessTools.PropertySetter(typeof(DNA), "isManiGene");
+    private static readonly FieldInfo? NpcGeneManiGeneField = AccessTools.Field(typeof(DNA), "isManiGene");
     private string _npcGeneSourceId = "";
     private string _npcGeneLv = "";
     private string _npcGeneSeed = "";

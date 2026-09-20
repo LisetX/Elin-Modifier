@@ -328,6 +328,13 @@ internal static class AllFeatsLearnableReflection
                                    StringComparison.Ordinal);
                     })
                 .ToList();
+            var callback = PurchaseListCallback.Value;
+            if (callback != null)
+            {
+                var behavioral = candidates.FirstOrDefault(method => ReadsOperand(method, callback));
+                if (behavioral != null)
+                    return behavioral;
+            }
             return candidates.FirstOrDefault(
                        method => string.Equals(
                            method.Name,
@@ -343,26 +350,45 @@ internal static class AllFeatsLearnableReflection
 
     private static MethodInfo? ResolvePurchaseListCallback()
     {
-        var listMethod = AccessTools.Method(
-            typeof(Chara),
-            "ListAvailabeFeats",
-            new[] { typeof(bool), typeof(bool) }) ??
-            AccessTools.Method(
-                typeof(Chara),
-                "ListAvailableFeats",
-                new[] { typeof(bool), typeof(bool) });
-        if (listMethod == null)
+        var listMethods = ResolveAvailableFeatListMethods();
+        if (listMethods.Count == 0)
             return null;
 
         return FindNestedMethod(
             method =>
             {
                 var parameters = method.GetParameters();
-                return method.ReturnType == typeof(void) &&
-                       parameters.Length == 1 &&
-                       parameters[0].ParameterType == typeof(UIList.SortMode) &&
-                       ReadsOperand(method, listMethod);
+                if (method.ReturnType != typeof(void) ||
+                    parameters.Length != 1 ||
+                    parameters[0].ParameterType != typeof(UIList.SortMode))
+                    return false;
+                for (var i = 0; i < listMethods.Count; i++)
+                    if (ReadsOperand(method, listMethods[i]))
+                        return true;
+                return false;
             });
+    }
+
+    private static List<MethodInfo> ResolveAvailableFeatListMethods()
+    {
+        var flags = BindingFlags.Instance | BindingFlags.Static |
+                    BindingFlags.Public | BindingFlags.NonPublic;
+        try
+        {
+            return typeof(Chara)
+                .GetMethods(flags)
+                .Where(
+                    method =>
+                        (string.Equals(method.Name, "ListAvailabeFeats", StringComparison.Ordinal) ||
+                         string.Equals(method.Name, "ListAvailableFeats", StringComparison.Ordinal)) &&
+                        method.GetParameters().All(
+                            parameter => parameter.ParameterType == typeof(bool)))
+                .ToList();
+        }
+        catch
+        {
+            return new List<MethodInfo>();
+        }
     }
 
     private static MethodInfo? ResolvePurchaseClickCallback()
@@ -441,6 +467,9 @@ internal static class AllFeatsLearnableReflection
 [HarmonyPatch]
 internal static class WindowCharaPurchaseListBuilderAllFeatsLearnablePatch
 {
+    [HarmonyPrepare]
+    private static bool Prepare() => TargetMethod() != null;
+
     private static MethodBase? TargetMethod()
     {
         return AllFeatsLearnableReflection.PurchaseListBuilder.Value;
@@ -456,6 +485,9 @@ internal static class WindowCharaPurchaseListBuilderAllFeatsLearnablePatch
 [HarmonyPatch]
 internal static class WindowCharaPurchaseListAllFeatsLearnablePatch
 {
+    [HarmonyPrepare]
+    private static bool Prepare() => TargetMethod() != null;
+
     private static MethodBase? TargetMethod()
     {
         return AllFeatsLearnableReflection.PurchaseListCallback.Value;
@@ -470,6 +502,9 @@ internal static class WindowCharaPurchaseListAllFeatsLearnablePatch
 [HarmonyPatch]
 internal static class WindowCharaPurchaseClickAllFeatsLearnablePatch
 {
+    [HarmonyPrepare]
+    private static bool Prepare() => TargetMethod() != null;
+
     private static MethodBase? TargetMethod()
     {
         return AllFeatsLearnableReflection.PurchaseClickCallback.Value;
@@ -503,6 +538,9 @@ internal static class WindowCharaPurchaseClickAllFeatsLearnablePatch
 [HarmonyPatch]
 internal static class FeatCostLearnAllFeatsLearnablePatch
 {
+    [HarmonyPrepare]
+    private static bool Prepare() => TargetMethod() != null;
+
     private static MethodBase? TargetMethod()
     {
         return AccessTools.PropertyGetter(typeof(Feat), "CostLearn");

@@ -390,6 +390,9 @@ internal static class AttackProcessPerformFriendlyFireProtectionPatch
 [HarmonyPatch]
 internal static class ActEffectDamageEleFriendlyFireProtectionPatch
 {
+    [HarmonyPrepare]
+    private static bool Prepare() => TargetMethod() != null;
+
     [HarmonyTargetMethod]
     private static MethodBase TargetMethod()
     {

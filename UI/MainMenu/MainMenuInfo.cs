@@ -201,23 +201,14 @@ internal sealed class MainMenuInfoModule
                     "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* \"显示物品更多信息\"中\"采集物采集门槛\"扩充显示范围",
-                        "* Expanded the display scope of \"Gathering requirements\" in \"Show more item info\""),
+                        "* \"全部专长可学习\"兼容适配最新Nightly版本",
+                        "* Made \"All feats learnable\" compatible with the latest Nightly build"),
                     host.TranslateModuleText(
-                        "* 优化\"AI辅助\"的使用体验，缩短上下文长度",
-                        "* Improved the \"AI Assistant\" experience and shortened context length"),
+                        "* \"自定义基因编辑\"优化",
+                        "* Improved \"Custom gene editing\""),
                     host.TranslateModuleText(
-                        "* [P0]修复\"AI辅助\"中EMG工具调用导致对话丢失的可能",
-                        "* [P0] Fixed possible conversation loss caused by EMG tool calls in \"AI Assistant\""),
-                    host.TranslateModuleText(
-                        "* [P2]修复\"AI辅助\"中高危操作确认因异常未将批准结果写入对话上下文",
-                        "* [P2] Fixed \"AI Assistant\" high-risk action confirmations not writing the approval result into the conversation context"),
-                    host.TranslateModuleText(
-                        "* [P1]修复\"AI辅助\"中因上下文压缩的异常表现导致的重复的EMG调用",
-                        "* [P1] Fixed repeated EMG calls caused by abnormal context compaction in \"AI Assistant\""),
-                    host.TranslateModuleText(
-                        "* [P3]修复\"AI辅助\"中因用户语种导致的上下文压缩时机异常",
-                        "* [P3] Fixed abnormal context compaction timing caused by the user language in \"AI Assistant\""),
+                        "* \"自定义基因编辑\"兼容适配最新Nightly版本",
+                        "* Made \"Custom gene editing\" compatible with the latest Nightly build"),
                 }
             };
 

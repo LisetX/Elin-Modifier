@@ -64,6 +64,37 @@ public sealed partial class ElinModifierPlugin
         _npcGeneIsManiGene = false;
         _npcGeneEditorValues.Clear();
     }
+    private static bool GetNpcGeneManiGeneFlag(DNA dna)
+    {
+        if (dna == null)
+            return false;
+        try
+        {
+            if (NpcGeneManiGeneGetter != null)
+                return NpcGeneManiGeneGetter.Invoke(dna, null) is bool fromProperty && fromProperty;
+            if (NpcGeneManiGeneField != null)
+                return NpcGeneManiGeneField.GetValue(dna) is bool fromField && fromField;
+        }
+        catch
+        {
+        }
+        return false;
+    }
+    private static void SetNpcGeneManiGeneFlag(DNA dna, bool value)
+    {
+        if (dna == null)
+            return;
+        try
+        {
+            if (NpcGeneManiGeneSetter != null)
+                NpcGeneManiGeneSetter.Invoke(dna, new object[] { value });
+            else
+                NpcGeneManiGeneField?.SetValue(dna, value);
+        }
+        catch
+        {
+        }
+    }
     private void LoadNpcGeneEditorFields(Chara target, DNA dna, int index)
     {
         _npcGeneLastTargetUid = GetCharaUid(target);
@@ -74,7 +105,7 @@ public sealed partial class ElinModifierPlugin
         _npcGeneCost = dna == null ? "0" : dna.cost.ToString(CultureInfo.InvariantCulture);
         _npcGeneSlot = dna == null ? "0" : dna.slot.ToString(CultureInfo.InvariantCulture);
         _npcGeneTypeIndex = dna == null ? 1 : GetNpcGeneTypeIndex(dna.type);
-        _npcGeneIsManiGene = dna != null && dna.isManiGene;
+        _npcGeneIsManiGene = GetNpcGeneManiGeneFlag(dna);
         _npcGeneEditorValues.Clear();
 
         if (dna?.vals == null)
@@ -315,7 +346,7 @@ public sealed partial class ElinModifierPlugin
         dna.seed = seed;
         dna.cost = cost;
         dna.slot = slot;
-        dna.isManiGene = _npcGeneIsManiGene;
+        SetNpcGeneManiGeneFlag(dna, _npcGeneIsManiGene);
         if (dna.vals == null)
             dna.vals = new List<int>();
         dna.vals.Clear();

@@ -435,6 +435,9 @@ public sealed partial class ElinModifierPlugin
     [HarmonyPatch]
     private static class ButtonGridSetCardEquipmentComparisonPatch
     {
+        [HarmonyPrepare]
+        private static bool Prepare() => TargetMethod() != null;
+
         [HarmonyTargetMethod]
         private static MethodBase TargetMethod()
         {

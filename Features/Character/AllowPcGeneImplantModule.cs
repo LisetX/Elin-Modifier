@@ -406,6 +406,9 @@ internal static partial class AllowPcGeneImplantReflection
 [HarmonyPatch]
 internal static class TraitGeneMachineTargetListAllowPcGeneImplantPatch
 {
+    [HarmonyPrepare]
+    private static bool Prepare() => TargetMethod() != null;
+
     private static MethodBase? TargetMethod()
     {
         return AllowPcGeneImplantReflection.TargetListCallback.Value;
@@ -420,6 +423,9 @@ internal static class TraitGeneMachineTargetListAllowPcGeneImplantPatch
 [HarmonyPatch]
 internal static class TraitGeneMachineTargetSelectedAllowPcGeneImplantPatch
 {
+    [HarmonyPrepare]
+    private static bool Prepare() => TargetMethod() != null;
+
     private static MethodBase? TargetMethod()
     {
         return AllowPcGeneImplantReflection.TargetSelectedCallback.Value;
