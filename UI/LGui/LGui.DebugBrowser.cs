@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -107,7 +108,7 @@ public sealed partial class ElinModifierPlugin
             object? value = null;
             var error = "";
             try { value = member.GetValue(targetType == null ? _lGuiDebugTarget! : null!); }
-            catch (Exception ex) { error = ex.GetType().Name + ": " + ex.Message; }
+            catch (Exception ex) { error = DescribeDebugMemberError(ex); }
             _lGuiDebugRows.Add(new LGuiDebugRow(key, targetType == null ? _lGuiDebugTarget : null!, member, value, error));
         }
         _lGuiDebugList.SetItems(_lGuiDebugRows);
@@ -123,10 +124,17 @@ public sealed partial class ElinModifierPlugin
         view.Icon.gameObject.SetActive(false);
         view.Label.gameObject.SetActive(true);
         view.Label.text = model.Member.Kind + " " + model.Member.Name;
-        view.Secondary.gameObject.SetActive(true);
-        view.Secondary.text = model.Error.Length > 0 ? model.Error : GetDebugTypeName(model.ValueType) + " = " + TruncateForLog(DebugValueToString(model.Value!), 56);
         var editable = model.Error.Length == 0 && model.Member.CanWrite && IsDebugEditableType(model.ValueType);
         var isBool = editable && model.ValueType == typeof(bool);
+        view.Secondary.gameObject.SetActive(true);
+        view.Secondary.supportRichText = false;
+        var secondaryWidth = editable && !isBool ? DebugRowSecondaryNarrowWidth
+            : isBool ? DebugRowSecondaryMediumWidth
+            : DebugRowSecondaryWideWidth;
+        PlaceLGuiRect(view.Secondary.rectTransform, 480f, 4f, secondaryWidth, 50f);
+        view.Secondary.text = model.Error.Length > 0
+            ? model.Error
+            : BuildDebugRowValueText(model, secondaryWidth);
         view.Input.gameObject.SetActive(editable && !isBool);
         if (editable && !isBool && (EventSystem.current == null || EventSystem.current.currentSelectedGameObject != view.Input.gameObject))
         {
@@ -137,7 +145,7 @@ public sealed partial class ElinModifierPlugin
         view.Toggle.gameObject.SetActive(isBool);
         if (isBool)
         {
-            view.ToggleLabel.text = T("值", "Value");
+            view.ToggleLabel.text = T("开关", "Toggle");
             view.SetToggleWithoutNotify(model.Value is bool b && b);
         }
         view.Primary.gameObject.SetActive(editable || (model.Value != null && !IsDebugLeafType(model.ValueType)));
@@ -145,6 +153,41 @@ public sealed partial class ElinModifierPlugin
         view.Auxiliary.gameObject.SetActive(editable);
         view.AuxiliaryText.text = _debugLocks.TryGetValue(model.Key, out var isLocked) && isLocked ? T("已锁定", "Locked") : T("锁定", "Lock");
         view.EndBind();
+    }
+    private static string DescribeDebugMemberError(Exception exception)
+    {
+        if (exception == null)
+            return "";
+        var root = exception;
+        for (var depth = 0; depth < 8; depth++)
+        {
+            if (root is TargetInvocationException || root is TypeInitializationException)
+            {
+                if (root.InnerException == null)
+                    break;
+                root = root.InnerException;
+                continue;
+            }
+            if (root is AggregateException aggregate && aggregate.InnerException != null)
+            {
+                root = aggregate.InnerException;
+                continue;
+            }
+            break;
+        }
+        return root.GetType().Name + ": " + root.Message;
+    }
+    private static string BuildDebugRowValueText(LGuiDebugRow model, float secondaryWidth)
+    {
+        var budget = secondaryWidth >= DebugRowSecondaryWideWidth ? DebugRowWideTextBudget
+            : secondaryWidth >= DebugRowSecondaryMediumWidth ? DebugRowMediumTextBudget
+            : DebugRowNarrowTextBudget;
+        var typeName = GetDebugTypeName(model.ValueType);
+        var typeBudget = Math.Max(16, budget * 3 / 5);
+        if (typeName.Length > typeBudget)
+            typeName = TruncateForLog(typeName, typeBudget);
+        var valueBudget = Math.Max(8, budget - typeName.Length - 3);
+        return typeName + " = " + TruncateForLog(DebugValueToDisplayString(model.Value!), valueBudget);
     }
     private static void RefreshLGuiDebugRowValue(LGuiDebugRow model)
     {
@@ -157,7 +200,7 @@ public sealed partial class ElinModifierPlugin
         catch (Exception ex)
         {
             model.Value = null;
-            model.Error = ex.GetType().Name + ": " + ex.Message;
+            model.Error = DescribeDebugMemberError(ex);
             model.ValueType = model.Member.ValueType;
         }
     }

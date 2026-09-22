@@ -199,16 +199,64 @@ internal sealed class MainMenuInfoModule
                     host.TranslateModuleText("{topic,Elin Modifier 更新日志}", "{topic,Elin Modifier Update Log}"),
                     "■ " + ModMetadata.ReleaseDate + " - v" + ModMetadata.Version,
                     "",
+                    "∧,_,∧",
+                    "(｡＞ᴗ＜｡)",
+                    host.TranslateModuleText(
+                        "提前祝大家中秋节、国庆节快乐！",
+                        "Wishing everyone an early Happy Mid-Autumn Festival and National Day!"),
+                    "",
                     host.TranslateModuleText("[更新内容]", "[Changes]"),
                     host.TranslateModuleText(
-                        "* \"全部专长可学习\"兼容适配最新Nightly版本",
-                        "* Made \"All feats learnable\" compatible with the latest Nightly build"),
+                        "* 新增\"世界地图\"模块",
+                        "* Added the \"World Map\" module"),
                     host.TranslateModuleText(
-                        "* \"自定义基因编辑\"优化",
-                        "* Improved \"Custom gene editing\""),
+                        "* \"世界地图\"模块新增\"区块地图\"",
+                        "* Added \"Zone map\" to the \"World Map\" module"),
                     host.TranslateModuleText(
-                        "* \"自定义基因编辑\"兼容适配最新Nightly版本",
-                        "* Made \"Custom gene editing\" compatible with the latest Nightly build"),
+                        "* \"世界地图\"完成功能上线前的二次重构优化",
+                        "* Refactored and optimized \"World Map\" a second time before release"),
+                    host.TranslateModuleText(
+                        "* \"世界地图\"模块新增\"标记系统\"",
+                        "* Added the \"Pin system\" to the \"World Map\" module"),
+                    host.TranslateModuleText(
+                        "* \"世界地图\"模块新增更多信息展示",
+                        "* Added more information display to the \"World Map\" module"),
+                    host.TranslateModuleText(
+                        "* \"世界地图\"模块支持将世界地图、区块地图导出为PNG",
+                        "* \"World Map\" can now export the world map and the zone map as PNG"),
+                    host.TranslateModuleText(
+                        "* \"世界地图\"模块导出PNG适配更多信息展示",
+                        "* PNG export from \"World Map\" now carries the extra information display"),
+                    host.TranslateModuleText(
+                        "* \"世界地图\"模块新增\"强制读取\"，开启后安全模拟区块生成，不会真正提前生成区块",
+                        "* Added \"Force read\" to the \"World Map\" module; it safely simulates zone generation without actually generating zones early"),
+                    host.TranslateModuleText(
+                        "* \"世界地图\"模块新增\"查询\"，支持采集物、NPC、区块查询",
+                        "* Added \"Search\" to the \"World Map\" module, covering gatherables, NPCs and zones"),
+                    host.TranslateModuleText(
+                        "* \"世界地图\"模块\"查询\"新增支持模糊检索",
+                        "* \"Search\" in the \"World Map\" module now supports fuzzy matching"),
+                    host.TranslateModuleText(
+                        "* \"世界地图\"模块新增\"目的地导航\"",
+                        "* Added \"Route guide\" to the \"World Map\" module"),
+                    host.TranslateModuleText(
+                        "* EMG更新，增加多个接口",
+                        "* Updated EMG with several new interfaces"),
+                    host.TranslateModuleText(
+                        "* \"AI辅助\"拓展接入\"NPC图鉴\"",
+                        "* Extended \"AI Assistant\" with \"NPC Compendium\" access"),
+                    host.TranslateModuleText(
+                        "* \"AI辅助\"拓展接入\"世界地图\"",
+                        "* Extended \"AI Assistant\" with \"World Map\" access"),
+                    host.TranslateModuleText(
+                        "* 优化\"AI辅助\"的游戏数据检索准确性",
+                        "* Improved the accuracy of game data lookups in \"AI Assistant\""),
+                    host.TranslateModuleText(
+                        "* \"调试模式\"UI优化，目前继续保持不对玩家开放",
+                        "* Improved the \"Debug mode\" UI; it stays unavailable to players for now"),
+                    host.TranslateModuleText(
+                        "* 修复部分UI异常表现",
+                        "* Fixed several UI display glitches"),
                 }
             };
 

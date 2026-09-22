@@ -348,7 +348,61 @@ public sealed partial class ElinModifierPlugin
     {
         if (type == null)
             return "null";
-        return string.IsNullOrEmpty(type.FullName) ? type.Name : type.FullName;
+        try
+        {
+            return FormatDebugTypeName(type, true);
+        }
+        catch
+        {
+            return type.Name;
+        }
+    }
+    private static string FormatDebugTypeName(Type type, bool qualified)
+    {
+        if (type == null)
+            return "null";
+        if (type.IsArray)
+        {
+            var element = type.GetElementType();
+            return FormatDebugTypeName(element!, qualified) + "[]";
+        }
+        var nullable = Nullable.GetUnderlyingType(type);
+        if (nullable != null)
+            return FormatDebugTypeName(nullable, qualified) + "?";
+        if (!type.IsGenericType)
+            return qualified && !string.IsNullOrEmpty(type.FullName) ? type.FullName! : type.Name;
+
+        var name = qualified && !string.IsNullOrEmpty(type.FullName) ? type.FullName! : type.Name;
+        var tick = name.IndexOf('`');
+        if (tick >= 0)
+            name = name.Substring(0, tick);
+        var arguments = type.GetGenericArguments();
+        var sb = new StringBuilder(name);
+        sb.Append('<');
+        for (var i = 0; i < arguments.Length; i++)
+        {
+            if (i > 0)
+                sb.Append(", ");
+            sb.Append(FormatDebugTypeName(arguments[i], false));
+        }
+        sb.Append('>');
+        return sb.ToString();
+    }
+    internal static string DebugValueToDisplayString(object value)
+    {
+        if (value == null)
+            return "null";
+        if (value is string || value is Type)
+            return DebugValueToString(value);
+        try
+        {
+            if (value is ICollection collection)
+                return "Count " + collection.Count.ToString(CultureInfo.InvariantCulture);
+        }
+        catch
+        {
+        }
+        return DebugValueToString(value);
     }
     private static int CountLines(string text)
     {

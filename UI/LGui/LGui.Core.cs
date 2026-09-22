@@ -43,6 +43,7 @@ public sealed partial class ElinModifierPlugin
         Nightly,
         Moongate,
         NpcInfo,
+        WorldMap,
         Ai,
         Debug,
         Emp,
@@ -384,6 +385,66 @@ public sealed partial class ElinModifierPlugin
     private Text? _lGuiCharacterTargetText;
     private Text? _lGuiPlayerInfoStatusText;
     private Text? _lGuiAiStatusText;
+    private Text? _lGuiWorldMapInfoText;
+    private Text? _lGuiWorldMapInfoTextRight;
+    private Image? _lGuiWorldMapImage;
+    private List<WorldMapZoneEntry>? _lGuiWorldMapZones;
+    private string _lGuiWorldMapInfo = "";
+    private int _lGuiWorldMapTab;
+    private bool _lGuiWorldMapHovering;
+    private bool _lGuiWorldMapCenterPending;
+    private bool _lGuiWorldMapApplyPending;
+    private readonly List<RectTransform> _lGuiWorldMapBlockRects = new List<RectTransform>();
+    private bool _lGuiWorldMapKnownOnly;
+    private bool _lGuiWorldMapShowInfo;
+    private bool _lGuiWorldMapShowList;
+    private bool _lGuiWorldMapShowNpcs;
+    private bool _lGuiWorldMapNavigation;
+    private int _lGuiWorldMapRouteVersion = -1;
+    private bool _lGuiWorldMapReadSaves;
+    private bool _lGuiWorldMapRebuildPending;
+    private bool _lGuiWorldMapInfoIsSummary;
+    private bool _lGuiWorldMapInfoLocked;
+    private int _lGuiWorldMapSyncedZoneUid;
+    private float _lGuiWorldMapNextSync;
+    private int _lGuiWorldMapSelectedGridX = int.MinValue;
+    private int _lGuiWorldMapSelectedGridY = int.MinValue;
+    private int _lGuiWorldMapSelectedFrame = -1;
+    private bool _lGuiWorldMapShowLandmarkNames;
+    private bool _lGuiWorldMapShowDungeonNames;
+    private bool _lGuiWorldMapShowPinNames;
+    private bool _lGuiWorldMapShowLocalContainers;
+    private bool _lGuiWorldMapShowLocalNpcs;
+    private readonly List<LGuiWorldMapLabel> _lGuiWorldMapLabels = new List<LGuiWorldMapLabel>();
+    private readonly List<Text> _lGuiWorldMapLabelPool = new List<Text>();
+    private RectTransform? _lGuiWorldMapLabelLayer;
+    private int _lGuiWorldMapFocusGridX = int.MinValue;
+    private int _lGuiWorldMapFocusGridY = int.MinValue;
+    private string _lGuiWorldMapZoneSignature = "";
+    private string _worldMapPinPayload = "";
+    private readonly float[] _lGuiWorldMapSavedZooms = new float[2];
+    private readonly Vector2[] _lGuiWorldMapSavedPans = new Vector2[2];
+    private Text? _lGuiWorldMapZoneHeader;
+    private Text? _lGuiWorldMapNpcHeader;
+    private Text? _lGuiWorldMapNpcSubtitle;
+    private Text? _lGuiWorldMapHitHeader;
+    private Text? _lGuiWorldMapSortLabel;
+    private InputField? _lGuiWorldMapPinInput;
+    private List<WorldMapZoneEntry>? _lGuiWorldMapZoneItems;
+    private List<WorldMapNpcEntry>? _lGuiWorldMapNpcItems;
+    private List<WorldMapSearchHit>? _lGuiWorldMapHitItems;
+    private VirtualList<WorldMapZoneEntry>? _lGuiWorldMapZoneList;
+    private VirtualList<WorldMapNpcEntry>? _lGuiWorldMapNpcList;
+    private VirtualList<WorldMapSearchHit>? _lGuiWorldMapHitList;
+    private int _lGuiWorldMapHoverCell = int.MinValue;
+    private int _lGuiWorldMapSort;
+    private float _lGuiWorldMapZoom;
+    private Vector2 _lGuiWorldMapPan;
+    private RectTransform? _lGuiWorldMapViewport;
+    private RectTransform? _lGuiWorldMapMarker;
+    private RectTransform? _lGuiWorldMapSelectionMarker;
+    private Image? _lGuiWorldMapSelectionImage;
+    private float _lGuiWorldMapSelectionSize;
     private Text? _lGuiAiSendLabel;
     private Text? _lGuiAiCompactLabel;
     private Text? _lGuiAiFetchModelsLabel;

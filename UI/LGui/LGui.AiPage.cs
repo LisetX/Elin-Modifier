@@ -100,9 +100,6 @@ public sealed partial class ElinModifierPlugin
         y += 442f;
         y = AddLGuiSectionTitle(content, T("输入框", "Input"), y);
         _lGuiAiPromptInput = CreateLGuiMultilineInput(content, "Prompt", 0f, y, 1320f, 150f);
-        _lGuiAiPromptInput.gameObject.AddComponent<LGuiTransparentInputBackground>();
-        if (_lGuiAiPromptInput.targetGraphic is Image promptBackground)
-            promptBackground.color = new Color(0f, 0f, 0f, 0f);
         _lGuiAiPromptInput.text = _aiPrompt;
         _lGuiAiPromptInput.onValueChanged.AddListener(value => _aiPrompt = value ?? "");
         y += 162f;

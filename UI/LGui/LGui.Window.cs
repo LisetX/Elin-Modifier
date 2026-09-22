@@ -102,12 +102,13 @@ public sealed partial class ElinModifierPlugin
             CreateLGuiNavButton(sidebar, LGuiPage.Automation, AutomationText("自动化", "Automation", "自動化", "Автоматизация"), 438f);
             CreateLGuiNavButton(sidebar, LGuiPage.Moongate, T("月门", "Moongate"), 498f);
             CreateLGuiNavButton(sidebar, LGuiPage.NpcInfo, T("NPC图鉴", "NPC Compendium"), 558f);
-            CreateLGuiNavButton(sidebar, LGuiPage.Nightly, "Nightly", 618f);
-            CreateLGuiNavButton(sidebar, LGuiPage.Ai, T("AI辅助", "AI Assistant"), 678f);
-            CreateLGuiNavButton(sidebar, LGuiPage.Emp, T("插件管理", "Plugin Manager"), 738f);
-            CreateLGuiNavButton(sidebar, LGuiPage.Settings, T("UI设置", "UI Settings"), 798f);
+            CreateLGuiNavButton(sidebar, LGuiPage.WorldMap, T("世界地图", "World map"), 618f);
+            CreateLGuiNavButton(sidebar, LGuiPage.Nightly, "Nightly", 678f);
+            CreateLGuiNavButton(sidebar, LGuiPage.Ai, T("AI辅助", "AI Assistant"), 738f);
+            CreateLGuiNavButton(sidebar, LGuiPage.Emp, T("插件管理", "Plugin Manager"), 798f);
+            CreateLGuiNavButton(sidebar, LGuiPage.Settings, T("UI设置", "UI Settings"), 858f);
             if (_debugAuthorized)
-                CreateLGuiNavButton(sidebar, LGuiPage.Debug, T("调试模式", "Debug mode"), 858f);
+                CreateLGuiNavButton(sidebar, LGuiPage.Debug, T("调试模式", "Debug mode"), 918f);
 
             _lGuiPageHost = CreateLGuiRect(_lGuiWindow, "PageHost");
             _lGuiPageHost.anchorMin = new Vector2(0f, 0f);
@@ -263,6 +264,7 @@ public sealed partial class ElinModifierPlugin
 
         EnsureLGuiEventSystem();
         UpdateLGuiImeMode();
+        RefreshLGuiWorldMapControls();
         var dynamicDue = ShouldRefreshLGuiDynamicValues();
         var slowDue = ShouldRefreshLGuiSlowValues();
         if (_lGuiPage == LGuiPage.Ai && ShouldRebuildLGuiAiPage())
@@ -425,6 +427,9 @@ public sealed partial class ElinModifierPlugin
             case LGuiPage.Moongate:
                 BuildLGuiMoongatePage();
                 break;
+            case LGuiPage.WorldMap:
+                BuildLGuiWorldMapPage();
+                break;
             case LGuiPage.NpcInfo:
                 BuildLGuiNpcInfoPage();
                 break;
@@ -484,7 +489,8 @@ public sealed partial class ElinModifierPlugin
                page == LGuiPage.Automation ||
                page == LGuiPage.Nightly ||
                page == LGuiPage.Moongate ||
-               page == LGuiPage.NpcInfo;
+               page == LGuiPage.NpcInfo ||
+               page == LGuiPage.WorldMap;
     }
     private void UpdateLGuiNavButtons()
     {

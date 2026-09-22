@@ -49,6 +49,7 @@ public sealed partial class ElinModifierPlugin
             case LGuiPage.Nightly: value = _modules.Nightly?.Log ?? ""; break;
             case LGuiPage.Moongate: value = _modules.Moongate.Log; break;
             case LGuiPage.NpcInfo: value = _modules.NpcInfo.Log; break;
+            case LGuiPage.WorldMap: value = _modules.WorldMap.Log; break;
             case LGuiPage.Ai: value = _aiLog; break;
             case LGuiPage.Debug: value = _debugLog; break;
             case LGuiPage.Emp: value = _pluginManagerLog; break;

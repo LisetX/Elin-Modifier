@@ -134,12 +134,17 @@ internal sealed class LGuiTextProfile : MonoBehaviour
     public int BaseFontSize = 13;
 }
 
-internal sealed class LGuiTransparentInputBackground : MonoBehaviour
+internal sealed class LGuiOrderHandleImage : MonoBehaviour
 {
 }
 
-internal sealed class LGuiOrderHandleImage : MonoBehaviour
+internal sealed class LGuiTextBoxBackground : MonoBehaviour
 {
+}
+
+internal sealed class LGuiPanelBackground : MonoBehaviour
+{
+    public float Alpha = 0.92f;
 }
 
 internal sealed class LGuiSteppedSlider : Slider

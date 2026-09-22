@@ -50,6 +50,12 @@ public sealed partial class ElinModifierPlugin
     private const int AiContextCompressionGrowthDivisor = 8;
     private const float LGuiAiContextUsageRefreshInterval = 0.5f;
     private const float ItemMoreInfoGatheringHoverInterval = 0.5f;
+    private const float DebugRowSecondaryNarrowWidth = 250f;
+    private const float DebugRowSecondaryMediumWidth = 420f;
+    private const float DebugRowSecondaryWideWidth = 584f;
+    private const int DebugRowNarrowTextBudget = 56;
+    private const int DebugRowMediumTextBudget = 100;
+    private const int DebugRowWideTextBudget = 150;
     private const int AiWideCharacterWeight = 3;
     private const int AiToolLoopDefaultMaxRounds = 8;
     private const int AiToolLoopMinRounds = 1;

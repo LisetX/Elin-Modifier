@@ -32,7 +32,7 @@ public sealed partial class ElinModifierPlugin
     private readonly Dictionary<string, AiPluginCacheEntry> _aiPluginCacheBySignature = new Dictionary<string, AiPluginCacheEntry>(StringComparer.Ordinal);
     private string _aiPluginCacheLog = "";
     internal string _debugExceptionTrace = "No Error/Fatal log captured.";
-    private string _debugStabilityTestResult = "Not run.";
+    private string _debugStabilityTestResult = "";
     internal int _debugExceptionTraceFrame = -1;
     internal string _debugLastExceptionTraceKey = "";
     internal int _debugLastExceptionTraceFrame = -9999;

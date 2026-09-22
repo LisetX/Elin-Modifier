@@ -47,6 +47,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
             Automation = new AutomationModule(host);
             Moongate = new MoongateModule(host);
             NpcInfo = new NpcInfoModule(host);
+            WorldMap = new WorldMapModule(host);
             Progression = new ProgressionModule();
             PlantHarvestMultiplier = new PlantHarvestMultiplierModule();
             YieldMultiplier = new YieldMultiplierModule();
@@ -134,6 +135,7 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
     internal AutomationModule Automation { get; }
     internal MoongateModule Moongate { get; }
     internal NpcInfoModule NpcInfo { get; }
+    internal WorldMapModule WorldMap { get; }
     internal ProgressionModule Progression { get; }
     internal PlantHarvestMultiplierModule PlantHarvestMultiplier { get; }
     internal YieldMultiplierModule YieldMultiplier { get; }
@@ -304,6 +306,9 @@ internal sealed class ElinModifierModuleRegistry : IDisposable
         Register("module.more-info", 1330, 0, MoreInfo);
         Register("module.exception-trace", 1340, 0, ExceptionTrace);
         Register("module.npc-compendium", 1350, 0, NpcInfo);
+        Register("module.world-map", 1355, 0, WorldMap,
+            lateTick: WorldMap.LateTick,
+            shutdown: WorldMap.Shutdown);
     }
 
     private void RegisterRuntime(ElinModifierPlugin host, ManualLogSource logger)

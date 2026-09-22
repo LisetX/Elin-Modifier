@@ -22,6 +22,7 @@ public sealed partial class ElinModifierPlugin
             case LGuiPage.Nightly: return "Nightly";
             case LGuiPage.Moongate: return T("月门", "Moongate");
             case LGuiPage.NpcInfo: return T("NPC图鉴", "NPC Compendium");
+            case LGuiPage.WorldMap: return T("世界地图", "World map");
             case LGuiPage.Ai: return T("AI辅助", "AI Assistant");
             case LGuiPage.Debug: return T("调试模式", "Debug mode");
             case LGuiPage.Emp: return T("插件管理", "Plugin Manager");

@@ -288,6 +288,21 @@ public sealed partial class ElinModifierPlugin
             sb.AppendLine("  \"aiContextCompressThreshold\": " + _aiContextCompressThreshold.ToString(CultureInfo.InvariantCulture) + ",");
             sb.AppendLine("  \"aiMaxToolRounds\": " + _aiMaxToolRounds.ToString(CultureInfo.InvariantCulture) + ",");
             sb.AppendLine();
+
+            sb.AppendLine("  \"worldMapShowInfo\": " + (_lGuiWorldMapShowInfo ? "true" : "false") + ",");
+            sb.AppendLine("  \"worldMapShowZoneList\": " + (_lGuiWorldMapShowList ? "true" : "false") + ",");
+            sb.AppendLine("  \"worldMapShowZoneNpcs\": " + (_lGuiWorldMapShowNpcs ? "true" : "false") + ",");
+            sb.AppendLine("  \"worldMapKnownZonesOnly\": " + (_lGuiWorldMapKnownOnly ? "true" : "false") + ",");
+            sb.AppendLine("  \"worldMapNavigation\": " + (_lGuiWorldMapNavigation ? "true" : "false") + ",");
+            sb.AppendLine("  \"worldMapForceReadSaves\": " + (_lGuiWorldMapReadSaves ? "true" : "false") + ",");
+            sb.AppendLine("  \"worldMapShowLandmarkNames\": " + (_lGuiWorldMapShowLandmarkNames ? "true" : "false") + ",");
+            sb.AppendLine("  \"worldMapShowDungeonNames\": " + (_lGuiWorldMapShowDungeonNames ? "true" : "false") + ",");
+            sb.AppendLine("  \"worldMapShowPinNames\": " + (_lGuiWorldMapShowPinNames ? "true" : "false") + ",");
+            sb.AppendLine("  \"worldMapShowLocalContainers\": " + (_lGuiWorldMapShowLocalContainers ? "true" : "false") + ",");
+            sb.AppendLine("  \"worldMapShowLocalNpcs\": " + (_lGuiWorldMapShowLocalNpcs ? "true" : "false") + ",");
+            sb.AppendLine("  \"worldMapPins\": \"" + EscapeJson(
+                _modules.WorldMap.PinsLoaded ? _modules.WorldMap.SavePins() : _worldMapPinPayload) + "\",");
+            sb.AppendLine();
             AppendEmpPluginConfigJson(sb);
             sb.AppendLine("}");
             _modules.ConfigurationStorage.WriteAllTextAtomic(path, sb.ToString(), Encoding.UTF8);

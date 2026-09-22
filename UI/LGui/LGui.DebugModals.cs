@@ -25,30 +25,30 @@ public sealed partial class ElinModifierPlugin
     private void OpenLGuiDebugDiagnostics()
     {
         if (!_debugAuthorized) return;
-        var modal = CreateLGuiCompleteModal("RuntimeDebugDiagnostics", "Diagnostics", out var content, 1600f, 1030f);
+        var modal = CreateLGuiCompleteModal("RuntimeDebugDiagnostics", T("诊断工具", "Diagnostics"), out var content, 1600f, 1030f);
         if (modal == null) return;
         var y = 4f;
-        CreateLGuiButton(content, "ConfigFiles", "BepInEx Config Files", 0f, y, 240f, 44f, OpenLGuiDebugConfigFiles);
+        CreateLGuiButton(content, "ConfigFiles", T("BepInEx配置文件", "BepInEx Config Files"), 0f, y, 240f, 44f, OpenLGuiDebugConfigFiles);
         y += 56f;
 
-        y = AddLGuiSectionTitle(content, "Exception trace", y);
+        y = AddLGuiSectionTitle(content, T("异常追踪", "Exception trace"), y);
         CreateLGuiButton(content, "TracePrev", "◀", 0f, y, 48f, 42f, () => { SelectDebugExceptionTraceRecord(_debugExceptionTraceRecordIndex - 1); OpenLGuiDebugDiagnostics(); });
         CreateLGuiButton(content, "TraceNext", "▶", 58f, y, 48f, 42f, () => { SelectDebugExceptionTraceRecord(_debugExceptionTraceRecordIndex + 1); OpenLGuiDebugDiagnostics(); });
-        CreateLGuiButton(content, "TraceLatest", "Latest", 116f, y, 80f, 42f, () => { SelectDebugExceptionTraceRecord(_debugExceptionTraceRecords.Count - 1); OpenLGuiDebugDiagnostics(); });
-        CreateLGuiButton(content, "TraceClear", "Clear", 206f, y, 80f, 42f, () => { ClearDebugExceptionTraceRecords(); OpenLGuiDebugDiagnostics(); });
-        var traceLabel = CreateLGuiText(content, "TraceLabel", GetDebugExceptionTraceRecordLabel() + " | Frame " + _debugExceptionTraceFrame, 16, TextAnchor.MiddleLeft, FontStyle.Normal);
+        CreateLGuiButton(content, "TraceLatest", T("最新", "Latest"), 116f, y, 80f, 42f, () => { SelectDebugExceptionTraceRecord(_debugExceptionTraceRecords.Count - 1); OpenLGuiDebugDiagnostics(); });
+        CreateLGuiButton(content, "TraceClear", T("清空", "Clear"), 206f, y, 80f, 42f, () => { ClearDebugExceptionTraceRecords(); OpenLGuiDebugDiagnostics(); });
+        var traceLabel = CreateLGuiText(content, "TraceLabel", GetDebugExceptionTraceRecordLabel() + " | " + T("帧", "Frame") + " " + _debugExceptionTraceFrame, 16, TextAnchor.MiddleLeft, FontStyle.Normal);
         PlaceLGuiRect(traceLabel.rectTransform, 306f, y, 880f, 42f);
         y += 50f;
         var trace = CreateLGuiMultilineInput(content, "Trace", 0f, y, 1480f, 280f, true);
         trace.text = _debugExceptionTrace;
         y += 294f;
 
-        y = AddLGuiSectionTitle(content, "Game and Plugin Stability Test", y);
-        CreateLGuiButton(content, "RunStability", "Run Test", 0f, y, 110f, 42f, () => { RunDebugStabilityTest(); OpenLGuiDebugDiagnostics(); });
-        CreateLGuiButton(content, "ClearStability", "Clear", 122f, y, 90f, 42f, () => { _debugStabilityTestResult = "Not run."; OpenLGuiDebugDiagnostics(); });
+        y = AddLGuiSectionTitle(content, T("游戏与插件稳定性测试", "Game and Plugin Stability Test"), y);
+        CreateLGuiButton(content, "RunStability", T("运行测试", "Run Test"), 0f, y, 110f, 42f, () => { RunDebugStabilityTest(); OpenLGuiDebugDiagnostics(); });
+        CreateLGuiButton(content, "ClearStability", T("清空", "Clear"), 122f, y, 90f, 42f, () => { _debugStabilityTestResult = ""; OpenLGuiDebugDiagnostics(); });
         y += 50f;
         var stability = CreateLGuiMultilineInput(content, "Stability", 0f, y, 1480f, 260f, true);
-        stability.text = _debugStabilityTestResult;
+        stability.text = _debugStabilityTestResult.Length == 0 ? T("未运行。", "Not run.") : _debugStabilityTestResult;
         y += 274f;
         content.sizeDelta = new Vector2(0f, Math.Max(900f, y + 20f));
     }
@@ -56,14 +56,14 @@ public sealed partial class ElinModifierPlugin
     {
         if (!_debugAuthorized) return;
         EnsureDebugGameTypeEntries();
-        var modal = CreateLGuiCompleteModal("RuntimeDebugRootSelector", "Debug root selector", out var content, 1600f, 1030f);
+        var modal = CreateLGuiCompleteModal("RuntimeDebugRootSelector", T("调试根对象选择", "Debug root selector"), out var content, 1600f, 1030f);
         if (modal == null) return;
         var y = 4f;
-        var filter = CreateLGuiInput(content, "RootFilter", "Search types / mods", 0f, y, 500f, 44f);
+        var filter = CreateLGuiInput(content, "RootFilter", T("搜索类型 / 模组", "Search types / mods"), 0f, y, 500f, 44f);
         filter.text = _debugGameModuleFilter;
         filter.onValueChanged.AddListener(value => _debugGameModuleFilter = value ?? "");
-        CreateLGuiButton(content, "Search", "Search", 514f, y, 100f, 44f, () => { _lGuiDebugRootPage = 0; OpenLGuiDebugRootSelector(); });
-        CreateLGuiButton(content, "Rescan", "Rescan modules", 628f, y, 160f, 44f, RefreshLGuiDebugModuleCatalog);
+        CreateLGuiButton(content, "Search", T("搜索", "Search"), 514f, y, 100f, 44f, () => { _lGuiDebugRootPage = 0; OpenLGuiDebugRootSelector(); });
+        CreateLGuiButton(content, "Rescan", T("重新扫描模块", "Rescan modules"), 628f, y, 160f, 44f, RefreshLGuiDebugModuleCatalog);
         y += 54f;
 
         var roots = new List<Tuple<string, object>>();
@@ -121,7 +121,7 @@ public sealed partial class ElinModifierPlugin
             var pair = roots[i];
             var local = pair;
             CreateLGuiButton(content, "Browse" + i, local.Item1, 0f, y, 1120f, 44f, () => SelectLGuiDebugRoot(local.Item1, local.Item2));
-            CreateLGuiButton(content, "Methods" + i, "Methods", 1134f, y, 110f, 44f, () => OpenLGuiDebugMethods(local.Item1, local.Item2));
+            CreateLGuiButton(content, "Methods" + i, T("方法", "Methods"), 1134f, y, 110f, 44f, () => OpenLGuiDebugMethods(local.Item1, local.Item2));
             y += 48f;
         }
         content.sizeDelta = new Vector2(0f, Math.Max(820f, y + 20f));
@@ -198,7 +198,7 @@ public sealed partial class ElinModifierPlugin
     private void OpenLGuiDebugMethods(string label, object target)
     {
         var type = target as Type ?? target.GetType();
-        var modal = CreateLGuiCompleteModal("RuntimeDebugMethods", label + " | Methods", out var content, 1600f, 1030f);
+        var modal = CreateLGuiCompleteModal("RuntimeDebugMethods", label + " | " + T("方法", "Methods"), out var content, 1600f, 1030f);
         if (modal == null) return;
         var y = 4f;
         var methods = GetDebugMethods(type).Where(method => string.IsNullOrWhiteSpace(_debugGameModuleFilter) || GetDebugMethodSignature(method).IndexOf(_debugGameModuleFilter, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
@@ -220,17 +220,17 @@ public sealed partial class ElinModifierPlugin
         var visible = GetDebugFilteredConfigFiles(files, _debugFilter, _debugConfigFileFilter);
         if (visible.Length == 0) visible = files;
         _lGuiDebugConfigFileIndex = Clamp(_lGuiDebugConfigFileIndex, 0, Math.Max(0, visible.Length - 1));
-        var modal = CreateLGuiCompleteModal("RuntimeDebugConfigFiles", "BepInEx Config Files", out var content, 1600f, 1030f);
+        var modal = CreateLGuiCompleteModal("RuntimeDebugConfigFiles", T("BepInEx配置文件", "BepInEx Config Files"), out var content, 1600f, 1030f);
         if (modal == null) return;
         var y = 4f;
-        var filter = CreateLGuiInput(content, "ConfigFilter", "Search", 0f, y, 430f, 44f);
+        var filter = CreateLGuiInput(content, "ConfigFilter", T("搜索", "Search"), 0f, y, 430f, 44f);
         filter.text = _debugConfigFileFilter;
         filter.onValueChanged.AddListener(value => _debugConfigFileFilter = value ?? "");
-        CreateLGuiButton(content, "Search", "Search", 444f, y, 90f, 44f, () => { _lGuiDebugConfigFileIndex = 0; _lGuiDebugConfigEntryPage = 0; OpenLGuiDebugConfigFiles(); });
+        CreateLGuiButton(content, "Search", T("搜索", "Search"), 444f, y, 90f, 44f, () => { _lGuiDebugConfigFileIndex = 0; _lGuiDebugConfigEntryPage = 0; OpenLGuiDebugConfigFiles(); });
         CreateLGuiButton(content, "PrevFile", "◀", 550f, y, 48f, 44f, () => { _lGuiDebugConfigFileIndex = Math.Max(0, _lGuiDebugConfigFileIndex - 1); _lGuiDebugConfigEntryPage = 0; OpenLGuiDebugConfigFiles(); });
         CreateLGuiButton(content, "NextFile", "▶", 608f, y, 48f, 44f, () => { _lGuiDebugConfigFileIndex = Math.Min(Math.Max(0, visible.Length - 1), _lGuiDebugConfigFileIndex + 1); _lGuiDebugConfigEntryPage = 0; OpenLGuiDebugConfigFiles(); });
         var file = visible.Length == 0 ? "" : visible[_lGuiDebugConfigFileIndex];
-        var fileLabel = CreateLGuiText(content, "File", string.IsNullOrEmpty(file) ? "No config files" : System.IO.Path.GetFileName(file), 16, TextAnchor.MiddleLeft, FontStyle.Normal);
+        var fileLabel = CreateLGuiText(content, "File", string.IsNullOrEmpty(file) ? T("没有配置文件", "No config files") : System.IO.Path.GetFileName(file), 16, TextAnchor.MiddleLeft, FontStyle.Normal);
         PlaceLGuiRect(fileLabel.rectTransform, 674f, y, 760f, 44f);
         y += 54f;
         var entries = string.IsNullOrEmpty(file) ? Array.Empty<DebugRawConfigEntry>() : GetDebugRawConfigEntries(file);
@@ -250,12 +250,12 @@ public sealed partial class ElinModifierPlugin
                 _debugInputs[key] = entry.Value;
             var label = CreateLGuiText(content, "ConfigKey", "[" + entry.Section + "] " + entry.Key, 15, TextAnchor.MiddleLeft, FontStyle.Normal);
             PlaceLGuiRect(label.rectTransform, 0f, y, 460f, 42f);
-            var input = CreateLGuiInput(content, "ConfigValue", "Value", 470f, y, 560f, 42f);
+            var input = CreateLGuiInput(content, "ConfigValue", T("值", "Value"), 470f, y, 560f, 42f);
             input.text = _debugInputs[key];
             input.onValueChanged.AddListener(value => _debugInputs[key] = value ?? "");
-            CreateLGuiButton(content, "Apply" + i, "Apply", 1042f, y, 90f, 42f, () => { ApplyDebugRawConfigValue(key, entry); OpenLGuiDebugConfigFiles(); });
+            CreateLGuiButton(content, "Apply" + i, T("应用", "Apply"), 1042f, y, 90f, 42f, () => { ApplyDebugRawConfigValue(key, entry); OpenLGuiDebugConfigFiles(); });
             var toggle = CreateLGuiToggle(content, "Lock" + i, 1144f, y, 130f, 42f, out var toggleLabel);
-            toggleLabel.text = "Lock";
+            toggleLabel.text = T("锁定", "Lock");
             toggle.isOn = _debugLocks.TryGetValue(key, out var isLocked) && isLocked;
             toggle.onValueChanged.AddListener(value =>
             {

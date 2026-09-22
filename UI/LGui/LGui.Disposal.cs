@@ -18,6 +18,9 @@ public sealed partial class ElinModifierPlugin
         _modules.Probability.DisposeUi();
         _lGuiDebugList?.Dispose();
         _lGuiEmpList?.Dispose();
+        _lGuiWorldMapZoneList?.Dispose();
+        _lGuiWorldMapNpcList?.Dispose();
+        _lGuiWorldMapHitList?.Dispose();
         _lGuiFeatureList = null;
         _lGuiCharacterList = null;
         _lGuiItemList = null;
@@ -27,6 +30,12 @@ public sealed partial class ElinModifierPlugin
         _lGuiHomeList = null;
         _lGuiDebugList = null;
         _lGuiEmpList = null;
+        _lGuiWorldMapZoneList = null;
+        _lGuiWorldMapNpcList = null;
+        _lGuiWorldMapHitList = null;
+        _lGuiWorldMapZoneItems = null;
+        _lGuiWorldMapNpcItems = null;
+        _lGuiWorldMapHitItems = null;
         _lGuiCharacterTargetText = null;
         _lGuiHomeSelectionText = null;
         _lGuiPlayerInfoStatusText = null;

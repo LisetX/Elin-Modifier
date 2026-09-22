@@ -113,6 +113,7 @@ public sealed partial class ElinModifierPlugin
         var moongateLandholderPrivileges = json.IndexOf("\"moongateLandholderPrivileges\"", StringComparison.Ordinal);
         var moongateUploadUpdateKeys = json.IndexOf("\"moongateUploadUpdateKeys\"", StringComparison.Ordinal);
         var ai = json.IndexOf("\"aiApiBase\"", StringComparison.Ordinal);
+        var worldMap = json.IndexOf("\"worldMapShowInfo\"", StringComparison.Ordinal);
         var emp = json.IndexOf("\"empPlugins\"", StringComparison.Ordinal);
 
         return acceptedTermsVersion >= 0 &&
@@ -180,7 +181,8 @@ public sealed partial class ElinModifierPlugin
                automation < moongateLandholderPrivileges &&
                moongateLandholderPrivileges < moongateUploadUpdateKeys &&
                moongateUploadUpdateKeys < ai &&
-               ai < emp;
+               ai < worldMap &&
+               worldMap < emp;
     }
     private static int ExtractInt(string json, string name, int fallback)
     {

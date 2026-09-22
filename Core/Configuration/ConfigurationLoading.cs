@@ -257,6 +257,18 @@ public sealed partial class ElinModifierPlugin
                                       !HasJsonValue(json, "aiHttpTimeoutSeconds") ||
                                       !HasJsonValue(json, "aiContextCompressThreshold") ||
                                       !HasJsonValue(json, "aiMaxToolRounds") ||
+                                      !HasJsonValue(json, "worldMapShowInfo") ||
+                                      !HasJsonValue(json, "worldMapShowZoneList") ||
+                                      !HasJsonValue(json, "worldMapShowZoneNpcs") ||
+                                      !HasJsonValue(json, "worldMapKnownZonesOnly") ||
+                                      !HasJsonValue(json, "worldMapNavigation") ||
+                                      !HasJsonValue(json, "worldMapForceReadSaves") ||
+                                      !HasJsonValue(json, "worldMapShowLandmarkNames") ||
+                                      !HasJsonValue(json, "worldMapShowDungeonNames") ||
+                                      !HasJsonValue(json, "worldMapShowPinNames") ||
+                                      !HasJsonValue(json, "worldMapShowLocalContainers") ||
+                                      !HasJsonValue(json, "worldMapShowLocalNpcs") ||
+                                      !HasJsonValue(json, "worldMapPins") ||
                                       !HasJsonValue(json, "empPlugins");
             _language = NormalizeLanguage(ExtractString(json, "language", _language));
             _uiStyleIndex = Clamp(ExtractInt(json, "uiStyleIndex", _uiStyleIndex), 0, UiStyleNamesZh.Length - 1);
@@ -562,6 +574,21 @@ public sealed partial class ElinModifierPlugin
             _aiContextCompressThresholdText = _aiContextCompressThreshold.ToString(CultureInfo.InvariantCulture);
             _aiMaxToolRounds = Clamp(ExtractInt(json, "aiMaxToolRounds", AiToolLoopDefaultMaxRounds), AiToolLoopMinRounds, AiToolLoopMaxRounds);
             _aiMaxToolRoundsText = _aiMaxToolRounds.ToString(CultureInfo.InvariantCulture);
+            _lGuiWorldMapShowInfo = ExtractBool(json, "worldMapShowInfo", false);
+            _lGuiWorldMapShowList = ExtractBool(json, "worldMapShowZoneList", false);
+            _lGuiWorldMapShowNpcs = ExtractBool(json, "worldMapShowZoneNpcs", false);
+            _lGuiWorldMapKnownOnly = ExtractBool(json, "worldMapKnownZonesOnly", false);
+            _lGuiWorldMapNavigation = ExtractBool(json, "worldMapNavigation", false);
+            _lGuiWorldMapReadSaves = ExtractBool(json, "worldMapForceReadSaves", false);
+            _lGuiWorldMapShowLandmarkNames = ExtractBool(json, "worldMapShowLandmarkNames", false);
+            _lGuiWorldMapShowDungeonNames = ExtractBool(json, "worldMapShowDungeonNames", false);
+            _lGuiWorldMapShowPinNames = ExtractBool(json, "worldMapShowPinNames", false);
+            _lGuiWorldMapShowLocalContainers = ExtractBool(json, "worldMapShowLocalContainers", false);
+            _lGuiWorldMapShowLocalNpcs = ExtractBool(json, "worldMapShowLocalNpcs", false);
+            _modules.WorldMap.NavigationEnabled = _lGuiWorldMapNavigation;
+            _modules.WorldMap.ShowLocalContainers = _lGuiWorldMapShowLocalContainers;
+            _modules.WorldMap.ShowLocalNpcs = _lGuiWorldMapShowLocalNpcs;
+            _worldMapPinPayload = ExtractString(json, "worldMapPins", "");
             LoadEmpPluginStatesFromConfig(json);
 
             SyncConfigTextFields();
@@ -767,6 +794,20 @@ public sealed partial class ElinModifierPlugin
         _aiMaxToolRounds = AiToolLoopDefaultMaxRounds;
         _aiMaxToolRoundsText = _aiMaxToolRounds.ToString(CultureInfo.InvariantCulture);
         _aiContextCompressedWeight = 0;
+        _lGuiWorldMapShowInfo = false;
+        _lGuiWorldMapShowList = false;
+        _lGuiWorldMapShowNpcs = false;
+        _lGuiWorldMapKnownOnly = false;
+        _lGuiWorldMapReadSaves = false;
+        _lGuiWorldMapShowLandmarkNames = false;
+        _lGuiWorldMapShowDungeonNames = false;
+        _lGuiWorldMapShowPinNames = false;
+        _lGuiWorldMapShowLocalContainers = false;
+        _lGuiWorldMapShowLocalNpcs = false;
+        _modules.WorldMap.ShowLocalContainers = false;
+        _modules.WorldMap.ShowLocalNpcs = false;
+        _worldMapPinPayload = "";
+        _modules.WorldMap.ClearPins();
         SyncConfigTextFields();
     }
     private static string DetectWindowsLanguage()

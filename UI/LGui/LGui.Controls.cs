@@ -212,6 +212,7 @@ public sealed partial class ElinModifierPlugin
         PlaceLGuiRect(rect, x, y, width, height);
         var image = rect.gameObject.AddComponent<Image>();
         image.color = new Color(0.035f, 0.04f, 0.047f, 1f);
+        rect.gameObject.AddComponent<LGuiTextBoxBackground>();
         RegisterLGuiRoundedImage(image);
 
         var scroll = rect.gameObject.AddComponent<ScrollRect>();

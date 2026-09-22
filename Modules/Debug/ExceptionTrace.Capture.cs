@@ -76,13 +76,14 @@ internal sealed partial class ExceptionTraceModule
             AddDebugExceptionTraceRecord(new DebugExceptionTraceRecord(frame, channel, sourceName, level, trace));
         }
     }
+    private string Text(string zh, string en) => _host.TranslateModuleText(zh, en);
     internal string GetDebugExceptionTraceRecordLabel()
     {
         var count = _host._debugExceptionTraceRecords.Count;
         if (count <= 0 || _host._debugExceptionTraceRecordIndex < 0)
-            return "Record: 0 / 0";
+            return Text("记录", "Record") + ": 0 / 0";
         var index = Math.Max(0, Math.Min(_host._debugExceptionTraceRecordIndex, count - 1));
-        return "Record: " + (index + 1).ToString(CultureInfo.InvariantCulture) + " / " + count.ToString(CultureInfo.InvariantCulture);
+        return Text("记录", "Record") + ": " + (index + 1).ToString(CultureInfo.InvariantCulture) + " / " + count.ToString(CultureInfo.InvariantCulture);
     }
     private void AddDebugExceptionTraceRecord(DebugExceptionTraceRecord record)
     {

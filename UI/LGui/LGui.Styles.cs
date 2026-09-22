@@ -91,10 +91,13 @@ public sealed partial class ElinModifierPlugin
 
         var buttons = _lGuiRoot!.GetComponentsInChildren<Button>(true);
         for (var i = 0; i < buttons.Length; i++)
-            if (buttons[i].targetGraphic is Image image)
-                image.color = _lGuiEditorModal != null && buttons[i].transform.IsChildOf(_lGuiEditorModal.transform)
-                    ? GetLGuiModalButtonColor(buttons[i], buttonColor, accent, lightTheme)
-                    : buttonColor;
+        {
+            if (buttons[i].targetGraphic is not Image image)
+                continue;
+            image.color = _lGuiEditorModal != null && buttons[i].transform.IsChildOf(_lGuiEditorModal.transform)
+                ? GetLGuiModalButtonColor(buttons[i], buttonColor, accent, lightTheme)
+                : buttonColor;
+        }
 
         var orderHandles = _lGuiRoot.GetComponentsInChildren<LGuiOrderHandleImage>(true);
         for (var i = 0; i < orderHandles.Length; i++)
@@ -109,11 +112,21 @@ public sealed partial class ElinModifierPlugin
         var inputs = _lGuiRoot.GetComponentsInChildren<InputField>(true);
         for (var i = 0; i < inputs.Length; i++)
             if (inputs[i].targetGraphic is Image image)
-                image.color = inputs[i].GetComponent<LGuiTransparentInputBackground>() != null
-                    ? Color.clear
-                    : _lGuiEditorModal != null && inputs[i].transform.IsChildOf(_lGuiEditorModal.transform)
-                        ? modalInputColor
-                        : inputColor;
+                image.color = _lGuiEditorModal != null && inputs[i].transform.IsChildOf(_lGuiEditorModal.transform)
+                    ? modalInputColor
+                    : inputColor;
+
+        var panels = _lGuiRoot.GetComponentsInChildren<LGuiPanelBackground>(true);
+        for (var i = 0; i < panels.Length; i++)
+        {
+            var image = panels[i].GetComponent<Image>();
+            if (image == null)
+                continue;
+            var basis = _lGuiEditorModal != null && panels[i].transform.IsChildOf(_lGuiEditorModal.transform)
+                ? modalInputColor
+                : inputColor;
+            image.color = new Color(basis.r, basis.g, basis.b, Clamp(panels[i].Alpha, 0f, 1f));
+        }
 
         ApplyLGuiDropdownStyles(buttonColor, inputColor, modalBaseColor, accent, lightTheme);
 
@@ -121,8 +134,16 @@ public sealed partial class ElinModifierPlugin
         for (var i = 0; i < scrolls.Length; i++)
         {
             var image = scrolls[i].GetComponent<Image>();
-            if (image != null)
+            if (image == null)
+                continue;
+            if (scrolls[i].GetComponent<LGuiTextBoxBackground>() == null)
+            {
                 image.color = Color.clear;
+                continue;
+            }
+            image.color = _lGuiEditorModal != null && scrolls[i].transform.IsChildOf(_lGuiEditorModal.transform)
+                ? modalInputColor
+                : inputColor;
         }
 
         var textColor = GetActiveUiTextColor();
@@ -147,6 +168,11 @@ public sealed partial class ElinModifierPlugin
         _modules.Probability.RefreshVisibleRows();
         _lGuiDebugList?.RefreshBoundRows();
         _lGuiEmpList?.RefreshBoundRows();
+        _lGuiWorldMapZoneList?.RefreshBoundRows();
+        _lGuiWorldMapNpcList?.RefreshBoundRows();
+        _lGuiWorldMapHitList?.RefreshBoundRows();
+        if (_lGuiPage == LGuiPage.WorldMap)
+            _lGuiWorldMapApplyPending = true;
         ApplyWatermarkVisualSettings();
     }
     private void ApplyLGuiDropdownStyles(Color buttonColor, Color inputColor, Color popupColor, Color accent, bool lightTheme)
