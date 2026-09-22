@@ -250,12 +250,12 @@ public sealed partial class ElinModifierPlugin
         AppendLGuiWorldMapLine(sb, T("已探索", "Explored"), cell.isSeen ? T("是", "yes") : T("否", "no"));
         AppendLGuiWorldMapLine(sb, T("地板", "Floor"), SafeText(() => cell.sourceFloor.GetName(), ""));
         AppendLGuiWorldMapLine(sb, T("地板材质", "Floor material"), SafeText(() => cell.matFloor.GetName(), ""));
-        if (cell._block != 0)
+        if (cell.HasBlock)
         {
             AppendLGuiWorldMapLine(sb, T("墙壁", "Block"), SafeText(() => cell.sourceBlock.GetName(), ""));
             AppendLGuiWorldMapLine(sb, T("墙壁材质", "Block material"), SafeText(() => cell.matBlock.GetName(), ""));
         }
-        if (cell.obj != 0)
+        if (cell.HasObj)
         {
             AppendLGuiWorldMapLine(sb, T("物件", "Object"), SafeText(() => cell.sourceObj.GetName(), ""));
             AppendLGuiWorldMapLine(sb, T("物件材质", "Object material"), SafeText(() => cell.matObj.GetName(), ""));

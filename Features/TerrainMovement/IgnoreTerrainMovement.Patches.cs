@@ -402,9 +402,9 @@ public sealed partial class ElinModifierPlugin
             if (sourceCell == null || targetCell == null)
                 return false;
 
-            if (Math.Abs(sourceCell.topHeight - targetCell.topHeight) > 8)
+            if (Math.Abs(CellNumericFields.TopHeight(sourceCell) - CellNumericFields.TopHeight(targetCell)) > 8)
                 return true;
-            if (Math.Abs(sourceCell.minHeight - targetCell.minHeight) > 8)
+            if (Math.Abs(CellNumericFields.MinHeight(sourceCell) - CellNumericFields.MinHeight(targetCell)) > 8)
                 return true;
 
             var sourceSurface = sourceCell.GetSurfaceHeight();

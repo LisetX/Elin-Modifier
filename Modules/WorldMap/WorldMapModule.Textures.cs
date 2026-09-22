@@ -393,9 +393,9 @@ internal sealed partial class WorldMapModule
                 return ColorSea;
             if (cell.isShoreSand)
                 return ColorShore;
-            if (cell._block != 0)
+            if (cell.HasBlock)
                 return MaterialColor(cell.matBlock, ColorBlocked);
-            if (cell.obj != 0)
+            if (cell.HasObj)
                 return new Color32(96, 132, 72, 255);
             return MaterialColor(cell.matFloor, ColorLand);
         }

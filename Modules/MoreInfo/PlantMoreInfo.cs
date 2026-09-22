@@ -94,8 +94,8 @@ internal sealed partial class MoreInfoModule
         try
         {
             GrowSystem.cell = cell;
-            var stageIndex = Clamp(cell.objVal / 30, 0, Math.Max(0, growth.StageLength - 1));
-            var stageProgress = cell.objVal % 30;
+            var stageIndex = Clamp(CellNumericFields.ObjVal(cell) / 30, 0, Math.Max(0, growth.StageLength - 1));
+            var stageProgress = CellNumericFields.ObjVal(cell) % 30;
             var canHarvest = growth.CanHarvest();
             var canReapSeed = growth.CanReapSeed();
             var isWithered = growth.IsWithered();
@@ -121,7 +121,7 @@ internal sealed partial class MoreInfoModule
             var materialLine = new List<string>
             {
                 BuildItemMoreInfoField(Tr("材质", "Material"), SafeText(() => cell.matObj.GetName(), "?"), ItemMoreInfoPlantStatsColor),
-                BuildItemMoreInfoField(Tr("外观", "Appearance"), "obj " + cell.obj.ToString(CultureInfo.InvariantCulture) + " / dir " + cell.objDir.ToString(CultureInfo.InvariantCulture), ItemMoreInfoPlantStatsColor)
+                BuildItemMoreInfoField(Tr("外观", "Appearance"), "obj " + CellNumericFields.Obj(cell).ToString(CultureInfo.InvariantCulture) + " / dir " + cell.objDir.ToString(CultureInfo.InvariantCulture), ItemMoreInfoPlantStatsColor)
             };
 
             var plantRuleLine = BuildItemMoreInfoField(Tr("植物规则", "Plant rules"), GetPlantRuleText(growth), ItemMoreInfoPlantStatsColor);

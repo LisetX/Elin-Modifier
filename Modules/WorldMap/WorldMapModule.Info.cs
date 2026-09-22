@@ -112,8 +112,8 @@ internal sealed partial class WorldMapModule
                             continue;
                         if (cell.isSeen) seen++;
                         if (cell.IsTopWater) water++;
-                        if (cell._block != 0) wall++;
-                        if (cell.obj != 0) obj++;
+                        if (cell.HasBlock) wall++;
+                        if (cell.HasObj) obj++;
                         if (cell.room != null) room++;
                     }
                     catch

@@ -185,10 +185,12 @@ internal sealed class ProgressionModule
             }
 
             var advancedEvasion = target.Evalue(151);
-            if (advancedEvasion != 0 && attack.toHit < advancedEvasion * 10L)
+            var toHit = AttackNumericFields.ToHit(attack);
+            var evasion = AttackNumericFields.Evasion(attack);
+            if (advancedEvasion != 0 && toHit < advancedEvasion * 10L)
             {
-                var evasionPressure = (float)(attack.evasion * 100L) /
-                                      Mathf.Clamp(attack.toHit, 1f, attack.toHit);
+                var evasionPressure = (float)(evasion * 100L) /
+                                      Mathf.Clamp(toHit, 1f, toHit);
                 if (evasionPressure > 300f && GameAccess.Random.Next(advancedEvasion + 250) > 100 ||
                     evasionPressure > 200f && GameAccess.Random.Next(advancedEvasion + 250) > 150 ||
                     evasionPressure > 150f && GameAccess.Random.Next(advancedEvasion + 250) > 200)
@@ -217,13 +219,15 @@ internal sealed class ProgressionModule
             return true;
         if (GameAccess.Random.Next(20) == 0)
             return false;
-        if (attack.toHit < 1)
+        var finalToHit = AttackNumericFields.ToHit(attack);
+        var finalEvasion = AttackNumericFields.Evasion(attack);
+        if (finalToHit < 1)
             return false;
-        if (attack.evasion < 1)
+        if (finalEvasion < 1)
             return true;
 
-        var hitScore = Math.Pow(Math.Max(1d, (double)attack.toHit), 2d);
-        var evasionScore = Math.Pow(Math.Max(1d, (double)attack.evasion), 2d);
+        var hitScore = Math.Pow(Math.Max(1d, (double)finalToHit), 2d);
+        var evasionScore = Math.Pow(Math.Max(1d, (double)finalEvasion), 2d);
         var coreChance = hitScore / (hitScore + evasionScore * (101d / 260d));
         var threshold = Math.Max(
             0,
